@@ -38,23 +38,23 @@
 void go::gfx_shader_resource::release()
 {
     // TODO: unbind from renderer
-	for(auto &m : internalOutputBindMask)
-	{
-		m.clear_all();
-	}
+    for(auto &m : internalOutputBindMask)
+    {
+        m.clear_all();
+    }
 
-	for(auto &m : internalPendingOutputBindMask)
-	{
-		m.clear_all();
-	}
+    for(auto &m : internalPendingOutputBindMask)
+    {
+        m.clear_all();
+    }
 
-	for(auto &m : internalInputBindMask)
-	{
-		m.clear_all();
-	}
+    for(auto &m : internalInputBindMask)
+    {
+        m.clear_all();
+    }
 
-	for(auto &m : internalPendingInputBindMask)
-	{
-		m.clear_all();
-	}
+    for(auto &m : internalPendingInputBindMask)
+    {
+        m.clear_all();
+    }
 }

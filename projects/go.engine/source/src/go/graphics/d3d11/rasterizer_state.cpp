@@ -56,7 +56,7 @@ void go::gfx_rasterizer_state::reset(const gfx_rasterizer_parameters &options)
     release();
 
     // RS
-	CD3D11_RASTERIZER_DESC desc(CD3D11_DEFAULT{});
+    CD3D11_RASTERIZER_DESC desc(CD3D11_DEFAULT{});
     desc.DepthClipEnable = options.depthClipEnable;
     desc.CullMode = (D3D11_CULL_MODE)options.cullMode;
     desc.DepthBias = options.depthBias;

@@ -70,9 +70,9 @@ void gat::material_file::load(const go::file_path &filePath)
         auto &&shaderInfo = go::gfx_material_shader_info[(uint32_t)shaderID];
 
         // Read the material textures
-		auto &&nTextures = nMaterial->first_node("textures");
-		auto &&nTex = nTextures->first_node("texture");
-		GO_FOR_EACH_INDEX(current, textures)
+        auto &&nTextures = nMaterial->first_node("textures");
+        auto &&nTex = nTextures->first_node("texture");
+        GO_FOR_EACH_INDEX(current, textures)
         {
             if(!nTex)
             {
@@ -80,23 +80,23 @@ void gat::material_file::load(const go::file_path &filePath)
             }
 
             *current.iterator = nTex->value();
-			textureFormats[current.index] = nTex->first_attribute("format")->value();
+            textureFormats[current.index] = nTex->first_attribute("format")->value();
 
             nTex = nTex->next_sibling(nTex->name());
         }
 
-		// Read the material constants
-		auto &&nConstants = nMaterial->first_node("constants");
-		auto &&nConstant = nConstants->first_node();
-		while(nConstant)
-		{
-			auto &&semantic = nConstant->name();
-			auto &&value = nConstant->value();
+        // Read the material constants
+        auto &&nConstants = nMaterial->first_node("constants");
+        auto &&nConstant = nConstants->first_node();
+        while(nConstant)
+        {
+            auto &&semantic = nConstant->name();
+            auto &&value = nConstant->value();
 
-			constants.emplace_back(semantic, value);
+            constants.emplace_back(semantic, value);
 
-			nConstant = nConstant->next_sibling();
-		}
+            nConstant = nConstant->next_sibling();
+        }
     }
     catch(...)
     {
@@ -123,19 +123,19 @@ void gat::material_file::save(const go::file_path &filePath)
         go::xml_require_attribute(nMaterial, "blendmode", go::gfx_blend_mode_strings[(uint32_t)blendMode]);
 
         // Material textures
-		auto &&nTextures = go::xml_add_child(nMaterial, "textures");
+        auto &&nTextures = go::xml_add_child(nMaterial, "textures");
         GO_FOR_EACH_INDEX(current, textures)
         {
             auto &&nTex = go::xml_add_child(nTextures, "texture", textures[current.index].c_str());
             go::xml_require_attribute(nTex, "format", textureFormats[current.index].c_str());
         }
 
-		// Material constants
-		auto &&nConstants = go::xml_add_child(nMaterial, "constants");
-		for(auto &&e : constants)
-		{
-			go::xml_add_child(nConstants, e.first.c_str(), e.second.c_str());
-		}
+        // Material constants
+        auto &&nConstants = go::xml_add_child(nMaterial, "constants");
+        for(auto &&e : constants)
+        {
+            go::xml_add_child(nConstants, e.first.c_str(), e.second.c_str());
+        }
 
         go::xml_save_document(doc, filePath);
     }
@@ -147,35 +147,35 @@ void gat::material_file::save(const go::file_path &filePath)
 
 
 void gat::material_file::bind_rgba_constant(
-	const section_file::section_t &section,
-	const std::string &semantic,
-	const std::string &newSemantic,
-	const std::string &defaultValue)
+    const section_file::section_t &section,
+    const std::string &semantic,
+    const std::string &newSemantic,
+    const std::string &defaultValue)
 {
-	auto &&value = section.opt_mapping(semantic, defaultValue);
+    auto &&value = section.opt_mapping(semantic, defaultValue);
 
-	// Remove the surrounding RGBA()
-	auto &&values = value.substr(5, value.length() - 6);
+    // Remove the surrounding RGBA()
+    auto &&values = value.substr(5, value.length() - 6);
 
-	constants.emplace_back(newSemantic, values);
+    constants.emplace_back(newSemantic, values);
 }
 
 
 void gat::material_file::bind_float_constant(
-	const section_file::section_t &section,
-	const std::string &semantic,
-	const std::string &newSemantic,
-	const std::string &defaultValue)
+    const section_file::section_t &section,
+    const std::string &semantic,
+    const std::string &newSemantic,
+    const std::string &defaultValue)
 {
-	constants.emplace_back(newSemantic, section.opt_mapping(semantic, defaultValue));
+    constants.emplace_back(newSemantic, section.opt_mapping(semantic, defaultValue));
 }
 
 
 void gat::material_file::bind_float2_constant(
-	const section_file::section_t &section,
-	const std::string &semantic,
-	const std::string &newSemantic,
-	const std::string &defaultValue)
+    const section_file::section_t &section,
+    const std::string &semantic,
+    const std::string &newSemantic,
+    const std::string &defaultValue)
 {
-	constants.emplace_back(newSemantic, section.opt_mapping(semantic, defaultValue));
+    constants.emplace_back(newSemantic, section.opt_mapping(semantic, defaultValue));
 }

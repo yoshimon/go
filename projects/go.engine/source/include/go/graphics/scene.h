@@ -86,23 +86,23 @@ public:
     typedef std::vector<size_t> component_manager_id_vector_t;
     typedef std::vector<bool32_t> shadow_caster_flag_vector_t;
     typedef std::vector<gfx_entity> entity_vector_t;
-	//! A structure, which holds additional data for disk lights.
-	struct disk_light_data
-	{
-		//! Half of the outer angle.
-		float halfOuterAngle;
-		//! The rcp of the tan of half of the outer angle.
-		float rcpTanHalfOuterAngle;
-		//! The cosine of the outer angle.
-		float cosOuter;
-		//! The cosine of the inner angle.
-		float cosInner;
-		//! The angular scale.
-		float angleScale;
-		//! The angular bias.
-		float angleBias;
-	};
-	typedef std::vector<disk_light_data> disk_light_data_vector_t;
+    //! A structure, which holds additional data for disk lights.
+    struct disk_light_data
+    {
+        //! Half of the outer angle.
+        float halfOuterAngle;
+        //! The rcp of the tan of half of the outer angle.
+        float rcpTanHalfOuterAngle;
+        //! The cosine of the outer angle.
+        float cosOuter;
+        //! The cosine of the inner angle.
+        float cosInner;
+        //! The angular scale.
+        float angleScale;
+        //! The angular bias.
+        float angleBias;
+    };
+    typedef std::vector<disk_light_data> disk_light_data_vector_t;
 public:
     /*!
         Constructor.
@@ -218,8 +218,8 @@ public:
 
         \param id The entity identifier.
         \param color The light color.
-		\param luminousPower The luminious power of the light.
-		\param size The size of the light (area light).
+        \param luminousPower The luminious power of the light.
+        \param size The size of the light (area light).
         \param castsShadows State flag, indicating whether the light can cast shadows.
      */
     GO_API void attach_spherical_light(gfx_entity_id id, const DirectX::XMFLOAT3 &color, float luminousPower, float size, bool castsShadows);
@@ -240,10 +240,10 @@ public:
 
         \param id The entity identifier.
         \param color The light color.
-		\param luminousPower The luminious power of the light.
+        \param luminousPower The luminious power of the light.
         \param size The size of the light (area light).
-		\param coneOuterAngle The outer cone angle of the light.
-		\param coneInnerAngle The inner cone angle of the light.
+        \param coneOuterAngle The outer cone angle of the light.
+        \param coneInnerAngle The inner cone angle of the light.
         \param castsShadows State flag, indicating whether the light can cast shadows.
      */
     GO_API void attach_disk_light(gfx_entity_id id, const DirectX::XMFLOAT3 &color, float luminousPower, float size, float coneOuterAngle, float coneInnerAngle, bool castsShadows);
@@ -259,21 +259,21 @@ public:
         \return The disk-light list.
      */
     GO_API const gfx_disk_lights &disk_lights() const noexcept;
-	/*!
-		Returns the list of entities that have disk-lights attached to them.
+    /*!
+        Returns the list of entities that have disk-lights attached to them.
 
-		\return The entities that have disk lights attached to them.
-	 */
-	GO_API const gfx_entity_id_vector &disk_light_entities() const noexcept;
-	/*!
-		Changes the color of a disk light.
+        \return The entities that have disk lights attached to them.
+     */
+    GO_API const gfx_entity_id_vector &disk_light_entities() const noexcept;
+    /*!
+        Changes the color of a disk light.
 
-		\param lightIndex The disk light index.
-		\param color The new color.
-		\param luminousPower The luminous power of the light.
-	 */
-	GO_API void change_disk_light_color(int32_t lightIndex, const DirectX::XMFLOAT3 &color, float luminousPower);
-	/*!
+        \param lightIndex The disk light index.
+        \param color The new color.
+        \param luminousPower The luminous power of the light.
+     */
+    GO_API void change_disk_light_color(int32_t lightIndex, const DirectX::XMFLOAT3 &color, float luminousPower);
+    /*!
         Registers a new component manager with the scene.
 
         \tparam T The component manager class.
@@ -372,8 +372,8 @@ private:
     gfx_entity_id_vector m_entityDiskLights;
     //! State flag for shadow-casting disk lights.
     shadow_caster_flag_vector_t m_entityDiskLightShadowCasterFlags;
-	//! Properties for the disk lights.
-	disk_light_data_vector_t m_diskLightData;
+    //! Properties for the disk lights.
+    disk_light_data_vector_t m_diskLightData;
 };
 
 

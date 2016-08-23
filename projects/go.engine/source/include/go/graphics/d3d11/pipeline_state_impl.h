@@ -40,7 +40,7 @@ template<size_t SlotCount, typename... SlotArgs>
 inline void gfx_pipeline_state<SlotCount, SlotArgs...>::reset()
 {
     m_modifiedEntries.clear_all();
-	m_slotValues.fill(data_tuple_t());
+    m_slotValues.fill(data_tuple_t());
 }
 
 
@@ -48,7 +48,7 @@ template<size_t SlotCount, typename... SlotArgs>
 inline auto gfx_pipeline_state<SlotCount, SlotArgs...>::bind_slot(uint32_t slot, SlotArgs... args) -> first_data_t
 {
     auto &&result = std::get<0>(m_slotValues[slot]);
-	m_slotValues[slot] = std::make_tuple(std::move(args)...);
+    m_slotValues[slot] = std::make_tuple(std::move(args)...);
     m_modifiedEntries.set(slot);
     return result;
 }

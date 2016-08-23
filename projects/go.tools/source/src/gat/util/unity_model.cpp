@@ -60,8 +60,8 @@ void gat::unity_model::load(const go::file_path &filePath)
         auto vNormal = go::string_to_vector3f<DirectX::XMFLOAT3>(normalsSection[i].c_str());
         auto vTangent = go::string_to_vector4f<DirectX::XMFLOAT4>(tangentsSection[i].c_str());
 
-		// Handle missing UVs
-		auto vUV1 = uvSet1Section.empty() ? DirectX::XMFLOAT2(0, 0) : go::string_to_vector2f<DirectX::XMFLOAT2>(uvSet1Section[i].c_str());
+        // Handle missing UVs
+        auto vUV1 = uvSet1Section.empty() ? DirectX::XMFLOAT2(0, 0) : go::string_to_vector2f<DirectX::XMFLOAT2>(uvSet1Section[i].c_str());
         auto vUV2 = uvSet2Section.empty() ? DirectX::XMFLOAT2(0, 0) : go::string_to_vector2f<DirectX::XMFLOAT2>(uvSet2Section[i].c_str());
 
         unskinned_vertices_t::value_type v;

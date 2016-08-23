@@ -86,42 +86,42 @@ void update_light_buffers(const LightType &inLight, GPUBuffers &gpuBuffers)
 
 go::dfx_forward_plus_render_path::dfx_forward_plus_render_path(gfx_renderer *renderer)
 {
-	// Initialize caches
-	{
-		gfx_texture2d_regular_atlas_info atlasInfo;
-		atlasInfo.numColumns = 6;
-		atlasInfo.numRows = DFX_MAX_NUM_SHADOW_CASTING_POINT_LIGHTS;
-		atlasInfo.elementWidth = DFX_POINT_LIGHT_SHADOW_MAP_ATLAS_PADDED_FACE_SIZE;
-		atlasInfo.elementHeight = atlasInfo.elementWidth;
-		atlasInfo.colorFormat = gfx_color_format::d32_float;
-		m_shadowMaps.pointLightAtlas.reset(atlasInfo);
-	}
+    // Initialize caches
+    {
+        gfx_texture2d_regular_atlas_info atlasInfo;
+        atlasInfo.numColumns = 6;
+        atlasInfo.numRows = DFX_MAX_NUM_SHADOW_CASTING_POINT_LIGHTS;
+        atlasInfo.elementWidth = DFX_POINT_LIGHT_SHADOW_MAP_ATLAS_PADDED_FACE_SIZE;
+        atlasInfo.elementHeight = atlasInfo.elementWidth;
+        atlasInfo.colorFormat = gfx_color_format::d32_float;
+        m_shadowMaps.pointLightAtlas.reset(atlasInfo);
+    }
 
-	{
-		gfx_texture2d_regular_atlas_info atlasInfo;
-		atlasInfo.numColumns = 1;
-		atlasInfo.numRows = DFX_MAX_NUM_SHADOW_CASTING_SPOT_LIGHTS;
-		atlasInfo.elementWidth = DFX_SPOT_LIGHT_SHADOW_MAP_ATLAS_PADDED_FACE_SIZE;
-		atlasInfo.elementHeight = atlasInfo.elementWidth;
-		atlasInfo.colorFormat = gfx_color_format::d32_float;
-		m_shadowMaps.spotLightAtlas.reset(atlasInfo);
-	}
+    {
+        gfx_texture2d_regular_atlas_info atlasInfo;
+        atlasInfo.numColumns = 1;
+        atlasInfo.numRows = DFX_MAX_NUM_SHADOW_CASTING_SPOT_LIGHTS;
+        atlasInfo.elementWidth = DFX_SPOT_LIGHT_SHADOW_MAP_ATLAS_PADDED_FACE_SIZE;
+        atlasInfo.elementHeight = atlasInfo.elementWidth;
+        atlasInfo.colorFormat = gfx_color_format::d32_float;
+        m_shadowMaps.spotLightAtlas.reset(atlasInfo);
+    }
 
     // Initialize all effects
-	m_effects.bilateralBlur.initialize(nullptr);
-	m_effects.dof.initialize(nullptr);
+    m_effects.bilateralBlur.initialize(nullptr);
+    m_effects.dof.initialize(nullptr);
     m_effects.filmGrain.initialize(nullptr);
     m_effects.fxaa.initialize(nullptr);
-	m_effects.gaussianBlur.initialize(nullptr);
-	m_effects.halfresUpsample.initialize(nullptr);
+    m_effects.gaussianBlur.initialize(nullptr);
+    m_effects.halfresUpsample.initialize(nullptr);
     m_effects.hdrBloom.initialize(nullptr);
     m_effects.minZDownsampling.initialize(nullptr);
     m_effects.overlay.initialize(nullptr);
-	m_effects.shadowMaps.initialize(nullptr);
-	m_effects.ssao.initialize(nullptr);
+    m_effects.shadowMaps.initialize(nullptr);
+    m_effects.ssao.initialize(nullptr);
     m_effects.tonemapping.initialize(nullptr);
     m_effects.vignette.initialize(nullptr);
-	m_effects.volumetricLighting.initialize(nullptr);
+    m_effects.volumetricLighting.initialize(nullptr);
 
     m_effects.forwardPlus.ambientLighting.initialize(nullptr);
     m_effects.forwardPlus.prepass.initialize(nullptr);
@@ -137,20 +137,20 @@ go::dfx_forward_plus_render_path::dfx_forward_plus_render_path(gfx_renderer *ren
 
 go::dfx_forward_plus_render_path::~dfx_forward_plus_render_path()
 {
-	m_effects.bilateralBlur.dispose();
-	m_effects.dof.dispose();
+    m_effects.bilateralBlur.dispose();
+    m_effects.dof.dispose();
     m_effects.filmGrain.dispose();
     m_effects.fxaa.dispose();
-	m_effects.gaussianBlur.dispose();
-	m_effects.halfresUpsample.dispose();
+    m_effects.gaussianBlur.dispose();
+    m_effects.halfresUpsample.dispose();
     m_effects.hdrBloom.dispose();
     m_effects.minZDownsampling.dispose();
     m_effects.overlay.dispose();
-	m_effects.shadowMaps.dispose();
-	m_effects.ssao.dispose();
+    m_effects.shadowMaps.dispose();
+    m_effects.ssao.dispose();
     m_effects.tonemapping.dispose();
     m_effects.vignette.dispose();
-	m_effects.volumetricLighting.dispose();
+    m_effects.volumetricLighting.dispose();
 
     m_effects.forwardPlus.ambientLighting.dispose();
     m_effects.forwardPlus.prepass.dispose();
@@ -176,20 +176,20 @@ DirectX::XMUINT2 go::dfx_forward_plus_render_path::light_culling_thread_groups()
 
 void go::dfx_forward_plus_render_path::on_resize()
 {
-	m_effects.bilateralBlur.on_resize();
-	m_effects.dof.on_resize();
+    m_effects.bilateralBlur.on_resize();
+    m_effects.dof.on_resize();
     m_effects.filmGrain.on_resize();
     m_effects.fxaa.on_resize();
-	m_effects.gaussianBlur.on_resize();
-	m_effects.halfresUpsample.on_resize();
+    m_effects.gaussianBlur.on_resize();
+    m_effects.halfresUpsample.on_resize();
     m_effects.hdrBloom.on_resize();
     m_effects.minZDownsampling.on_resize();
     m_effects.overlay.on_resize();
-	m_effects.shadowMaps.on_resize();
-	m_effects.ssao.on_resize();
+    m_effects.shadowMaps.on_resize();
+    m_effects.ssao.on_resize();
     m_effects.tonemapping.on_resize();
     m_effects.vignette.on_resize();
-	m_effects.volumetricLighting.on_resize();
+    m_effects.volumetricLighting.on_resize();
 
     m_effects.forwardPlus.ambientLighting.on_resize();
     m_effects.forwardPlus.prepass.on_resize();
@@ -209,19 +209,19 @@ void go::dfx_forward_plus_render_path::reset_render_targets()
         auto fmt = backBufferFmt;
 
         // Recreate all render-targets
-		fmt.colorFormat = gfx_color_format::b8g8r8a8_unorm;
+        fmt.colorFormat = gfx_color_format::b8g8r8a8_unorm;
         m_gbuffer.albedo.reset(fmt);
 
-		fmt.colorFormat = gfx_color_format::r16g16b16a16_float;
+        fmt.colorFormat = gfx_color_format::r16g16b16a16_float;
         m_gbuffer.normalWS.reset(fmt);
 
-		fmt.colorFormat = gfx_color_format::r16g16b16a16_float;
+        fmt.colorFormat = gfx_color_format::r16g16b16a16_float;
         m_gbuffer.color.reset(fmt);
 
-		fmt.colorFormat = gfx_color_format::b8g8r8a8_unorm;
+        fmt.colorFormat = gfx_color_format::b8g8r8a8_unorm;
         m_gbuffer.metallicRoughness.reset(fmt);
 
-		auto depthVSFmt = fmt;
+        auto depthVSFmt = fmt;
         depthVSFmt.flags = go::gfx_texture::kFlagUAV;
         depthVSFmt.mipLevels = 2;
         depthVSFmt.srvMipLevels = 1; // Only top-most mip readable
@@ -246,22 +246,22 @@ void go::dfx_forward_plus_render_path::reset_render_targets()
             fmt.flags = gfx_texture::kFlagUAV;
             fmt.width = go::ceil_div(fmt.width, 2);
             fmt.height = go::ceil_div(fmt.height, 2);
-			fmt.mipLevels = dfx_effects::hdr_bloom_parameters::kNumBlurPasses;
+            fmt.mipLevels = dfx_effects::hdr_bloom_parameters::kNumBlurPasses;
             fmt.srvMipLevels = fmt.mipLevels;
             fmt.uavMipLevels = fmt.mipLevels;
-			m_hdrBuffers.bloom.reset(fmt);
+            m_hdrBuffers.bloom.reset(fmt);
         }
 
-		// Volumetric lighting
-		{
-			auto fmt = hdrFmt;
-			fmt.flags = gfx_texture::kFlagUAV;
-			fmt.width = go::ceil_div(fmt.width, 2);
-			fmt.height = go::ceil_div(fmt.height, 2);
+        // Volumetric lighting
+        {
+            auto fmt = hdrFmt;
+            fmt.flags = gfx_texture::kFlagUAV;
+            fmt.width = go::ceil_div(fmt.width, 2);
+            fmt.height = go::ceil_div(fmt.height, 2);
             fmt.srvMipLevels = fmt.mipLevels;
             fmt.uavMipLevels = fmt.mipLevels;
-			m_volumetricLightingBuffers.output.reset(fmt);
-		}
+            m_volumetricLightingBuffers.output.reset(fmt);
+        }
     }
 
     // HDREffect buffers
@@ -293,17 +293,17 @@ void go::dfx_forward_plus_render_path::reset_render_targets()
         }
     }
 
-	// Temp buffers
-	{
-		auto fmt = backBufferFmt;
-		m_tempBuffers.backBufferMirror.reset(fmt);
-	}
+    // Temp buffers
+    {
+        auto fmt = backBufferFmt;
+        m_tempBuffers.backBufferMirror.reset(fmt);
+    }
 
-	// Shadow maps
-	{
-		auto fmt = gfx_texture_format::as_2d(DFX_DIRECTIONAL_LIGHT_SHADOW_MAP_SIZE, DFX_DIRECTIONAL_LIGHT_SHADOW_MAP_SIZE, gfx_color_format::d32_float);
-		m_shadowMaps.directionalLight.reset(fmt);
-	}
+    // Shadow maps
+    {
+        auto fmt = gfx_texture_format::as_2d(DFX_DIRECTIONAL_LIGHT_SHADOW_MAP_SIZE, DFX_DIRECTIONAL_LIGHT_SHADOW_MAP_SIZE, gfx_color_format::d32_float);
+        m_shadowMaps.directionalLight.reset(fmt);
+    }
 }
 
 
@@ -339,124 +339,124 @@ void go::dfx_forward_plus_render_path::update_per_frame_constants(const gfx_rend
     auto &fmt = the_gfx_device->back_buffer()->format();
 
     {
-		// Scale + bias matrix for clip-space to UV space transform
-		auto mTexScaleBias = XMMatrixScaling(0.5f, -0.5f, 1.0f);
-		mTexScaleBias *= XMMatrixTranslation(0.5f, 0.5f, 0.0f);
+        // Scale + bias matrix for clip-space to UV space transform
+        auto mTexScaleBias = XMMatrixScaling(0.5f, -0.5f, 1.0f);
+        mTexScaleBias *= XMMatrixTranslation(0.5f, 0.5f, 0.0f);
 
         auto cb = dfx_hlsl::constants::g_frame;
         auto p = static_cast<dfx_hlsl::constants::frame *>(cb->begin_update());
         {
-			//
-			// Main render point
-			//
-			auto &mainRenderPointTransforms = context.renderPoints.main.transform;
+            //
+            // Main render point
+            //
+            auto &mainRenderPointTransforms = context.renderPoints.main.transform;
 
-			// View
-			auto mainRPView = DirectX::XMLoadFloat4x4(&mainRenderPointTransforms.viewMatrix);
-			auto mainRPInvView = DirectX::XMMatrixInverse(nullptr, mainRPView);
+            // View
+            auto mainRPView = DirectX::XMLoadFloat4x4(&mainRenderPointTransforms.viewMatrix);
+            auto mainRPInvView = DirectX::XMMatrixInverse(nullptr, mainRPView);
 
-			// Proj
-			auto mainRPProj = DirectX::XMLoadFloat4x4(&mainRenderPointTransforms.projectionMatrix);
-			auto mainRPInvProj = DirectX::XMMatrixInverse(nullptr, mainRPProj);
+            // Proj
+            auto mainRPProj = DirectX::XMLoadFloat4x4(&mainRenderPointTransforms.projectionMatrix);
+            auto mainRPInvProj = DirectX::XMMatrixInverse(nullptr, mainRPProj);
 
-			// Combined
-			auto mainRPViewProj = DirectX::XMLoadFloat4x4(&mainRenderPointTransforms.viewProjectionMatrix);
+            // Combined
+            auto mainRPViewProj = DirectX::XMLoadFloat4x4(&mainRenderPointTransforms.viewProjectionMatrix);
 
-			XMStoreFloat3x4((XMFLOAT4X3 *)p->g_mainRenderPointView, DirectX::XMMatrixTranspose(mainRPView));
-			XMStoreFloat4x4((XMFLOAT4X4 *)p->g_mainRenderPointInvView, DirectX::XMMatrixTranspose(mainRPInvView));
-			XMStoreFloat4x4((XMFLOAT4X4 *)p->g_mainRenderPointViewProj, XMMatrixTranspose(mainRPViewProj));
-			XMStoreFloat4x4((XMFLOAT4X4 *)p->g_mainRenderPointInvProjection, XMMatrixTranspose(mainRPInvProj));
-			p->g_mainRenderPointPositionWS[0] = mainRenderPointTransforms.frustum.position.x;
-			p->g_mainRenderPointPositionWS[1] = mainRenderPointTransforms.frustum.position.y;
-			p->g_mainRenderPointPositionWS[2] = mainRenderPointTransforms.frustum.position.z;
-			p->g_mainRenderPointPositionWS[3] = 1.0f;
-			p->g_mainRenderPointNearClip = mainRenderPointTransforms.frustum.nearClip;
-			p->g_mainRenderPointFarClip = mainRenderPointTransforms.frustum.farClip;
+            XMStoreFloat3x4((XMFLOAT4X3 *)p->g_mainRenderPointView, DirectX::XMMatrixTranspose(mainRPView));
+            XMStoreFloat4x4((XMFLOAT4X4 *)p->g_mainRenderPointInvView, DirectX::XMMatrixTranspose(mainRPInvView));
+            XMStoreFloat4x4((XMFLOAT4X4 *)p->g_mainRenderPointViewProj, XMMatrixTranspose(mainRPViewProj));
+            XMStoreFloat4x4((XMFLOAT4X4 *)p->g_mainRenderPointInvProjection, XMMatrixTranspose(mainRPInvProj));
+            p->g_mainRenderPointPositionWS[0] = mainRenderPointTransforms.frustum.position.x;
+            p->g_mainRenderPointPositionWS[1] = mainRenderPointTransforms.frustum.position.y;
+            p->g_mainRenderPointPositionWS[2] = mainRenderPointTransforms.frustum.position.z;
+            p->g_mainRenderPointPositionWS[3] = 1.0f;
+            p->g_mainRenderPointNearClip = mainRenderPointTransforms.frustum.nearClip;
+            p->g_mainRenderPointFarClip = mainRenderPointTransforms.frustum.farClip;
 
-			// Inverse fov-aspect (stretch in xy by the projection)
-			p->g_mainRenderPointInvFovAspect[0] = 1.0f / mainRenderPointTransforms.projectionMatrix._11;
-			p->g_mainRenderPointInvFovAspect[1] = 1.0f / mainRenderPointTransforms.projectionMatrix._22;
-			
-			//
-			// Directional light render point
-			//
-			auto &directionalLight = context.renderPoints.directionalLight[0].transform;
+            // Inverse fov-aspect (stretch in xy by the projection)
+            p->g_mainRenderPointInvFovAspect[0] = 1.0f / mainRenderPointTransforms.projectionMatrix._11;
+            p->g_mainRenderPointInvFovAspect[1] = 1.0f / mainRenderPointTransforms.projectionMatrix._22;
+            
+            //
+            // Directional light render point
+            //
+            auto &directionalLight = context.renderPoints.directionalLight[0].transform;
 
-			auto vSunDir = -XMLoadFloat3(&context.sky.sunDirection);
-			XMStoreFloat3((XMFLOAT3 *)p->g_directionalLightDirWS, vSunDir);
+            auto vSunDir = -XMLoadFloat3(&context.sky.sunDirection);
+            XMStoreFloat3((XMFLOAT3 *)p->g_directionalLightDirWS, vSunDir);
 
-			auto vSunColor = XMLoadFloat3(&context.sky.sunColor);
-			XMStoreFloat3((XMFLOAT3 *)p->g_directionalLightColor, vSunColor);
+            auto vSunColor = XMLoadFloat3(&context.sky.sunColor);
+            XMStoreFloat3((XMFLOAT3 *)p->g_directionalLightColor, vSunColor);
 
-			// Combined
-			auto vSunViewProj = DirectX::XMLoadFloat4x4(&directionalLight.viewProjectionMatrix);
-			XMStoreFloat4x4((XMFLOAT4X4 *)p->g_directionalLightViewProj, XMMatrixTranspose(vSunViewProj));
+            // Combined
+            auto vSunViewProj = DirectX::XMLoadFloat4x4(&directionalLight.viewProjectionMatrix);
+            XMStoreFloat4x4((XMFLOAT4X4 *)p->g_directionalLightViewProj, XMMatrixTranspose(vSunViewProj));
 
-			// Scale and bias to texture space
-			auto vSunViewProjUV = vSunViewProj * mTexScaleBias;
-			XMStoreFloat4x4((XMFLOAT4X4 *)p->g_directionalLightViewProjUV, XMMatrixTranspose(vSunViewProjUV));
+            // Scale and bias to texture space
+            auto vSunViewProjUV = vSunViewProj * mTexScaleBias;
+            XMStoreFloat4x4((XMFLOAT4X4 *)p->g_directionalLightViewProjUV, XMMatrixTranspose(vSunViewProjUV));
 
-			// Main RP to directional light
-			auto vSunView = XMLoadFloat4x4(&directionalLight.viewMatrix);
-			auto mainViewToDirectionalView = mainRPInvView * vSunView;
-			auto mainViewToDirectionalViewProjUV = mainRPInvView * vSunViewProj * mTexScaleBias;
-			XMStoreFloat4x4((XMFLOAT4X4 *)p->g_mainRenderPointViewToDirectionalLightView, XMMatrixTranspose(mainViewToDirectionalView));
-			XMStoreFloat4x4((XMFLOAT4X4 *)p->g_mainRenderPointViewToDirectionalLightViewProjUV, XMMatrixTranspose(mainViewToDirectionalViewProjUV));
+            // Main RP to directional light
+            auto vSunView = XMLoadFloat4x4(&directionalLight.viewMatrix);
+            auto mainViewToDirectionalView = mainRPInvView * vSunView;
+            auto mainViewToDirectionalViewProjUV = mainRPInvView * vSunViewProj * mTexScaleBias;
+            XMStoreFloat4x4((XMFLOAT4X4 *)p->g_mainRenderPointViewToDirectionalLightView, XMMatrixTranspose(mainViewToDirectionalView));
+            XMStoreFloat4x4((XMFLOAT4X4 *)p->g_mainRenderPointViewToDirectionalLightViewProjUV, XMMatrixTranspose(mainViewToDirectionalViewProjUV));
 
 
-			//
-			// Point lights
-			//
-			for(size_t i = 0, end = context.renderPoints.pointLights.max_size(); i < end; ++i)
-			{
+            //
+            // Point lights
+            //
+            for(size_t i = 0, end = context.renderPoints.pointLights.max_size(); i < end; ++i)
+            {
                 auto &&light = context.renderPoints.pointLights[i];
-				for(size_t j = 0; j < 6; ++j)
-				{
-					auto &&faceTransformIndex = i * 6 + j;
-					auto &&vLightViewProj = XMLoadFloat4x4(&light.faceTransforms[j].viewProjectionMatrix);
-					auto &&vLightViewProjUV = vLightViewProj * mTexScaleBias;
-					XMStoreFloat4x4((XMFLOAT4X4 *)p->g_shadowCastingPointLightsViewProjectionUV[faceTransformIndex], XMMatrixTranspose(vLightViewProjUV));
-				}
-			}
+                for(size_t j = 0; j < 6; ++j)
+                {
+                    auto &&faceTransformIndex = i * 6 + j;
+                    auto &&vLightViewProj = XMLoadFloat4x4(&light.faceTransforms[j].viewProjectionMatrix);
+                    auto &&vLightViewProjUV = vLightViewProj * mTexScaleBias;
+                    XMStoreFloat4x4((XMFLOAT4X4 *)p->g_shadowCastingPointLightsViewProjectionUV[faceTransformIndex], XMMatrixTranspose(vLightViewProjUV));
+                }
+            }
 
 
-			//
-			// Spot lights
-			//
-			for(size_t i = 0, end = context.renderPoints.spotLights.max_size(); i < end; ++i)
-			{
+            //
+            // Spot lights
+            //
+            for(size_t i = 0, end = context.renderPoints.spotLights.max_size(); i < end; ++i)
+            {
                 auto &&light = context.renderPoints.spotLights[i];
-				auto &&vLightViewProj = XMLoadFloat4x4(&light.transform.viewProjectionMatrix);
-				auto &&vLightViewProjUV = vLightViewProj * mTexScaleBias;
-				XMStoreFloat4x4((XMFLOAT4X4 *)p->g_shadowCastingSpotLightsViewProjectionUV[i], XMMatrixTranspose(vLightViewProjUV));
-			}
+                auto &&vLightViewProj = XMLoadFloat4x4(&light.transform.viewProjectionMatrix);
+                auto &&vLightViewProjUV = vLightViewProj * mTexScaleBias;
+                XMStoreFloat4x4((XMFLOAT4X4 *)p->g_shadowCastingSpotLightsViewProjectionUV[i], XMMatrixTranspose(vLightViewProjUV));
+            }
 
 
-			//
-			// General rendering constants
-			//
-			// Resolution
-			p->g_nativeResolution[0] = (float)fmt.width;
-			p->g_nativeResolution[1] = (float)fmt.height;
+            //
+            // General rendering constants
+            //
+            // Resolution
+            p->g_nativeResolution[0] = (float)fmt.width;
+            p->g_nativeResolution[1] = (float)fmt.height;
 
-			// rcp(Resolution)
-			p->g_nativeResolutionRcp[0] = 1.0f / fmt.width;
-			p->g_nativeResolutionRcp[1] = 1.0f / fmt.height;
+            // rcp(Resolution)
+            p->g_nativeResolutionRcp[0] = 1.0f / fmt.width;
+            p->g_nativeResolutionRcp[1] = 1.0f / fmt.height;
 
-			p->g_halfResolutionRcp[0] = 1.0f / (0.5f * fmt.width);
-			p->g_halfResolutionRcp[1] = 1.0f / (0.5f * fmt.height);
+            p->g_halfResolutionRcp[0] = 1.0f / (0.5f * fmt.width);
+            p->g_halfResolutionRcp[1] = 1.0f / (0.5f * fmt.height);
 
-			p->g_nativeTwoTexelSize[0] = 2.0f / p->g_nativeResolution[0];
-			p->g_nativeTwoTexelSize[1] = -2.0f / p->g_nativeResolution[1];
+            p->g_nativeTwoTexelSize[0] = 2.0f / p->g_nativeResolution[0];
+            p->g_nativeTwoTexelSize[1] = -2.0f / p->g_nativeResolution[1];
 
-			// TODO:
-			p->g_gammaRcp = 1.f / go::clamp(GO_CVAR(display_gamma).valuef(), 0.1f, 4.0f);
+            // TODO:
+            p->g_gammaRcp = 1.f / go::clamp(GO_CVAR(display_gamma).valuef(), 0.1f, 4.0f);
 
-			// TODO:
-			p->g_randomUNorm = 1.0f;
-			p->g_periodicSine = 1.0f;
-			p->g_elapsedTimeMS = go::performance.elapsedTime;
-		}
+            // TODO:
+            p->g_randomUNorm = 1.0f;
+            p->g_periodicSine = 1.0f;
+            p->g_elapsedTimeMS = go::performance.elapsedTime;
+        }
         cb->end_update();
     }
 
@@ -673,14 +673,14 @@ void go::dfx_forward_plus_render_path::render(
         // CPU start time
         uint64_t start;
 
-		GO_PERF_BEGIN_EVENT("Shadow Maps");
-		{
+        GO_PERF_BEGIN_EVENT("Shadow Maps");
+        {
             start = go::timer::query_current_time_cycles();
-			run_shadow_maps_effect(renderContext, assetContext);
+            run_shadow_maps_effect(renderContext, assetContext);
             go::performance.cpu.shadowMaps = go::timer::query_delta_time_milliseconds(start);
             gpuTimers.add_event();
         }
-		GO_PERF_END_EVENT;
+        GO_PERF_END_EVENT;
 
         GO_PERF_BEGIN_EVENT("Forward+ Prepass & Shading");
         {
@@ -696,14 +696,14 @@ void go::dfx_forward_plus_render_path::render(
         }
         GO_PERF_END_EVENT;
 
-		GO_PERF_BEGIN_EVENT("MinZ Depth Downsampling");
-		{
+        GO_PERF_BEGIN_EVENT("MinZ Depth Downsampling");
+        {
             start = go::timer::query_current_time_cycles();
             run_min_z_downsample(renderContext, assetContext);
             go::performance.cpu.depthDownsampling = go::timer::query_delta_time_milliseconds(start);
             gpuTimers.add_event();
         }
-		GO_PERF_END_EVENT;
+        GO_PERF_END_EVENT;
 
         start = go::timer::query_current_time_cycles();
         run_ssao_effect(renderContext, assetContext);
@@ -779,9 +779,9 @@ void go::dfx_forward_plus_render_path::run_prepass_effect(
 {
     dfx_effects::forward_plus::prepass_parameters params;
 
-	params.assetContext = &assetContext;
-	params.in.renderPoint = &renderContext.renderPoints.main;
-	params.out.depthStencilBuffer = m_gbuffer.depthBuffer;
+    params.assetContext = &assetContext;
+    params.in.renderPoint = &renderContext.renderPoints.main;
+    params.out.depthStencilBuffer = m_gbuffer.depthBuffer;
 
     // Disk lights
     params.in.numDiskLights = renderContext.lights.disk.shapes.size();
@@ -821,19 +821,19 @@ void go::dfx_forward_plus_render_path::run_shading_effect(
     params.in.sky = &renderContext.sky;
     
     // G-Buffer
-	params.out.colorRT = &m_gbuffer.color;
-	params.out.albedoRT = &m_gbuffer.albedo;
-	params.out.metallicRoughnessRT = &m_gbuffer.metallicRoughness;
-	params.out.normalWSRT = &m_gbuffer.normalWS;
-	params.out.depthVSRT = &m_gbuffer.depthVS;
+    params.out.colorRT = &m_gbuffer.color;
+    params.out.albedoRT = &m_gbuffer.albedo;
+    params.out.metallicRoughnessRT = &m_gbuffer.metallicRoughness;
+    params.out.normalWSRT = &m_gbuffer.normalWS;
+    params.out.depthVSRT = &m_gbuffer.depthVS;
     params.out.ambientOcclusionRT = &m_gbuffer.ambientOcclusion;
 
-	params.out.depthStencilBuffer = m_gbuffer.depthBuffer;
+    params.out.depthStencilBuffer = m_gbuffer.depthBuffer;
 
-	// Shadow maps
-	params.in.shadowMaps.directionalLight = &m_shadowMaps.directionalLight;
-	params.in.shadowMaps.pointLightAtlas = &m_shadowMaps.pointLightAtlas;
-	params.in.shadowMaps.spotLightAtlas = &m_shadowMaps.spotLightAtlas;
+    // Shadow maps
+    params.in.shadowMaps.directionalLight = &m_shadowMaps.directionalLight;
+    params.in.shadowMaps.pointLightAtlas = &m_shadowMaps.pointLightAtlas;
+    params.in.shadowMaps.spotLightAtlas = &m_shadowMaps.spotLightAtlas;
 
     m_effects.forwardPlus.shading.run(&params);
 }
@@ -848,8 +848,8 @@ void go::dfx_forward_plus_render_path::run_ssao_effect(
     params.in.angularBias = 0.5f;
     params.in.depthVSTexture = &m_gbuffer.depthVS;
     params.in.normalWSTexture = &m_gbuffer.normalWS;
-	params.in.depthProjMatrix = renderContext.renderPoints.main.transform.projectionMatrix;
-	params.in.depthViewMatrix = renderContext.renderPoints.main.transform.viewMatrix;
+    params.in.depthProjMatrix = renderContext.renderPoints.main.transform.projectionMatrix;
+    params.in.depthViewMatrix = renderContext.renderPoints.main.transform.viewMatrix;
     params.in.metersToViewSpaceUnits = 1.0f;
     params.in.radius = 2.0f;
     params.in.strength = 3.0f;
@@ -864,9 +864,9 @@ void go::dfx_forward_plus_render_path::run_ambient_lighting_effect(
     const gfx_render_context &renderContext,
     gfx_asset_context &assetContext)
 {
-	// Lookup the env BRDF
-	auto &&envBRDFMat = assetContext.material_db().find("envbrdf");
-	auto &&envBRDF = assetContext.texture_mgr().load(envBRDFMat->textureIDs[0], 0, go::resource_eviction_policy::permanent);
+    // Lookup the env BRDF
+    auto &&envBRDFMat = assetContext.material_db().find("envbrdf");
+    auto &&envBRDF = assetContext.texture_mgr().load(envBRDFMat->textureIDs[0], 0, go::resource_eviction_policy::permanent);
 
     dfx_effects::forward_plus::ambient_lighting_parameters params;
 
@@ -874,11 +874,11 @@ void go::dfx_forward_plus_render_path::run_ambient_lighting_effect(
     params.in.ambientColorBelowWS = renderContext.sky.ambientColorBelow;
     params.in.aoTexture = &m_gbuffer.ambientOcclusion;
     params.in.normalWSTexture = &m_gbuffer.normalWS;
-	params.in.albedoTexture = &m_gbuffer.albedo;
-	params.in.metallicRoughnessTexture = &m_gbuffer.metallicRoughness;
-	params.in.depthVSTexture = &m_gbuffer.depthVS;
-	params.in.envBRDFTexture = *envBRDF;
-	params.in.sceneSpecularEnvMap = renderContext.sky.specularEnvMap; // NOTE: the renderer modifies the binding
+    params.in.albedoTexture = &m_gbuffer.albedo;
+    params.in.metallicRoughnessTexture = &m_gbuffer.metallicRoughness;
+    params.in.depthVSTexture = &m_gbuffer.depthVS;
+    params.in.envBRDFTexture = *envBRDF;
+    params.in.sceneSpecularEnvMap = renderContext.sky.specularEnvMap; // NOTE: the renderer modifies the binding
 
     // Additive blending
     params.out.colorTexture = &m_gbuffer.color;
@@ -936,7 +936,7 @@ void go::dfx_forward_plus_render_path::run_tonemapping_effect(
 
     params.in.colorLUTBlendFactor = renderContext.renderPoints.main.cameraProperties.colorGradingBlendFactor;
 
-	params.out.outputTexture = &m_tempBuffers.backBufferMirror;
+    params.out.outputTexture = &m_tempBuffers.backBufferMirror;
 
     m_effects.tonemapping.run(&params);
 }
@@ -973,59 +973,59 @@ void go::dfx_forward_plus_render_path::run_shadow_maps_effect(
     const gfx_render_context &renderContext,
     gfx_asset_context &assetContext)
 {
-	dfx_effects::shadow_maps_parameters params;
+    dfx_effects::shadow_maps_parameters params;
 
-	// Bind the shadow maps
-	params.in.pointLightRenderPoints = &renderContext.renderPoints.pointLights;
-	params.out.pointLightShadowMapAtlas = &m_shadowMaps.pointLightAtlas;
+    // Bind the shadow maps
+    params.in.pointLightRenderPoints = &renderContext.renderPoints.pointLights;
+    params.out.pointLightShadowMapAtlas = &m_shadowMaps.pointLightAtlas;
 
-	params.in.spotLightRenderPoints = &renderContext.renderPoints.spotLights;
-	params.out.spotLightShadowMapAtlas = &m_shadowMaps.spotLightAtlas;
+    params.in.spotLightRenderPoints = &renderContext.renderPoints.spotLights;
+    params.out.spotLightShadowMapAtlas = &m_shadowMaps.spotLightAtlas;
 
-	params.assetContext = &assetContext;
-	params.in.directionalLightRenderPoint = renderContext.renderPoints.directionalLight.data();
-	params.out.directionalLightShadowMap = &m_shadowMaps.directionalLight;
+    params.assetContext = &assetContext;
+    params.in.directionalLightRenderPoint = renderContext.renderPoints.directionalLight.data();
+    params.out.directionalLightShadowMap = &m_shadowMaps.directionalLight;
     
-	m_effects.shadowMaps.run(&params);
+    m_effects.shadowMaps.run(&params);
 }
 
 
 void go::dfx_forward_plus_render_path::run_fxaa_effect(
-	const gfx_render_context &renderContext,
-	gfx_asset_context &assetContext)
+    const gfx_render_context &renderContext,
+    gfx_asset_context &assetContext)
 {
-	dfx_effects::fxaa_parameters params;
+    dfx_effects::fxaa_parameters params;
 
-	params.in.colorTexture = &m_tempBuffers.backBufferMirror;
-	params.out.colorTexture = go::the_gfx_device->back_buffer();
+    params.in.colorTexture = &m_tempBuffers.backBufferMirror;
+    params.out.colorTexture = go::the_gfx_device->back_buffer();
 
-	m_effects.fxaa.run(&params);
+    m_effects.fxaa.run(&params);
 }
 
 
 void go::dfx_forward_plus_render_path::run_volumetric_lighting_effect(
-	const gfx_render_context &renderContext,
-	gfx_asset_context &assetContext)
+    const gfx_render_context &renderContext,
+    gfx_asset_context &assetContext)
 {
-	dfx_effects::volumetric_lighting_parameters params;
+    dfx_effects::volumetric_lighting_parameters params;
 
-	params.in.intensity = 1.0f;
-	params.in.sampleCount = 48;
-	params.in.viewDepthTexture = &m_gbuffer.depthVS;
-	params.in.directionalLightShadowMap = &m_shadowMaps.directionalLight;
-	params.in.bilateralBlurEffect = &m_effects.bilateralBlur;
-	params.in.halfresUpsampleEffect = &m_effects.halfresUpsample;
-	params.out.blurredOutputScratchTexture = &m_hdrBuffers.blurredBrightnessScratch; // NOTE: re-use unused HDR buffer
-	params.out.volumetricLightingOutputTexture = &m_volumetricLightingBuffers.output;
-	params.out.combinedOutputTexture = &m_gbuffer.color;
+    params.in.intensity = 1.0f;
+    params.in.sampleCount = 48;
+    params.in.viewDepthTexture = &m_gbuffer.depthVS;
+    params.in.directionalLightShadowMap = &m_shadowMaps.directionalLight;
+    params.in.bilateralBlurEffect = &m_effects.bilateralBlur;
+    params.in.halfresUpsampleEffect = &m_effects.halfresUpsample;
+    params.out.blurredOutputScratchTexture = &m_hdrBuffers.blurredBrightnessScratch; // NOTE: re-use unused HDR buffer
+    params.out.volumetricLightingOutputTexture = &m_volumetricLightingBuffers.output;
+    params.out.combinedOutputTexture = &m_gbuffer.color;
 
-	m_effects.volumetricLighting.run(&params);
+    m_effects.volumetricLighting.run(&params);
 }
 
 
 void go::dfx_forward_plus_render_path::run_min_z_downsample(
-	const gfx_render_context &renderContext,
-	gfx_asset_context &assetContext)
+    const gfx_render_context &renderContext,
+    gfx_asset_context &assetContext)
 {
     dfx_effects::min_z_downsampling_parameters params;
 

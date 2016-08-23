@@ -287,15 +287,15 @@ void go::application::run()
     // Change global focus to this window
     go::the_system_input->change_focus_window(m_windowHandle);
 
-	// Handle pre-run exit request
-	if(m_isExiting)
-	{
-		exit_message_loop();
-	}
-	else
-	{
-		game_message_loop();
-	}
+    // Handle pre-run exit request
+    if(m_isExiting)
+    {
+        exit_message_loop();
+    }
+    else
+    {
+        game_message_loop();
+    }
 
     DestroyWindow(m_windowHandle);
     handle_shutdown();
@@ -306,15 +306,15 @@ void go::application::run()
 
 void go::application::exit_message_loop()
 {
-	MSG msg = { 0 };
-	do
-	{
-		if(PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
-		{
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-		}
-	}
+    MSG msg = { 0 };
+    do
+    {
+        if(PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+        {
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
+        }
+    }
     while(msg.message != WM_QUIT);
 }
 
@@ -333,35 +333,35 @@ void go::application::game_message_loop()
 
     // Variables for timing
     auto currentTime = timer::query_current_time_cycles();
-	auto accumulator = GO_UPDATE_PERIOD;
+    auto accumulator = GO_UPDATE_PERIOD;
     
     auto startTime = currentTime;
     go::the_game_time = 0;
 
-	m_isRunning = true;
-	MSG msg = { 0 };
-	do
-	{
-		while(PeekMessage(&msg, NULL, 0, 0, PM_REMOVE) && msg.message != WM_QUIT)
-		{
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-		}
+    m_isRunning = true;
+    MSG msg = { 0 };
+    do
+    {
+        while(PeekMessage(&msg, NULL, 0, 0, PM_REMOVE) && msg.message != WM_QUIT)
+        {
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
+        }
         
         if(msg.message == WM_QUIT)
         {
             break;
         }
 
-		update_and_display(accumulator, startTime, currentTime);
-	}
+        update_and_display(accumulator, startTime, currentTime);
+    }
     while(true);
 }
 
 
 void go::application::post_exit()
 {
-	m_isExiting = true;
+    m_isExiting = true;
     PostQuitMessage(0);
 }
 
@@ -383,7 +383,7 @@ void go::application::update_and_display(float &accumulator, uint64_t startTime,
     currentTime = newTime;
     accumulator += frameTime;
     
-	// TODO: fix your timestep!
+    // TODO: fix your timestep!
     //while(accumulator >= GO_UPDATE_PERIOD)
     //{
         update_game();

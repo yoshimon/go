@@ -49,29 +49,29 @@ static ID3D11UnorderedAccessView *s_UAVNullPtr[GO_INTERNAL gfx_uav_pipeline_stat
 
 static bool is_pending_input(GO gfx_shader_resource *resource)
 {
-	for(auto &m : resource->internalPendingInputBindMask)
-	{
-		if(!m.is_zero())
-		{
-			return true;
-		}
-	}
+    for(auto &m : resource->internalPendingInputBindMask)
+    {
+        if(!m.is_zero())
+        {
+            return true;
+        }
+    }
 
-	return false;
+    return false;
 }
 
 
 static bool is_pending_output(GO gfx_shader_resource *resource)
 {
-	for(auto &m : resource->internalPendingOutputBindMask)
-	{
-		if(!m.is_zero())
-		{
-			return true;
-		}
-	}
+    for(auto &m : resource->internalPendingOutputBindMask)
+    {
+        if(!m.is_zero())
+        {
+            return true;
+        }
+    }
 
-	return false;
+    return false;
 }
 
 
@@ -370,7 +370,7 @@ void go::gfx_renderer::match_viewport(float x, float y, float w, float h)
 
 void go::gfx_renderer::match_viewport(const rect<float> &bounds)
 {
-	match_viewport(bounds.left, bounds.top, bounds.width(), bounds.height());
+    match_viewport(bounds.left, bounds.top, bounds.width(), bounds.height());
 }
 
 
@@ -619,7 +619,7 @@ void go::gfx_renderer::update_pipeline_state()
     m_desiredPipelineVS.bind(m_currentPipelineVS);
     m_desiredPipelinePS.bind(m_currentPipelinePS);
     m_desiredPipelineGS.bind(m_currentPipelineGS);
-	m_desiredPipelineRS.bind(m_currentPipelineRS);
+    m_desiredPipelineRS.bind(m_currentPipelineRS);
     m_desiredPipelineCS.bind(m_currentPipelineCS);
 }
 
@@ -639,21 +639,21 @@ void go::gfx_renderer::bind_default_pipeline_state()
     bind_index_buffer(nullptr, 0);
     bind_input_topology(gfx_input_topology::triangle_list);
 
-	for(int i = 0; i < m_desiredPipelineVS.constantBuffers.kSlotCount; ++i)
-	{
-		bind_vertex_shader_constants(i, nullptr);
+    for(int i = 0; i < m_desiredPipelineVS.constantBuffers.kSlotCount; ++i)
+    {
+        bind_vertex_shader_constants(i, nullptr);
         bind_pixel_shader_constants(i, nullptr);
         bind_geometry_shader_constants(i, nullptr);
         bind_compute_shader_constants(i, nullptr);
-	}
+    }
 
-	for(int i = 0; i < m_desiredPipelineVS.shaderResources.kSlotCount; ++i)
-	{
-		bind_vertex_shader_resource(i, nullptr, 0);
-		bind_pixel_shader_resource(i, nullptr, 0);
+    for(int i = 0; i < m_desiredPipelineVS.shaderResources.kSlotCount; ++i)
+    {
+        bind_vertex_shader_resource(i, nullptr, 0);
+        bind_pixel_shader_resource(i, nullptr, 0);
         bind_geometry_shader_resource(i, nullptr, 0);
         bind_compute_shader_resource(i, nullptr, 0);
-	}
+    }
 
     for(int i = 0; i < m_desiredPipelineCS.uavs.kSlotCount; ++i)
     {

@@ -102,16 +102,16 @@ void go::gfx_device::initialize_system_states()
             gfx_texture_address_mode::clamp,
             gfx_texture_address_mode::clamp);
         m_systemSamplerStates.anisotropic4xWrap.reset(
-			gfx_sampler_state_type::anisotropic4x,
-			gfx_texture_address_mode::wrap,
-			gfx_texture_address_mode::wrap,
-			gfx_texture_address_mode::wrap);
-		m_systemSamplerStates.anisotropic4xClamp.reset(
-			gfx_sampler_state_type::anisotropic4x,
-			gfx_texture_address_mode::clamp,
-			gfx_texture_address_mode::clamp,
-			gfx_texture_address_mode::clamp);
-		m_systemSamplerStates.shadowMapLinear.reset(
+            gfx_sampler_state_type::anisotropic4x,
+            gfx_texture_address_mode::wrap,
+            gfx_texture_address_mode::wrap,
+            gfx_texture_address_mode::wrap);
+        m_systemSamplerStates.anisotropic4xClamp.reset(
+            gfx_sampler_state_type::anisotropic4x,
+            gfx_texture_address_mode::clamp,
+            gfx_texture_address_mode::clamp,
+            gfx_texture_address_mode::clamp);
+        m_systemSamplerStates.shadowMapLinear.reset(
             gfx_sampler_state_type::compare_min_mag_linear_mip_point,
             gfx_texture_address_mode::clamp,
             gfx_texture_address_mode::clamp,
@@ -137,7 +137,7 @@ void go::gfx_device::initialize_system_states()
     // Depth states
     {
         gfx_depth_stencil_state_parameters o;
-		o.stencil.enableTest = false;
+        o.stencil.enableTest = false;
 
         // Test & Write
         o.depth.enableTest = true;
@@ -169,16 +169,16 @@ void go::gfx_device::initialize_system_states()
     }
 
     // Rasterizer
-	{
-		gfx_rasterizer_parameters o;
+    {
+        gfx_rasterizer_parameters o;
 
-		o.cullMode = gfx_rasterizer_cull_mode::none;
-		o.depthBias = 0;
-		o.depthBiasClamp = 0;
-		o.slopeScaledDepthBias = 0;
-		o.depthClipEnable = true;
-		o.frontCounterClockwise = false;
-		m_systemRasterizerStates.twoSided.reset(o);
+        o.cullMode = gfx_rasterizer_cull_mode::none;
+        o.depthBias = 0;
+        o.depthBiasClamp = 0;
+        o.slopeScaledDepthBias = 0;
+        o.depthClipEnable = true;
+        o.frontCounterClockwise = false;
+        m_systemRasterizerStates.twoSided.reset(o);
 
         o.cullMode = gfx_rasterizer_cull_mode::front;
         m_systemRasterizerStates.backFaces.reset(o);
@@ -189,17 +189,17 @@ void go::gfx_device::initialize_system_states()
         auto d32_depth_bias = [](float d) { return (int)(d / (1 / std::pow(2, 23))); };
         
         o.cullMode = gfx_rasterizer_cull_mode::back;
-		o.depthBias = d32_depth_bias(0.0001f);
-		o.slopeScaledDepthBias = 3.0f;
+        o.depthBias = d32_depth_bias(0.0001f);
+        o.slopeScaledDepthBias = 3.0f;
         m_systemRasterizerStates.shadow.reset(o);
         
         o.cullMode = gfx_rasterizer_cull_mode::none;
-		m_systemRasterizerStates.shadowTwoSided.reset(o);
+        m_systemRasterizerStates.shadowTwoSided.reset(o);
 
         o.depthClipEnable = false;
-		o.depthBias = d32_depth_bias(0.00005f);
-		o.slopeScaledDepthBias = 2.0f;
-		o.cullMode = gfx_rasterizer_cull_mode::back;
+        o.depthBias = d32_depth_bias(0.00005f);
+        o.slopeScaledDepthBias = 2.0f;
+        o.cullMode = gfx_rasterizer_cull_mode::back;
         m_systemRasterizerStates.shadowDirectional.reset(o);
         
         o.cullMode = gfx_rasterizer_cull_mode::none;
@@ -224,7 +224,7 @@ bool go::gfx_device::on_observer_gpu_display(gfx_display *, gfx_display::event_t
         m_depthBuffer.release();
         break;
     case gfx_display_event_data::event::resized:
-		initialize_back_buffer();
+        initialize_back_buffer();
         initialize_depth_buffer();
         break;
     }

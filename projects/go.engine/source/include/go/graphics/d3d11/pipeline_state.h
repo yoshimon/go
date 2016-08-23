@@ -104,7 +104,7 @@ public:
 
         \return The old element at the slot.
      */
-	auto bind_slot(uint32_t slot, SlotArgs... args) ->first_data_t;
+    auto bind_slot(uint32_t slot, SlotArgs... args) ->first_data_t;
     /*!
         Unbinds a set of slots using an unbind-mask.
 

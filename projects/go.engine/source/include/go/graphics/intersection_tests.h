@@ -67,8 +67,8 @@ struct intersection_tests
         \param radius1 The radius of the second sphere.
         */
     static inline bool sphere_sphere(
-		DirectX::FXMVECTOR center0, float radius0,
-		DirectX::HXMVECTOR center1, float radius1)
+        DirectX::FXMVECTOR center0, float radius0,
+        DirectX::HXMVECTOR center1, float radius1)
     {
         using namespace DirectX;
         auto sumRadii = radius0 + radius1;
@@ -85,8 +85,8 @@ struct intersection_tests
         \param sphereRadius The radius of the sphere.
         */
     static inline result_t cone_sphere(
-		DirectX::FXMVECTOR coneApex, DirectX::FXMVECTOR coneDir, float coneCos, float coneSin,
-		DirectX::FXMVECTOR sphereCenter, float sphereRadius)
+        DirectX::FXMVECTOR coneApex, DirectX::FXMVECTOR coneDir, float coneCos, float coneSin,
+        DirectX::FXMVECTOR sphereCenter, float sphereRadius)
     {
         using namespace DirectX;
         auto v = sphereCenter - coneApex;
@@ -111,7 +111,7 @@ struct intersection_tests
         \param sphereRadius The sphere radius.
      */
     static inline bool cylinder_sphere(
-		DirectX::FXMVECTOR cylinderBase, DirectX::FXMVECTOR cylinderAxis, float cylinderRadius,
+        DirectX::FXMVECTOR cylinderBase, DirectX::FXMVECTOR cylinderAxis, float cylinderRadius,
         DirectX::FXMVECTOR sphereCenter, float sphereRadius)
     {
         using namespace DirectX;
@@ -136,135 +136,135 @@ struct intersection_tests
         \param cone1Cos The angle of the second cone.
      */
     static inline bool cone_cone(
-		DirectX::FXMVECTOR cone0Apex, float cone0Cos,
+        DirectX::FXMVECTOR cone0Apex, float cone0Cos,
         DirectX::FXMVECTOR cone1Apex, float cone1Cos)
     {
         GO_ASSERT(false);
-		return false;
+        return false;
     }
     /*!
         Returns the intersection between a frustum and a sphere.
 
-		\param vPlanes The frustum planes.
-		\param vCenter The center of the sphere.
+        \param vPlanes The frustum planes.
+        \param vCenter The center of the sphere.
         \param radius The radius of the sphere.
 
         \return The intersection test result.
      */
     static inline result_t frustum_sphere(
-		DirectX::FXMVECTOR vPlanes[6],
-		DirectX::FXMVECTOR vCenter, float radius)
+        DirectX::FXMVECTOR vPlanes[6],
+        DirectX::FXMVECTOR vCenter, float radius)
     {
-		using namespace DirectX;
+        using namespace DirectX;
 
-		// Load the sphere.
-		auto vRadius = XMVectorReplicate(radius);
+        // Load the sphere.
+        auto vRadius = XMVectorReplicate(radius);
 
-		XMVECTOR Outside, Inside;
+        XMVECTOR Outside, Inside;
 
-		// Test against each plane.
-		DirectX::Internal::FastIntersectSpherePlane(vCenter, vRadius, vPlanes[0], Outside, Inside);
+        // Test against each plane.
+        DirectX::Internal::FastIntersectSpherePlane(vCenter, vRadius, vPlanes[0], Outside, Inside);
 
-		auto AnyOutside = Outside;
-		auto AllInside = Inside;
+        auto AnyOutside = Outside;
+        auto AllInside = Inside;
 
-		DirectX::Internal::FastIntersectSpherePlane(vCenter, vRadius, vPlanes[1], Outside, Inside);
-		AnyOutside = XMVectorOrInt(AnyOutside, Outside);
-		AllInside = XMVectorAndInt(AllInside, Inside);
+        DirectX::Internal::FastIntersectSpherePlane(vCenter, vRadius, vPlanes[1], Outside, Inside);
+        AnyOutside = XMVectorOrInt(AnyOutside, Outside);
+        AllInside = XMVectorAndInt(AllInside, Inside);
 
-		DirectX::Internal::FastIntersectSpherePlane(vCenter, vRadius, vPlanes[2], Outside, Inside);
-		AnyOutside = XMVectorOrInt(AnyOutside, Outside);
-		AllInside = XMVectorAndInt(AllInside, Inside);
+        DirectX::Internal::FastIntersectSpherePlane(vCenter, vRadius, vPlanes[2], Outside, Inside);
+        AnyOutside = XMVectorOrInt(AnyOutside, Outside);
+        AllInside = XMVectorAndInt(AllInside, Inside);
 
-		DirectX::Internal::FastIntersectSpherePlane(vCenter, vRadius, vPlanes[3], Outside, Inside);
-		AnyOutside = XMVectorOrInt(AnyOutside, Outside);
-		AllInside = XMVectorAndInt(AllInside, Inside);
+        DirectX::Internal::FastIntersectSpherePlane(vCenter, vRadius, vPlanes[3], Outside, Inside);
+        AnyOutside = XMVectorOrInt(AnyOutside, Outside);
+        AllInside = XMVectorAndInt(AllInside, Inside);
 
-		DirectX::Internal::FastIntersectSpherePlane(vCenter, vRadius, vPlanes[4], Outside, Inside);
-		AnyOutside = XMVectorOrInt(AnyOutside, Outside);
-		AllInside = XMVectorAndInt(AllInside, Inside);
+        DirectX::Internal::FastIntersectSpherePlane(vCenter, vRadius, vPlanes[4], Outside, Inside);
+        AnyOutside = XMVectorOrInt(AnyOutside, Outside);
+        AllInside = XMVectorAndInt(AllInside, Inside);
 
-		DirectX::Internal::FastIntersectSpherePlane(vCenter, vRadius, vPlanes[5], Outside, Inside);
-		AnyOutside = XMVectorOrInt(AnyOutside, Outside);
-		AllInside = XMVectorAndInt(AllInside, Inside);
+        DirectX::Internal::FastIntersectSpherePlane(vCenter, vRadius, vPlanes[5], Outside, Inside);
+        AnyOutside = XMVectorOrInt(AnyOutside, Outside);
+        AllInside = XMVectorAndInt(AllInside, Inside);
 
-		// If the sphere is outside any plane it is outside.
-		if(XMVector4EqualInt(AnyOutside, XMVectorTrueInt()))
-		{
-			return intersection_test_result::disjoint;
-		}
+        // If the sphere is outside any plane it is outside.
+        if(XMVector4EqualInt(AnyOutside, XMVectorTrueInt()))
+        {
+            return intersection_test_result::disjoint;
+        }
 
-		// If the sphere is inside all planes it is inside.
-		if(XMVector4EqualInt(AllInside, XMVectorTrueInt()))
-		{
-			return intersection_test_result::contains;
-		}
+        // If the sphere is inside all planes it is inside.
+        if(XMVector4EqualInt(AllInside, XMVectorTrueInt()))
+        {
+            return intersection_test_result::contains;
+        }
 
-		// The sphere is not inside all planes or outside a plane, it may intersect.
-		return intersection_test_result::intersects;
+        // The sphere is not inside all planes or outside a plane, it may intersect.
+        return intersection_test_result::intersects;
     }
-	/*!
-		Returns the intersection between a frustum and an OBB.
+    /*!
+        Returns the intersection between a frustum and an OBB.
 
-		\param vPlanes The frustum planes.
-		\param vCenter The center of the sphere.
-		\param vExtents The extents of the OBB.
-		\param vAxis0 The local box basis.
-		\param vAxis1 The local box basis.
-		\param vAxis2 The local box basis.
+        \param vPlanes The frustum planes.
+        \param vCenter The center of the sphere.
+        \param vExtents The extents of the OBB.
+        \param vAxis0 The local box basis.
+        \param vAxis1 The local box basis.
+        \param vAxis2 The local box basis.
 
-		\return The intersection test result.
-	 */
-	static inline intersection_test_result frustum_obb(
-		DirectX::FXMVECTOR vPlanes[6],
-		DirectX::FXMVECTOR vCenter, DirectX::FXMVECTOR vExtents,
-		DirectX::FXMVECTOR *vAxis)
-	{
-		using namespace DirectX;
+        \return The intersection test result.
+     */
+    static inline intersection_test_result frustum_obb(
+        DirectX::FXMVECTOR vPlanes[6],
+        DirectX::FXMVECTOR vCenter, DirectX::FXMVECTOR vExtents,
+        DirectX::FXMVECTOR *vAxis)
+    {
+        using namespace DirectX;
 
-		XMVECTOR Outside, Inside;
+        XMVECTOR Outside, Inside;
 
-		// Test against each plane.
-		DirectX::Internal::FastIntersectOrientedBoxPlane(vCenter, vExtents, vAxis[0], vAxis[1], vAxis[2], vPlanes[0], Outside, Inside);
+        // Test against each plane.
+        DirectX::Internal::FastIntersectOrientedBoxPlane(vCenter, vExtents, vAxis[0], vAxis[1], vAxis[2], vPlanes[0], Outside, Inside);
 
-		auto AnyOutside = Outside;
-		auto AllInside = Inside;
+        auto AnyOutside = Outside;
+        auto AllInside = Inside;
 
-		DirectX::Internal::FastIntersectOrientedBoxPlane(vCenter, vExtents, vAxis[0], vAxis[1], vAxis[2], vPlanes[1], Outside, Inside);
-		AnyOutside = XMVectorOrInt(AnyOutside, Outside);
-		AllInside = XMVectorAndInt(AllInside, Inside);
+        DirectX::Internal::FastIntersectOrientedBoxPlane(vCenter, vExtents, vAxis[0], vAxis[1], vAxis[2], vPlanes[1], Outside, Inside);
+        AnyOutside = XMVectorOrInt(AnyOutside, Outside);
+        AllInside = XMVectorAndInt(AllInside, Inside);
 
-		DirectX::Internal::FastIntersectOrientedBoxPlane(vCenter, vExtents, vAxis[0], vAxis[1], vAxis[2], vPlanes[2], Outside, Inside);
-		AnyOutside = XMVectorOrInt(AnyOutside, Outside);
-		AllInside = XMVectorAndInt(AllInside, Inside);
+        DirectX::Internal::FastIntersectOrientedBoxPlane(vCenter, vExtents, vAxis[0], vAxis[1], vAxis[2], vPlanes[2], Outside, Inside);
+        AnyOutside = XMVectorOrInt(AnyOutside, Outside);
+        AllInside = XMVectorAndInt(AllInside, Inside);
 
-		DirectX::Internal::FastIntersectOrientedBoxPlane(vCenter, vExtents, vAxis[0], vAxis[1], vAxis[2], vPlanes[3], Outside, Inside);
-		AnyOutside = XMVectorOrInt(AnyOutside, Outside);
-		AllInside = XMVectorAndInt(AllInside, Inside);
+        DirectX::Internal::FastIntersectOrientedBoxPlane(vCenter, vExtents, vAxis[0], vAxis[1], vAxis[2], vPlanes[3], Outside, Inside);
+        AnyOutside = XMVectorOrInt(AnyOutside, Outside);
+        AllInside = XMVectorAndInt(AllInside, Inside);
 
-		DirectX::Internal::FastIntersectOrientedBoxPlane(vCenter, vExtents, vAxis[0], vAxis[1], vAxis[2], vPlanes[4], Outside, Inside);
-		AnyOutside = XMVectorOrInt(AnyOutside, Outside);
-		AllInside = XMVectorAndInt(AllInside, Inside);
+        DirectX::Internal::FastIntersectOrientedBoxPlane(vCenter, vExtents, vAxis[0], vAxis[1], vAxis[2], vPlanes[4], Outside, Inside);
+        AnyOutside = XMVectorOrInt(AnyOutside, Outside);
+        AllInside = XMVectorAndInt(AllInside, Inside);
 
-		DirectX::Internal::FastIntersectOrientedBoxPlane(vCenter, vExtents, vAxis[0], vAxis[1], vAxis[2], vPlanes[5], Outside, Inside);
-		AnyOutside = XMVectorOrInt(AnyOutside, Outside);
-		AllInside = XMVectorAndInt(AllInside, Inside);
+        DirectX::Internal::FastIntersectOrientedBoxPlane(vCenter, vExtents, vAxis[0], vAxis[1], vAxis[2], vPlanes[5], Outside, Inside);
+        AnyOutside = XMVectorOrInt(AnyOutside, Outside);
+        AllInside = XMVectorAndInt(AllInside, Inside);
 
-		// If the box is outside any plane it is outside.
-		if(XMVector4EqualInt(AnyOutside, XMVectorTrueInt()))
-		{
-			return intersection_test_result::disjoint;
-		}
+        // If the box is outside any plane it is outside.
+        if(XMVector4EqualInt(AnyOutside, XMVectorTrueInt()))
+        {
+            return intersection_test_result::disjoint;
+        }
 
-		// If the box is inside all planes it is inside.
-		if(XMVector4EqualInt(AllInside, XMVectorTrueInt()))
-		{
-			return intersection_test_result::contains;
-		}
+        // If the box is inside all planes it is inside.
+        if(XMVector4EqualInt(AllInside, XMVectorTrueInt()))
+        {
+            return intersection_test_result::contains;
+        }
 
-		// The box is not inside all planes or outside a plane, it may intersect.
-		return intersection_test_result::intersects;
-	}
+        // The box is not inside all planes or outside a plane, it may intersect.
+        return intersection_test_result::intersects;
+    }
 };
 
 GO_END_NAMESPACE

@@ -68,9 +68,9 @@ private:
 };
 
 /*!
-	Safely advances a null-terminated string pointer.
+    Safely advances a null-terminated string pointer.
 
-	\param p The pointer to a advance.
+    \param p The pointer to a advance.
  */
 GO_API char *advance_str_ptr(char *p);
 /*!

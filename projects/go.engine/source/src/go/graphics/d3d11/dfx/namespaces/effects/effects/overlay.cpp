@@ -69,11 +69,11 @@ void dfx::effects::overlay::on_begin_run(void *userData)
     // Setup next pass
     dfx_hlsl::effects::overlay::g_overlayTexture = parameters->in.overlayTexture;
 
-	// Bind shaders
-	auto renderPath = (go::dfx_forward_plus_render_path *)go::the_gfx_renderer->render_path();
-	auto &shaderCache = renderPath->renderer_helper().shader_cache();
-	m_pass0VS = shaderCache.common.fsTriangleVS;
-	m_pass0PS = shaderCache.overlayEffect.overlayPS;
+    // Bind shaders
+    auto renderPath = (go::dfx_forward_plus_render_path *)go::the_gfx_renderer->render_path();
+    auto &shaderCache = renderPath->renderer_helper().shader_cache();
+    m_pass0VS = shaderCache.common.fsTriangleVS;
+    m_pass0PS = shaderCache.overlayEffect.overlayPS;
 }
 
 

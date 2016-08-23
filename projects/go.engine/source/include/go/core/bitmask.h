@@ -51,10 +51,10 @@ class bitmask
 {
 public:
     typedef size_t submask_t;
-	//! The number of bits in the mask.
-	static const size_t kBitCount = BitCount;
-	//! The number of submasks in the bitmask.
-	static const size_t kSubmaskCount = 1 + BitCount / (8 * sizeof(submask_t) + 1);
+    //! The number of bits in the mask.
+    static const size_t kBitCount = BitCount;
+    //! The number of submasks in the bitmask.
+    static const size_t kSubmaskCount = 1 + BitCount / (8 * sizeof(submask_t) + 1);
 public:
     //! Constructor.
     bitmask();
@@ -130,14 +130,14 @@ public:
         \param index The index of the bit to unset.
      */
     void clear(size_t index);
-	/*!
-		Scans for the first set LSB.
+    /*!
+        Scans for the first set LSB.
 
-		\param[out] index The first bit set.
+        \param[out] index The first bit set.
 
-		\return True, if a set bit was found. Otherwise false.
-	 */
-	bool forward_null_scan(uint32_t *index);
+        \return True, if a set bit was found. Otherwise false.
+     */
+    bool forward_null_scan(uint32_t *index);
     /*!
         Invokes a function for each bit that was set.
 

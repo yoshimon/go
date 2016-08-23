@@ -185,13 +185,13 @@ void go::gfx_shader::initialize(gfx_shader_type type, const uint8_t *byteCode, u
                 "failed to query shader input parameter descriptor"
             );
 
-			// Skip system values
-			if(strcmp(spd.SemanticName, "SV_InstanceID") == 0)
-			{
-				continue;
-			}
+            // Skip system values
+            if(strcmp(spd.SemanticName, "SV_InstanceID") == 0)
+            {
+                continue;
+            }
 
-			D3D11_INPUT_ELEMENT_DESC ied;
+            D3D11_INPUT_ELEMENT_DESC ied;
             ied.SemanticName = spd.SemanticName;
             ied.SemanticIndex = spd.SemanticIndex;
             ied.InputSlot = 0;
@@ -199,8 +199,8 @@ void go::gfx_shader::initialize(gfx_shader_type type, const uint8_t *byteCode, u
             ied.InstanceDataStepRate = 0;
             ied.AlignedByteOffset = i == 0 ? 0 : D3D11_APPEND_ALIGNED_ELEMENT;
             ied.Format = d3d_register_component_info_to_dxgi_format(spd.ComponentType, input_component_count(spd));
-			inputElements.push_back(std::move(ied));
-		}
+            inputElements.push_back(std::move(ied));
+        }
 
         GO_THROW_HRESULT
         (

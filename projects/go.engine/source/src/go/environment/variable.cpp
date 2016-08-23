@@ -39,7 +39,7 @@
 // ============================================================================== //
 
 go::variable::variable(std::string name, std::string val, std::string description,
-	uint32_t flags, variable::observer_type *observer)
+    uint32_t flags, variable::observer_type *observer)
     : m_name(std::move(name)), m_value(std::move(val)), m_description(std::move(description)), m_flags(flags)
 {
     if(observer)

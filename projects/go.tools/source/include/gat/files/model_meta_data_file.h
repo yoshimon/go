@@ -44,8 +44,8 @@ struct model_meta_data_file
     model_meta_data_file(const go::file_path &filePath);
     //! \overload
     model_meta_data_file(
-		const unity_model &inModel,
-		const gmd_file &gmdFile,
+        const unity_model &inModel,
+        const gmd_file &gmdFile,
         const go::file_path &gmdFilePath);
     //! The material names that are associated with the model.
     std::vector<asset_db_name> materials;

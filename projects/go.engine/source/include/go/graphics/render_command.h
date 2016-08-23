@@ -281,12 +281,12 @@ struct GO_API gfx_render_command_buffers
         \param bufferSizeHint The estimated size of the buffer.
      */
     virtual void resize(size_t bufferSizeHint);
-	/*!
-		Returns whether the command buffers are empty.
+    /*!
+        Returns whether the command buffers are empty.
 
-		\return True, if all command buffers are empty. Otherwise false.
-	 */
-	bool is_empty() const noexcept;
+        \return True, if all command buffers are empty. Otherwise false.
+     */
+    bool is_empty() const noexcept;
     //! Render commands for static geometry.
     gfx_static_render_command_buffer staticGeometry;
     //! Render commands for dynamic geometry.

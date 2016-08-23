@@ -63,8 +63,8 @@ namespace dfx_effects
                 //! The number of disk lights.
                 uint32_t numDiskLights;
 
-				//! The render-point to use.
-				const gfx_perspective_render_point *renderPoint;
+                //! The render-point to use.
+                const gfx_perspective_render_point *renderPoint;
             } in;
             struct
             {
@@ -73,8 +73,8 @@ namespace dfx_effects
                 //! The light-tile mapping buffer for disk lights.
                 gfx_shader_resource *diskLightTileIndices;
 
-				//! The depth-stencil buffer to use.
-				gfx_depth_stencil_buffer *depthStencilBuffer;
+                //! The depth-stencil buffer to use.
+                gfx_depth_stencil_buffer *depthStencilBuffer;
             } out;
         };
     }

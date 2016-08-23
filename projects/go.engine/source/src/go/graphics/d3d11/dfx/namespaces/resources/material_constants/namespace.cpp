@@ -57,18 +57,18 @@ void initialize_standard_constants(go::gfx_material_database *materialDB)
     standardConstants.reserve(materialDB->capacity());
 
     // Figure out how many standard materials we have and read their constants
-	for(size_t materialIndex = 0, materialTypeIndex = 0; materialIndex < materialDB->capacity(); ++materialIndex)
+    for(size_t materialIndex = 0, materialTypeIndex = 0; materialIndex < materialDB->capacity(); ++materialIndex)
     {
-		if(materialTypeIndex < standardMaterialIndices.size() && standardMaterialIndices[materialTypeIndex] == materialIndex)
-		{
-			standardConstants.push_back(materialDB->find(materialIndex)->constants.standard);
-			++materialTypeIndex;
-		}
-		else
-		{
-			// Push dummy record
-			standardConstants.emplace_back();
-		}
+        if(materialTypeIndex < standardMaterialIndices.size() && standardMaterialIndices[materialTypeIndex] == materialIndex)
+        {
+            standardConstants.push_back(materialDB->find(materialIndex)->constants.standard);
+            ++materialTypeIndex;
+        }
+        else
+        {
+            // Push dummy record
+            standardConstants.emplace_back();
+        }
     }
 
     // GPU constants

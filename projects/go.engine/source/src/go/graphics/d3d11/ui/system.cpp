@@ -568,9 +568,9 @@ void go::ui_system::render()
         auto surface = (GO_INTERNAL awesomium_surface *)screen->surface();
         if(surface)
         {
-			dfx_effects::overlay_parameters overlayParams;
-			overlayParams.in.overlayTexture = &surface->texture;
-			overlayParams.out.outputTexture = the_gfx_device->back_buffer();
+            dfx_effects::overlay_parameters overlayParams;
+            overlayParams.in.overlayTexture = &surface->texture;
+            overlayParams.out.outputTexture = the_gfx_device->back_buffer();
             m_renderUIEffect->run(&overlayParams);
         }
     }

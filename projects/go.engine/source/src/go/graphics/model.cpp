@@ -50,23 +50,23 @@ void go::gfx_model::reset(const unskinned_vertex_t *unskinnedVertices, uint32_t 
     {
         m_unskinnedVertexBuffer.reset(unskinnedVertexCount, sizeof(unskinned_vertex_t), gfx_buffer_update_frequency::never, (void *)unskinnedVertices);
     
-		// Clone the vertex buffer for Pos + UV only
-		std::vector<unskinned_uv_vertex_t> unskinnedUVVertices;
-		unskinnedUVVertices.resize(unskinnedVertexCount);
-		for(size_t i = 0; i < unskinnedVertexCount; ++i)
-		{
-			auto &vIn = unskinnedVertices[i];
-			auto &vOut = unskinnedUVVertices[i];
-			vOut.position = vIn.position;
-			vOut.uv = vIn.uv;
-		}
+        // Clone the vertex buffer for Pos + UV only
+        std::vector<unskinned_uv_vertex_t> unskinnedUVVertices;
+        unskinnedUVVertices.resize(unskinnedVertexCount);
+        for(size_t i = 0; i < unskinnedVertexCount; ++i)
+        {
+            auto &vIn = unskinnedVertices[i];
+            auto &vOut = unskinnedUVVertices[i];
+            vOut.position = vIn.position;
+            vOut.uv = vIn.uv;
+        }
 
-		m_unskinnedUVVertexBuffer.reset(unskinnedUVVertices.size(), sizeof(unskinned_uv_vertex_t), gfx_buffer_update_frequency::never, (void *)unskinnedUVVertices.data());
-	}
+        m_unskinnedUVVertexBuffer.reset(unskinnedUVVertices.size(), sizeof(unskinned_uv_vertex_t), gfx_buffer_update_frequency::never, (void *)unskinnedUVVertices.data());
+    }
     else
     {
         m_unskinnedVertexBuffer.release();
-		m_unskinnedUVVertexBuffer.release();
+        m_unskinnedUVVertexBuffer.release();
     }
 
     if(skinnedVertexCount > 0)
@@ -92,7 +92,7 @@ void go::gfx_model::reset(const unskinned_vertex_t *unskinnedVertices, uint32_t 
 void go::gfx_model::release()
 {
     m_unskinnedVertexBuffer.release();
-	m_unskinnedUVVertexBuffer.release();
+    m_unskinnedUVVertexBuffer.release();
     m_skinnedVertexBuffer.release();
     m_indexBuffer.release();
 }

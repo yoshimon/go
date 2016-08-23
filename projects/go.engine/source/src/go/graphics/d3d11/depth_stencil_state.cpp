@@ -53,7 +53,7 @@ void go::gfx_depth_stencil_state::release()
 
 void go::gfx_depth_stencil_state::reset(const gfx_depth_stencil_state_parameters &options)
 {
-	CD3D11_DEPTH_STENCIL_DESC dsd(CD3D11_DEFAULT{});
+    CD3D11_DEPTH_STENCIL_DESC dsd(CD3D11_DEFAULT{});
     dsd.DepthEnable = options.depth.enableTest;
     dsd.DepthWriteMask = options.depth.enableWrite ? D3D11_DEPTH_WRITE_MASK_ALL : D3D11_DEPTH_WRITE_MASK_ZERO;
     dsd.DepthFunc = (D3D11_COMPARISON_FUNC)options.depth.comparisonFunction;

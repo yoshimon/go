@@ -68,7 +68,7 @@ struct unity_entity
         {
             //! The model meta file asset path.
             go::file_path modelMetaFileAssetPath;
-		} meshFilter;
+        } meshFilter;
         //! State flag.
         bool hasMeshFilter = false;
         struct
@@ -79,7 +79,7 @@ struct unity_entity
             int resolution;
             //! The probe box-projection volume.
             bool hasProxyBoxProj;
-			//! The size of the proxy box.
+            //! The size of the proxy box.
             DirectX::XMFLOAT3 proxySize;
             //! The proxy center offset.
             DirectX::XMFLOAT3 proxyCenterOffset;

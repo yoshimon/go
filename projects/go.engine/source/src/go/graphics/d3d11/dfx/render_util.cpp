@@ -40,55 +40,55 @@
 
 void go::dfx_util::common_shader_cache::reset(gfx_shader_manager *shaderMgr)
 {
-	// Common
-	common.fsTriangleVS = shaderMgr->get(GO_PATH_SYMBOL_SHADER "shaders\\vertex_to_pixel\\fstriangle_vs.cso");
+    // Common
+    common.fsTriangleVS = shaderMgr->get(GO_PATH_SYMBOL_SHADER "shaders\\vertex_to_pixel\\fstriangle_vs.cso");
     common.skyVS = shaderMgr->get(GO_PATH_SYMBOL_SHADER "shaders\\vertex_to_pixel\\sky_vs.cso");
-	common.unskinnedGeometryVS = shaderMgr->get(GO_PATH_SYMBOL_SHADER "shaders\\vertex_to_pixel\\unskinned_vs.cso");
-	common.unskinnedDepthGeometryVS = shaderMgr->get(GO_PATH_SYMBOL_SHADER "shaders\\vertex_to_pixel\\unskinned_depth_vs.cso");
+    common.unskinnedGeometryVS = shaderMgr->get(GO_PATH_SYMBOL_SHADER "shaders\\vertex_to_pixel\\unskinned_vs.cso");
+    common.unskinnedDepthGeometryVS = shaderMgr->get(GO_PATH_SYMBOL_SHADER "shaders\\vertex_to_pixel\\unskinned_depth_vs.cso");
 
-	// Half-res upsample
-	halfresUpsampleEffect.halfresUpsamplePS = shaderMgr->get(GO_PATH_SYMBOL_SHADER "effects\\halfres_upsample\\halfres_upsample_ps.cso");
+    // Half-res upsample
+    halfresUpsampleEffect.halfresUpsamplePS = shaderMgr->get(GO_PATH_SYMBOL_SHADER "effects\\halfres_upsample\\halfres_upsample_ps.cso");
 
-	// Shadow Maps
-	shadowMapsEffect.unskinnedGeometryVS = shaderMgr->get(GO_PATH_SYMBOL_SHADER "effects\\shadow_maps\\unskinned_vs.cso");
+    // Shadow Maps
+    shadowMapsEffect.unskinnedGeometryVS = shaderMgr->get(GO_PATH_SYMBOL_SHADER "effects\\shadow_maps\\unskinned_vs.cso");
 
     // MinZ Downsampling
     minZDownsamplingEffect.minZDownsamplingCS = shaderMgr->get(GO_PATH_SYMBOL_SHADER "effects\\min_z_downsampling\\min_z_downsampling_cs.cso");
 
-	// Bilateral Blur
-	bilateralBlurEffect.blurXCS = shaderMgr->get(GO_PATH_SYMBOL_SHADER "effects\\bilateral_blur\\blur_x_cs.cso");
-	bilateralBlurEffect.blurYCS = shaderMgr->get(GO_PATH_SYMBOL_SHADER "effects\\bilateral_blur\\blur_y_cs.cso");
+    // Bilateral Blur
+    bilateralBlurEffect.blurXCS = shaderMgr->get(GO_PATH_SYMBOL_SHADER "effects\\bilateral_blur\\blur_x_cs.cso");
+    bilateralBlurEffect.blurYCS = shaderMgr->get(GO_PATH_SYMBOL_SHADER "effects\\bilateral_blur\\blur_y_cs.cso");
 
-	// Overlay
-	overlayEffect.overlayPS = shaderMgr->get(GO_PATH_SYMBOL_SHADER "effects\\overlay\\overlay_ps.cso");
+    // Overlay
+    overlayEffect.overlayPS = shaderMgr->get(GO_PATH_SYMBOL_SHADER "effects\\overlay\\overlay_ps.cso");
 
-	// Gaussian Blur
+    // Gaussian Blur
     gaussianBlurEffect.blurXCS = shaderMgr->get(GO_PATH_SYMBOL_SHADER "effects\\gaussian_blur\\blur_x_cs.cso");
     gaussianBlurEffect.blurYCS = shaderMgr->get(GO_PATH_SYMBOL_SHADER "effects\\gaussian_blur\\blur_y_cs.cso");
 
-	// HDR / Bloom
+    // HDR / Bloom
     hdrBloomEffect.luminanceBrightnessCS = shaderMgr->get(GO_PATH_SYMBOL_SHADER "effects\\hdr_bloom\\luminance_brightness_cs.cso");
     hdrBloomEffect.averageLuminanceCS = shaderMgr->get(GO_PATH_SYMBOL_SHADER "effects\\hdr_bloom\\average_luminance_cs.cso");
     hdrBloomEffect.combineCS = shaderMgr->get(GO_PATH_SYMBOL_SHADER "effects\\hdr_bloom\\combine_cs.cso");
 
-	// Tonemapping
+    // Tonemapping
     tonemappingEffect.tonemappingPS = shaderMgr->get(GO_PATH_SYMBOL_SHADER "effects\\tonemapping\\tonemap_ps.cso");
 
-	// Film Grain
+    // Film Grain
     filmGrainEffect.filmGrainPS = shaderMgr->get(GO_PATH_SYMBOL_SHADER "effects\\film_grain\\film_grain_ps.cso");
 
-	// Vignette
+    // Vignette
     vignetteEffect.vignettePS = shaderMgr->get(GO_PATH_SYMBOL_SHADER "effects\\vignette\\vignette_ps.cso");
 
-	// FXAA
-	fxaaEffect.fxaaPS = shaderMgr->get(GO_PATH_SYMBOL_SHADER "effects\\fxaa\\fxaa_ps.cso");
+    // FXAA
+    fxaaEffect.fxaaPS = shaderMgr->get(GO_PATH_SYMBOL_SHADER "effects\\fxaa\\fxaa_ps.cso");
 
-	// Volumetric Lighting
+    // Volumetric Lighting
     volumetricLightingEffect.volumetricLightingCS = shaderMgr->get(GO_PATH_SYMBOL_SHADER "effects\\volumetric_lighting\\volumetric_lighting_cs.cso");
     volumetricLightingEffect.applyTransmittancePS = shaderMgr->get(GO_PATH_SYMBOL_SHADER "effects\\volumetric_lighting\\apply_transmittance_ps.cso");
 
     // Material depth-only shaders
-	go::file_path pxShaderPath(GO_PATH_SYMBOL_SHADER, "shaders\\pixel");
+    go::file_path pxShaderPath(GO_PATH_SYMBOL_SHADER, "shaders\\pixel");
     for(uint32_t i = 0; i < (uint32_t)go::gfx_material_type::count; ++i)
     {
         auto &matTypeStr = go::gfx_material_type_strings[i];

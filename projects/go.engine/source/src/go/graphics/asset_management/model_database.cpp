@@ -83,26 +83,26 @@ void go::gfx_model_database::process_record(rapidxml::xml_node<> *n, gfx_model_d
             GO_THROW(data_error, "Invalid AABB definition.");
         }
 
-		// Store the AABB min max corners
-		auto &&m0 = string_to_vector3f<XMFLOAT3>(attAABBMin->value());
-		def.aabbMin.x = m0.x;
-		def.aabbMin.y = m0.y;
-		def.aabbMin.z = m0.z;
-		def.aabbMin.w = 1.0f;
+        // Store the AABB min max corners
+        auto &&m0 = string_to_vector3f<XMFLOAT3>(attAABBMin->value());
+        def.aabbMin.x = m0.x;
+        def.aabbMin.y = m0.y;
+        def.aabbMin.z = m0.z;
+        def.aabbMin.w = 1.0f;
 
-		auto &&m1 = string_to_vector3f<XMFLOAT3>(attAABBMax->value());
-		def.aabbMax.x = m1.x;
-		def.aabbMax.y = m1.y;
-		def.aabbMax.z = m1.z;
-		def.aabbMax.w = 1.0f;
+        auto &&m1 = string_to_vector3f<XMFLOAT3>(attAABBMax->value());
+        def.aabbMax.x = m1.x;
+        def.aabbMax.y = m1.y;
+        def.aabbMax.z = m1.z;
+        def.aabbMax.w = 1.0f;
 
         auto &&vAABBMin = XMLoadFloat4A(&def.aabbMin);
         auto &&vAABBMax = XMLoadFloat4A(&def.aabbMax);
-		auto &&vAABBExtents = (vAABBMax - vAABBMin) * 0.5f;
-		auto &&vAABBCenter = vAABBMin + vAABBExtents;
+        auto &&vAABBExtents = (vAABBMax - vAABBMin) * 0.5f;
+        auto &&vAABBCenter = vAABBMin + vAABBExtents;
 
-		XMStoreFloat4A(&def.aabbCenter, vAABBCenter);
-		XMStoreFloat4A(&def.aabbExtents, vAABBExtents);
+        XMStoreFloat4A(&def.aabbCenter, vAABBCenter);
+        XMStoreFloat4A(&def.aabbExtents, vAABBExtents);
 
         // BoundingSphere
         auto &&vSphere = XMVectorSetW(vAABBCenter, XMVectorGetX(XMVector3Length(vAABBExtents)));

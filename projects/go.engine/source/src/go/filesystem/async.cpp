@@ -473,15 +473,15 @@ go::async_io::~async_io()
 
 void go::async_io::shutdown()
 {
-	if(s_isRunning)
-	{
-		GO_LOGFILE_INFO("Shutting down the AFIO manager...\n");
+    if(s_isRunning)
+    {
+        GO_LOGFILE_INFO("Shutting down the AFIO manager...\n");
 
-		shutdown_threads();
-		free_streaming_memory();
+        shutdown_threads();
+        free_streaming_memory();
 
-		GO_LOGFILE_INFO("The AFIO manager was successfully shut down.\n");
-	}
+        GO_LOGFILE_INFO("The AFIO manager was successfully shut down.\n");
+    }
 }
 
 

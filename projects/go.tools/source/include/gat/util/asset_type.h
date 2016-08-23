@@ -42,8 +42,8 @@ enum class asset_type : int32_t
     texture,
     //! The content represents an animation.
     animation,
-	//! The number of asset types.
-	count
+    //! The number of asset types.
+    count
 };
 
 

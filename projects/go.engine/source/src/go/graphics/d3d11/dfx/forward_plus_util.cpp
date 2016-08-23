@@ -86,7 +86,7 @@ go::dfx_materials::texture_bindings go::dfx_util::forward_plus_renderer::kUnlitM
 void bind_instance_constants(uint32_t instanceIDBias, uint32_t materialIndex)
 {
     // Update CB
-	auto p = static_cast<dfx_hlsl::constants::instanced_draw *>(dfx_hlsl::constants::g_instanced_draw->begin_update());
+    auto p = static_cast<dfx_hlsl::constants::instanced_draw *>(dfx_hlsl::constants::g_instanced_draw->begin_update());
     p->g_instancingIDBias = instanceIDBias;
     p->g_instancingMaterialIndex = materialIndex;
     dfx_hlsl::constants::g_instanced_draw->end_update();
@@ -143,19 +143,19 @@ void update_static_instance_data(const go::gfx_static_render_command_buffer &cmd
     auto &transparentCommands = cmdBuffer.transparent_commands();
     auto instanceBuffer = dfx_hlsl::resources::instancing::g_unskinnedInstanceData;
 
-	auto &opaqueCmdOrder = cmdBuffer.opaque_command_order();
-	auto maxNumInstances = (size_t)instanceBuffer->element_capacity();
-	auto numCommands = opaqueCommands.size() + transparentCommands.size();
+    auto &opaqueCmdOrder = cmdBuffer.opaque_command_order();
+    auto maxNumInstances = (size_t)instanceBuffer->element_capacity();
+    auto numCommands = opaqueCommands.size() + transparentCommands.size();
 
-	if(numCommands >= maxNumInstances)
-	{
-		// We can't fill more data in!
-		GO_LOGFILE_WARNING("Instance buffer not large enough to hold all instances.");
-	}
+    if(numCommands >= maxNumInstances)
+    {
+        // We can't fill more data in!
+        GO_LOGFILE_WARNING("Instance buffer not large enough to hold all instances.");
+    }
 
     // Map the entire buffer
     auto p = reinterpret_cast<dfx_hlsl::instance_data::unskinned_instance_data *>(instanceBuffer->begin_update());
-	
+    
     // Opaque geometry
     size_t j = 0;
     {
@@ -206,23 +206,23 @@ void forward_plus_bind_material(
         case go::gfx_material_shader_id::unlit: textureBindings = &go::dfx_util::forward_plus_renderer::kUnlitMaterialTextureBindings; break;
         }
 
-		// Pick the pixel shader table
-		auto matShaderTable = renderPass.depthOnly ? shaderCache.common.materialDepthOnlyPSTable : shaderCache.materialShaders;
+        // Pick the pixel shader table
+        auto matShaderTable = renderPass.depthOnly ? shaderCache.common.materialDepthOnlyPSTable : shaderCache.materialShaders;
 
-		if(material->isTwoSided)
-		{
-			go::the_gfx_renderer->bind_rasterizer_state(renderPass.twoSidedRS);
-		}
-		else
-		{
-			go::the_gfx_renderer->bind_rasterizer_state(renderPass.frontFacesRS);
-		}
+        if(material->isTwoSided)
+        {
+            go::the_gfx_renderer->bind_rasterizer_state(renderPass.twoSidedRS);
+        }
+        else
+        {
+            go::the_gfx_renderer->bind_rasterizer_state(renderPass.frontFacesRS);
+        }
 
         // Bind the right shader and rasterizer state
         if(material->requiresAlphaTest)
         {
             go::the_gfx_renderer->bind_pixel_shader(matShaderTable[(uint32_t)material->shaderID]);
-			go::dfx_materials::bind_material(texMgr, material, *textureBindings);
+            go::dfx_materials::bind_material(texMgr, material, *textureBindings);
         }
         else
         {
@@ -234,8 +234,8 @@ void forward_plus_bind_material(
             else
             {
                 go::the_gfx_renderer->bind_pixel_shader(matShaderTable[(uint32_t)material->shaderID]);
-				go::dfx_materials::bind_material(texMgr, material, *textureBindings);
-			}
+                go::dfx_materials::bind_material(texMgr, material, *textureBindings);
+            }
         }
     }
 }
@@ -335,7 +335,7 @@ void go::dfx_util::forward_plus_renderer::submit_draw_calls(const forward_plus_r
                     bind_instance_constants(cmdOrderIndex, materialID);
                     forward_plus_bind_material(texMgr, m_shaderCache, material, lastMaterial, renderPass);
 
-					the_gfx_renderer->draw_indexed_instanced(cmd.indexCount, cmd.startIndex, cmd.startVertex, numInstances, 0);
+                    the_gfx_renderer->draw_indexed_instanced(cmd.indexCount, cmd.startIndex, cmd.startVertex, numInstances, 0);
 
                     cmdOrderIndex += numInstances;
                 }

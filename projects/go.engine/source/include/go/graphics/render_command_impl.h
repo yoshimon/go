@@ -54,7 +54,7 @@ void gfx_render_command_buffer<RenderCommand>::resize(size_t bufferSizeHint)
 template<class RenderCommand>
 void gfx_render_command_buffer<RenderCommand>::enqueue(const typename render_command_t::enqueue_command_t &command)
 {
-	render_command_t data(command);
+    render_command_t data(command);
     auto viewZ = command.viewZ;
 
     for(auto &mesh : command.model->unskinnedMeshes)
@@ -106,16 +106,16 @@ void gfx_render_command_buffer<RenderCommand>::enqueue_mesh(render_command_t &da
         commandIdxQueue = &m_transparentCommandIndices;
     }
 
-	// Copy command data
-	data.indexCount = mesh.indexCount;
-	data.startIndex = mesh.startIndex;
-	data.startVertex = mesh.startVertex;
+    // Copy command data
+    data.indexCount = mesh.indexCount;
+    data.startIndex = mesh.startIndex;
+    data.startVertex = mesh.startVertex;
 
-	// Setup the command key
-	gfx_render_command_key key(mesh.material->id, viewZ, blendMode);
+    // Setup the command key
+    gfx_render_command_key key(mesh.material->id, viewZ, blendMode);
 
-	auto idx = commandQueue->emplace_back(key, data);
-	commandIdxQueue->push_back(idx - commandQueue->begin());
+    auto idx = commandQueue->emplace_back(key, data);
+    commandIdxQueue->push_back(idx - commandQueue->begin());
 }
 
 
@@ -123,9 +123,9 @@ template<class RenderCommand>
 void gfx_render_command_buffer<RenderCommand>::clear()
 {
     m_opaqueCommands.clear();
-	m_opaqueCommandIndices.clear();
-	m_transparentCommands.clear();
-	m_transparentCommandIndices.clear();
+    m_opaqueCommandIndices.clear();
+    m_transparentCommands.clear();
+    m_transparentCommandIndices.clear();
     m_instanceCache.clear();
     m_nextInstanceID = 0;
 }

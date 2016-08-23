@@ -78,8 +78,8 @@ public:
         //! The number of gfx_bones.
         uint32_t numBones;
     };
-	typedef uint32_t index32_t;
-	typedef uint16_t index16_t;
+    typedef uint32_t index32_t;
+    typedef uint16_t index16_t;
     //! A structure, which represents a submesh in the model.
     struct submesh_t
     {

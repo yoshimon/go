@@ -133,50 +133,50 @@ int _tmain(int argc, _TCHAR *argv[])
     
     // Initialize Go
     _tprintf(_T("> Initializing Go Library...\n"));
-	try
-	{
-		go::initialize();
-		_tprintf(_T("> Running client code...\n"));
-		go::the_application->handle_initialize(argc, argv);
+    try
+    {
+        go::initialize();
+        _tprintf(_T("> Running client code...\n"));
+        go::the_application->handle_initialize(argc, argv);
     }
     catch(std::exception &e)
     {
         _tprintf(_T("! ERROR: Could not initialize Go Library. See the log file for further information. Exception: %s.\n"), e.what());
         app_post_exit();
     }
-	catch(...)
-	{
+    catch(...)
+    {
         _tprintf(_T("! ERROR: Could not initialize Go Library. See the log file for further information.\n"));
         app_post_exit();
     }
 
-	if(hideConsole)
-	{
-		ShowWindow(GetConsoleWindow(), SW_HIDE);
-	}
+    if(hideConsole)
+    {
+        ShowWindow(GetConsoleWindow(), SW_HIDE);
+    }
 
-	try
-	{
-		go::the_application->run();
-	}
+    try
+    {
+        go::the_application->run();
+    }
     catch(std::exception &e)
     {
         _tprintf(_T("! ERROR: An unexpected exception occurred during program execution. See the log file for further information. Exception: %s.\n"), e.what());
         app_exit();
     }
-	catch(...)
-	{
-		_tprintf(_T("! ERROR: An unexpected exception occurred during program execution. See the log file for further information.\n"));
+    catch(...)
+    {
+        _tprintf(_T("! ERROR: An unexpected exception occurred during program execution. See the log file for further information.\n"));
         app_exit();
-	}
+    }
 
-	if(hideConsole)
-	{
-		ShowWindow(GetConsoleWindow(), SW_SHOWNORMAL);
-	}
+    if(hideConsole)
+    {
+        ShowWindow(GetConsoleWindow(), SW_SHOWNORMAL);
+    }
 
     // Shut down Go
-	_tprintf(_T("> Shutting down Go Library...\n"));
+    _tprintf(_T("> Shutting down Go Library...\n"));
     try
     {
         go::shutdown();

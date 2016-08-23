@@ -133,35 +133,35 @@ void dfx::forward_plus::prepass::on_do_pass0(void *userData)
 
 void dfx::forward_plus::prepass::on_do_pass1(void *userData)
 {
-	auto parameters = (go::dfx_effects::forward_plus::prepass_parameters *)userData;
+    auto parameters = (go::dfx_effects::forward_plus::prepass_parameters *)userData;
 
-	GO_PERF_BEGIN_EVENT("Z-Prepass");
-	// NOTE: complementary Z!
-	go::the_gfx_renderer->clear_depth_stencil_buffer(parameters->out.depthStencilBuffer, 0, 0.0f);
-	go::the_gfx_renderer->bind_depth_stencil_buffer(parameters->out.depthStencilBuffer, 0);
-	go::the_gfx_renderer->match_viewport(parameters->out.depthStencilBuffer);
+    GO_PERF_BEGIN_EVENT("Z-Prepass");
+    // NOTE: complementary Z!
+    go::the_gfx_renderer->clear_depth_stencil_buffer(parameters->out.depthStencilBuffer, 0, 0.0f);
+    go::the_gfx_renderer->bind_depth_stencil_buffer(parameters->out.depthStencilBuffer, 0);
+    go::the_gfx_renderer->match_viewport(parameters->out.depthStencilBuffer);
 
-	auto &rasterizerStates = go::the_gfx_device->common_rasterizer_states();
-	auto &depthStencilStates = go::the_gfx_device->common_depth_stencil_states();
+    auto &rasterizerStates = go::the_gfx_device->common_rasterizer_states();
+    auto &depthStencilStates = go::the_gfx_device->common_depth_stencil_states();
 
-	// Grab the Forward+ renderer
-	auto renderPath = (go::dfx_forward_plus_render_path *)go::the_gfx_renderer->render_path();
-	auto &renderHelper = renderPath->renderer_helper();
-	auto &shaderCache = renderHelper.shader_cache();
+    // Grab the Forward+ renderer
+    auto renderPath = (go::dfx_forward_plus_render_path *)go::the_gfx_renderer->render_path();
+    auto &renderHelper = renderPath->renderer_helper();
+    auto &shaderCache = renderHelper.shader_cache();
 
-	// Submit the scene geometry
-	go::dfx_util::forward_plus_render_pass renderPass;
-	renderPass.materialDB = &parameters->assetContext->material_db();
-	renderPass.mask = go::dfx_util::geometry_mask::opaque_only;
-	renderPass.depthOnly = true;
-	renderPass.writeDepth = true;
-	renderPass.cmdBuffers = &parameters->in.renderPoint->commandBuffers;
-	renderPass.unskinnedGeometryVS = shaderCache.common.unskinnedDepthGeometryVS;
-	renderPass.backFacesRS = &rasterizerStates.backFaces;
-	renderPass.frontFacesRS = &rasterizerStates.frontFaces;
-	renderPass.twoSidedRS = &rasterizerStates.twoSided;
-	renderPass.depthTestWriteEnabledDSS = &depthStencilStates.greaterTestWrite;
-	renderPass.depthTestEnabledDSS = &depthStencilStates.greaterTestOnly;
-	renderHelper.submit_draw_calls(renderPass);
-	GO_PERF_END_EVENT;
+    // Submit the scene geometry
+    go::dfx_util::forward_plus_render_pass renderPass;
+    renderPass.materialDB = &parameters->assetContext->material_db();
+    renderPass.mask = go::dfx_util::geometry_mask::opaque_only;
+    renderPass.depthOnly = true;
+    renderPass.writeDepth = true;
+    renderPass.cmdBuffers = &parameters->in.renderPoint->commandBuffers;
+    renderPass.unskinnedGeometryVS = shaderCache.common.unskinnedDepthGeometryVS;
+    renderPass.backFacesRS = &rasterizerStates.backFaces;
+    renderPass.frontFacesRS = &rasterizerStates.frontFaces;
+    renderPass.twoSidedRS = &rasterizerStates.twoSided;
+    renderPass.depthTestWriteEnabledDSS = &depthStencilStates.greaterTestWrite;
+    renderPass.depthTestEnabledDSS = &depthStencilStates.greaterTestOnly;
+    renderHelper.submit_draw_calls(renderPass);
+    GO_PERF_END_EVENT;
 }

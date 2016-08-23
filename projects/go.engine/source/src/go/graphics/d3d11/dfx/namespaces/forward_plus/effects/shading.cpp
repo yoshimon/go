@@ -105,20 +105,20 @@ void dfx::forward_plus::shading::on_begin_run(void *userData)
         dfx_hlsl::forward_plus::shading::g_tileSphericalLightIndices = sceneLight.tileIndices;
     }
 
-	// Disk lights
-	{
-		auto &sceneLight = parameters->in.diskLights;
-		dfx_hlsl::forward_plus::shading::g_diskLightProps = sceneLight.parameters;
-		dfx_hlsl::forward_plus::shading::g_diskLightProxyShapes = sceneLight.shapes;
-		dfx_hlsl::forward_plus::shading::g_tileDiskLightIndices = sceneLight.tileIndices;
-	}
+    // Disk lights
+    {
+        auto &sceneLight = parameters->in.diskLights;
+        dfx_hlsl::forward_plus::shading::g_diskLightProps = sceneLight.parameters;
+        dfx_hlsl::forward_plus::shading::g_diskLightProxyShapes = sceneLight.shapes;
+        dfx_hlsl::forward_plus::shading::g_tileDiskLightIndices = sceneLight.tileIndices;
+    }
 
-	// Shadow maps
-	{
-		dfx_hlsl::forward_plus::shading::g_directionalSM = parameters->in.shadowMaps.directionalLight;
-		dfx_hlsl::forward_plus::shading::g_pointLightSM = parameters->in.shadowMaps.pointLightAtlas->texture();
-		dfx_hlsl::forward_plus::shading::g_spotLightSM = parameters->in.shadowMaps.spotLightAtlas->texture();
-	}
+    // Shadow maps
+    {
+        dfx_hlsl::forward_plus::shading::g_directionalSM = parameters->in.shadowMaps.directionalLight;
+        dfx_hlsl::forward_plus::shading::g_pointLightSM = parameters->in.shadowMaps.pointLightAtlas->texture();
+        dfx_hlsl::forward_plus::shading::g_spotLightSM = parameters->in.shadowMaps.spotLightAtlas->texture();
+    }
 
     // Bind shaders
     auto renderPath = (go::dfx_forward_plus_render_path *)go::the_gfx_renderer->render_path();

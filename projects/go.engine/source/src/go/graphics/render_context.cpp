@@ -52,7 +52,7 @@ void go::gfx_render_context::initialize()
     {
         for(auto &commandBuffers : light.faceCommandBuffers)
         {
-			commandBuffers.resize(GO_MAX_NUM_DRAW_CALLS_PER_PASS);
+            commandBuffers.resize(GO_MAX_NUM_DRAW_CALLS_PER_PASS);
         }
     }
 
@@ -126,46 +126,46 @@ void go::gfx_render_context::clear_command_buffers()
     // Point lights
     for(auto &light : renderPoints.pointLights)
     {
-		// Clear the cmd buffers
+        // Clear the cmd buffers
         for(auto &commandBuffers : light.faceCommandBuffers)
         {
-			commandBuffers.clear();
+            commandBuffers.clear();
         }
 
-		// Disable the light
-		light.isActive = false;
+        // Disable the light
+        light.isActive = false;
 
-		// Disable all faces
-		for(auto &&face : light.isFaceActive)
-		{
-			face = false;
-		}
+        // Disable all faces
+        for(auto &&face : light.isFaceActive)
+        {
+            face = false;
+        }
     }
 
     // Spot lights
     for(auto &light : renderPoints.spotLights)
     {
-		// Clear the cmd buffer
-		light.commandBuffers.clear();
+        // Clear the cmd buffer
+        light.commandBuffers.clear();
 
-		// Disable the light
-		light.isActive = false;
-	}
+        // Disable the light
+        light.isActive = false;
+    }
 }
 
 
 void go::gfx_render_context::reset_light_caches()
 {
-	// Unmark shadow casting lights
-	for(auto scl : lights.shadowCasting.spherical)
-	{
-		lights.spherical.parameters[scl].shadowCasterIndex = -1.0f;
-	}
+    // Unmark shadow casting lights
+    for(auto scl : lights.shadowCasting.spherical)
+    {
+        lights.spherical.parameters[scl].shadowCasterIndex = -1.0f;
+    }
 
-	for(auto scl : lights.shadowCasting.disk)
-	{
-		lights.disk.parameters[scl].shadowCasterIndex = -1.0f;
-	}
+    for(auto scl : lights.shadowCasting.disk)
+    {
+        lights.disk.parameters[scl].shadowCasterIndex = -1.0f;
+    }
 
     lights.shadowCasting.disk.clear();
     lights.shadowCasting.spherical.clear();

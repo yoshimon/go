@@ -53,18 +53,18 @@ void go::throw_if_hresult_failed(const char *fileName, int32_t line, HRESULT hr,
 // ================================================================================ //
 
 go::hresult_error::hresult_error(const std::string &whatArg, HRESULT errorCode)
-	: base_class_type(whatArg), m_errorCode(errorCode)
+    : base_class_type(whatArg), m_errorCode(errorCode)
 {
 }
 
 
 go::hresult_error::hresult_error(const char *whatArg, HRESULT errorCode)
-	: base_class_type(whatArg), m_errorCode(errorCode)
+    : base_class_type(whatArg), m_errorCode(errorCode)
 {
 }
 
 
 HRESULT go::hresult_error::error_code() const noexcept
 {
-	return m_errorCode;
+    return m_errorCode;
 }

@@ -56,26 +56,26 @@ void go::gfx_blend_state::reset(gfx_blend_mode type)
     release();
 
     CD3D11_BLEND_DESC bd(CD3D11_DEFAULT{});
-	if(type == gfx_blend_mode::alpha)
+    if(type == gfx_blend_mode::alpha)
     {
-		bd.IndependentBlendEnable = TRUE;
+        bd.IndependentBlendEnable = TRUE;
 
-		// Fragment color + albedo + metallic roughness
-		for(int i = 0; i < 3; ++i)
-		{
-			auto &&rt = bd.RenderTarget[i];
-			rt.BlendEnable = TRUE;
-			rt.SrcBlend = D3D11_BLEND_SRC_ALPHA;
-			rt.DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+        // Fragment color + albedo + metallic roughness
+        for(int i = 0; i < 3; ++i)
+        {
+            auto &&rt = bd.RenderTarget[i];
+            rt.BlendEnable = TRUE;
+            rt.SrcBlend = D3D11_BLEND_SRC_ALPHA;
+            rt.DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
 
-			rt.SrcBlendAlpha = D3D11_BLEND_ONE;
-			rt.DestBlendAlpha = D3D11_BLEND_ZERO;
+            rt.SrcBlendAlpha = D3D11_BLEND_ONE;
+            rt.DestBlendAlpha = D3D11_BLEND_ZERO;
 
-			rt.BlendOp = D3D11_BLEND_OP_ADD;
-			rt.BlendOpAlpha = D3D11_BLEND_OP_ADD;
+            rt.BlendOp = D3D11_BLEND_OP_ADD;
+            rt.BlendOpAlpha = D3D11_BLEND_OP_ADD;
 
-			rt.RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-		}
+            rt.RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+        }
     }
     else if(type == gfx_blend_mode::additive)
     {

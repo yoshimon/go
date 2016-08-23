@@ -49,21 +49,21 @@ struct GO_SSE_ALIGN gfx_model_definition : public aligned<gfx_model_definition>,
 {
     typedef std::vector<gfx_material_definition *> material_vector_t;
     /*!
-		AABB min-corner.
+        AABB min-corner.
 
-		The w component is set to 1.
-	 */
+        The w component is set to 1.
+     */
     DirectX::XMFLOAT4A aabbMin;
-	/*!
-		AABB max-corner.
+    /*!
+        AABB max-corner.
 
-		The w component is set to 1.
-	 */
+        The w component is set to 1.
+     */
     DirectX::XMFLOAT4A aabbMax;
-	//! The AABB center.
-	DirectX::XMFLOAT4A aabbCenter;
-	//! The AABB extents.
-	DirectX::XMFLOAT4A aabbExtents;
+    //! The AABB center.
+    DirectX::XMFLOAT4A aabbCenter;
+    //! The AABB extents.
+    DirectX::XMFLOAT4A aabbExtents;
     //! The bounding-sphere.
     DirectX::XMFLOAT4A boundingSphere;
     //! The name of the animation collection.

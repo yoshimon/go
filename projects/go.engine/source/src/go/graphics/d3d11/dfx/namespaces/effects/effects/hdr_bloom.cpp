@@ -198,13 +198,13 @@ void dfx::effects::hdr_bloom::on_do_pass3(void *userData)
         auto sourceMipLevel = s_numBlurPasses;
         auto destMipLevel = sourceMipLevel - 1;
 
-		// Bind the right mip-level
-		go::the_gfx_renderer->bind_compute_shader_uav
-		(
-			dfx_hlsl::effects::hdr_bloom::kRegister_bloomTextureRW,
-			dfx_hlsl::effects::hdr_bloom::g_bloomTextureRW,
-			destMipLevel
-		);
+        // Bind the right mip-level
+        go::the_gfx_renderer->bind_compute_shader_uav
+        (
+            dfx_hlsl::effects::hdr_bloom::kRegister_bloomTextureRW,
+            dfx_hlsl::effects::hdr_bloom::g_bloomTextureRW,
+            destMipLevel
+        );
 
         auto &bloomFmt = dfx_hlsl::effects::hdr_bloom::g_bloomTextureRW->format();
 

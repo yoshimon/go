@@ -32,14 +32,14 @@
 
 const _TCHAR *gat::asset_type_string[] =
 {
-	//! The content represents a 3D model.
-	_T("model"),
-	//! The content represents a material.
-	_T("material"),
-	//! The content represents a texture.
-	_T("texture"),
-	//! The content represents an animation.
-	_T("animation")
+    //! The content represents a 3D model.
+    _T("model"),
+    //! The content represents a material.
+    _T("material"),
+    //! The content represents a texture.
+    _T("texture"),
+    //! The content represents an animation.
+    _T("animation")
 };
 
 

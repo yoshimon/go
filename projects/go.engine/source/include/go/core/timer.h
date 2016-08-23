@@ -53,12 +53,12 @@ public:
 public:
     /*!
         Converts time (measured in cycles) to seconds.
-		
+        
         \param timeCycles Time in cycles.
 
         \return The time in seconds.
      */
-	static float cycles_to_seconds(uint64_t timeCycles);
+    static float cycles_to_seconds(uint64_t timeCycles);
     /*!
         Converts time (measured in cycles) to seconds.
 
@@ -75,66 +75,66 @@ public:
         \return The time in milliseconds.
      */
     static float query_delta_time_milliseconds(uint64_t startTimeCycles);
-	/*!
+    /*!
         Converts time (measured in seconds) to cycles.
-		
+        
         \param timeSeconds Time in seconds.
 
         \return The time in cycles.
      */
-	static uint64_t seconds_to_cycles(float timeSeconds);
-	/*!
+    static uint64_t seconds_to_cycles(float timeSeconds);
+    /*!
         Queries the hardware timer frequency.
-		
+        
         Call this once before using this class.
      */
-	static void query_hardware_timer_frequency();
-	/*!
+    static void query_hardware_timer_frequency();
+    /*!
         Queries the current time in cycles.
-		
+        
         \return Current time in cycles.
      */
-	static uint64_t query_current_time_cycles();
+    static uint64_t query_current_time_cycles();
 public:
     //! Time scale factor.
-	float timeScale;
+    float timeScale;
     //! Indicates whether the timer is paused.
     bool isPaused;
 public:
-	/*!
+    /*!
         Calculates the time difference between two timers.
-		
-		\return Time difference in seconds.
+        
+        \return Time difference in seconds.
      */
-	float calculate_delta_seconds(const timer &other);
-	/*!
+    float calculate_delta_seconds(const timer &other);
+    /*!
         Returns the elapsed time in cycles since the timer was started.
-		
+        
         \return Elapsed time in cycles since the timer was started.
      */
-	uint64_t life_time_cycles() const;
+    uint64_t life_time_cycles() const;
     /*!
         Returns the current time in cycles.
         
         \return Time in cycles.
      */
-	uint64_t time_cycles() const;
-	/*!
+    uint64_t time_cycles() const;
+    /*!
         Steps the timer ahead.
 
-		\param elapsedTime Unscaled frame delta time (step size) in seconds.
-				
-		\return Scaled elapsed time. If the timer is disabled the return value is zero.
+        \param elapsedTime Unscaled frame delta time (step size) in seconds.
+                
+        \return Scaled elapsed time. If the timer is disabled the return value is zero.
      */
-	float integrate(float elapsedTime);
+    float integrate(float elapsedTime);
 private:
     //! Reciprocal of hi-res timer frequency.
-	static float s_frequencyReciprocal;
+    static float s_frequencyReciprocal;
 private:
     //! Total clock time in cycles.
-	uint64_t m_timeCycles;
+    uint64_t m_timeCycles;
     //! Clock initialization time-stamp
-	uint64_t m_timeLifeBeginCycles;
+    uint64_t m_timeLifeBeginCycles;
 };
 
 GO_END_NAMESPACE

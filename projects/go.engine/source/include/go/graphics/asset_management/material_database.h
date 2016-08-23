@@ -111,8 +111,8 @@ struct gfx_material_info_type
 {
     //! The texture semantics.
     std::array<const char *, GO_MATERIAL_MAX_TEXTURE_COUNT> textureSemantics;
-	//! The number of used texture slots.
-	uint32_t usedTextureCount;
+    //! The number of used texture slots.
+    uint32_t usedTextureCount;
 };
 
 
@@ -200,8 +200,8 @@ struct gfx_material_definition : public asset_record
         NOTE: this is automatically deduced from the shader and is merely for convenience.
      */
     bool32_t requiresAlphaTest;
-	//! Indicates, whether the material should be rendered from both sides.
-	bool32_t isTwoSided;
+    //! Indicates, whether the material should be rendered from both sides.
+    bool32_t isTwoSided;
     //! The material texture slots.
     rid textureIDs[GO_MATERIAL_MAX_TEXTURE_COUNT];
     struct

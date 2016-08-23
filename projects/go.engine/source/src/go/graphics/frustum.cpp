@@ -40,9 +40,9 @@ void go::gfx_perspective_frustum::reset(
     DirectX::FXMVECTOR vPos, DirectX::FXMVECTOR vDir, DirectX::FXMVECTOR vUp,
     float nearClip, float farClip, float fovY, float aspectRatio)
 {
-	auto frustumDepth = farClip - nearClip;
+    auto frustumDepth = farClip - nearClip;
     
-	auto vRight = XMVector3Normalize(XMVector3Cross(vUp, vDir));
+    auto vRight = XMVector3Normalize(XMVector3Cross(vUp, vDir));
 
     auto vNC = vPos + vDir * nearClip;
     auto vFC = vPos + vDir * farClip;
@@ -87,26 +87,26 @@ void go::gfx_perspective_frustum::reset(
     XMStoreFloat4A(&corners[6], vFBL);
     XMStoreFloat4A(&corners[7], vFBR);
 
-	// Store frustum center
-	auto vCenter = (1.0f / 8.0f) * (vNTL + vNTR + vNBL + vNBR + vFTL + vFTR + vFBL + vFBR);
-	XMStoreFloat4A(&center, vCenter);
+    // Store frustum center
+    auto vCenter = (1.0f / 8.0f) * (vNTL + vNTR + vNBL + vNBR + vFTL + vFTR + vFBL + vFBR);
+    XMStoreFloat4A(&center, vCenter);
 
     // Compute sphere around the corner points
-	// http://gsteph.blogspot.de/2010/11/minimum-bounding-sphere-for-frustum.html
-	// NOTE: requires a projection with width >= height
-	auto halfNearLen = halfNearWidth > halfNearHeight ? halfNearWidth : halfNearHeight;
-	auto halfFarLen = halfFarWidth > halfFarHeight ? halfFarWidth : halfFarHeight;
+    // http://gsteph.blogspot.de/2010/11/minimum-bounding-sphere-for-frustum.html
+    // NOTE: requires a projection with width >= height
+    auto halfNearLen = halfNearWidth > halfNearHeight ? halfNearWidth : halfNearHeight;
+    auto halfFarLen = halfFarWidth > halfFarHeight ? halfFarWidth : halfFarHeight;
 
-	auto h = frustumDepth;
-	auto h2 = h * h;
-	auto de2 = halfFarLen * halfFarLen;
-	auto ab2 = halfNearLen * halfNearLen;
-	auto nom = de2 - ab2 - h2;
-	auto denom = -2.0f * h;
-	auto cd = nom / denom; // Distance of center from far plane
-	auto centerOffset = farClip - std::max(0.0f, cd);
-	auto vBoundingSphereCenter = vPos + vDir * centerOffset;
-	XMStoreFloat4A(&boundingSphereCenter, vBoundingSphereCenter);
+    auto h = frustumDepth;
+    auto h2 = h * h;
+    auto de2 = halfFarLen * halfFarLen;
+    auto ab2 = halfNearLen * halfNearLen;
+    auto nom = de2 - ab2 - h2;
+    auto denom = -2.0f * h;
+    auto cd = nom / denom; // Distance of center from far plane
+    auto centerOffset = farClip - std::max(0.0f, cd);
+    auto vBoundingSphereCenter = vPos + vDir * centerOffset;
+    XMStoreFloat4A(&boundingSphereCenter, vBoundingSphereCenter);
     boundingSphereRadius = XMVectorGetX(XMVector3Length(vFTL - vBoundingSphereCenter));
 
     // Compute cone around the corner points
@@ -115,7 +115,7 @@ void go::gfx_perspective_frustum::reset(
     boundingConeAngleSin = sin(acos(boundingConeAngleCos));
     boundingConeAngleTan = boundingConeAngleSin / boundingConeAngleCos;
     
-	// Compute the frustum plane normals
+    // Compute the frustum plane normals
     auto vTopLeftEdge = vFTL - vNTL;
     auto vTopNearEdge = vNTR - vNTL;
     auto vTopDownEdge = vFBL - vFTL;

@@ -82,11 +82,11 @@ static void compute_ssao(go::dfx_effects::ssao_parameters *parameters)
     outputParams.Blur.Enable = true;
     outputParams.Blur.Radius = GFSDK_SSAO_BLUR_RADIUS_4;
     outputParams.Blur.Sharpness = 4.f;
-	outputParams.CoarseAO = 1.0f;
-	outputParams.DetailAO = 1.0f;
-	outputParams.DepthClampMode = GFSDK_SSAO_DepthClampMode::GFSDK_SSAO_CLAMP_TO_EDGE;
-	outputParams.DepthStorage = GFSDK_SSAO_DepthStorage::GFSDK_SSAO_FP32_VIEW_DEPTHS;
-	outputParams.DepthThreshold.Enable = false;
+    outputParams.CoarseAO = 1.0f;
+    outputParams.DetailAO = 1.0f;
+    outputParams.DepthClampMode = GFSDK_SSAO_DepthClampMode::GFSDK_SSAO_CLAMP_TO_EDGE;
+    outputParams.DepthStorage = GFSDK_SSAO_DepthStorage::GFSDK_SSAO_FP32_VIEW_DEPTHS;
+    outputParams.DepthThreshold.Enable = false;
     outputParams.Output.BlendMode = GFSDK_SSAO_BlendMode::GFSDK_SSAO_OVERWRITE_RGB;
 
     auto &&outputTexture = parameters->out.outputTexture;

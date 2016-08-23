@@ -58,16 +58,16 @@ namespace dfx_effects
                 gfx_texture *normalWSTexture;
                 //! The ambient-occlusion texture to mask the diffuse lighting with.
                 gfx_texture *aoTexture;
-				//! The metallic-roughness mask.
-				gfx_texture *metallicRoughnessTexture;
-				//! The albedo texture.
-				gfx_texture *albedoTexture;
-				//! The view-space depth texture.
-				gfx_texture *depthVSTexture;
-				//! The pre-integrated environment BRDF.
-				gfx_texture *envBRDFTexture;
-				//! The scene environment map.
-				gfx_texture *sceneSpecularEnvMap;
+                //! The metallic-roughness mask.
+                gfx_texture *metallicRoughnessTexture;
+                //! The albedo texture.
+                gfx_texture *albedoTexture;
+                //! The view-space depth texture.
+                gfx_texture *depthVSTexture;
+                //! The pre-integrated environment BRDF.
+                gfx_texture *envBRDFTexture;
+                //! The scene environment map.
+                gfx_texture *sceneSpecularEnvMap;
                 //! The ambient color from above in world-space.
                 DirectX::XMFLOAT3 ambientColorAboveWS;
                 //! The ambient color from above in world-space.

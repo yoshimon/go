@@ -78,32 +78,32 @@ static LONG WINAPI OnHandleException(_EXCEPTION_POINTERS *pExceptionInfo)
         /*
         GO_LOGFILE_ERROR
         (
-			"Non-critical exception thrown (code: %#x).\n",
-			pExceptionInfo->ExceptionRecord->ExceptionCode
-		);
+            "Non-critical exception thrown (code: %#x).\n",
+            pExceptionInfo->ExceptionRecord->ExceptionCode
+        );
          */
         return EXCEPTION_CONTINUE_SEARCH;
     }
 
-	// Create crash dump folder
+    // Create crash dump folder
     GO file_path path(GO directory_id::application, "crash");
-	CreateDirectoryA(path.c_str(), nullptr);
+    CreateDirectoryA(path.c_str(), nullptr);
 
-	// Generate crash-dump timestamp
-	SYSTEMTIME time;
-	GetLocalTime(&time);
+    // Generate crash-dump timestamp
+    SYSTEMTIME time;
+    GetLocalTime(&time);
 
-	// Build file path
-	char fileName[MAX_PATH];
-	StringCchPrintfA
+    // Build file path
+    char fileName[MAX_PATH];
+    StringCchPrintfA
     (
-		fileName,
-		MAX_PATH,
-		"%s\\%d-%d-%d_%dh%dm%ds.dmp",
-		path.c_str(), time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond
-	);
+        fileName,
+        MAX_PATH,
+        "%s\\%d-%d-%d_%dh%dm%ds.dmp",
+        path.c_str(), time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond
+    );
 
-	// Create dump file
+    // Create dump file
     HANDLE hFile = CreateFileA(fileName, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL); 
     if(hFile != INVALID_HANDLE_VALUE)
     {
@@ -116,9 +116,9 @@ static LONG WINAPI OnHandleException(_EXCEPTION_POINTERS *pExceptionInfo)
 
             g_pMiniDumpWriteDump
             (
-				GetCurrentProcess(), GetCurrentProcessId(),
-				hFile, MiniDumpWithThreadInfo, &mdei, NULL, NULL
-			);
+                GetCurrentProcess(), GetCurrentProcessId(),
+                hFile, MiniDumpWithThreadInfo, &mdei, NULL, NULL
+            );
         }
 
         CloseHandle(hFile);
@@ -274,11 +274,11 @@ static void initialize_runtime_environment()
         // Initialize random number generator
         std::srand((unsigned int)time(nullptr));
 
-		g_runtimeEnvironmentInitialized = true;
+        g_runtimeEnvironmentInitialized = true;
 
-		RegisterUnhandledExceptionFilter();
+        RegisterUnhandledExceptionFilter();
 
-		GO_INTERNAL refresh_path_cache();
+        GO_INTERNAL refresh_path_cache();
 
         // Create global Logger
         new GO log();
@@ -288,24 +288,24 @@ static void initialize_runtime_environment()
 
         GO_LOGFILE_INFO("Initializing Go...\n");
 
-		// Initialize the task scheduler
-		the_task_scheduler = new tbb::task_scheduler_init();
+        // Initialize the task scheduler
+        the_task_scheduler = new tbb::task_scheduler_init();
 
-		// Create global environment-manager
-		new GO environment_manager();
+        // Create global environment-manager
+        new GO environment_manager();
 
-		// Register ALL environment variables
-		GO_INTERNAL initialize_all_environment_variables();
+        // Register ALL environment variables
+        GO_INTERNAL initialize_all_environment_variables();
 
-		// and load the default configuration file
-		GO the_environment->read_file();
+        // and load the default configuration file
+        GO the_environment->read_file();
 
         // Initialize global (hardware) timer
         GO timer::query_hardware_timer_frequency();
 
         // Create global file-manager
         new GO async_io();
-	}
+    }
 }
 
 
@@ -315,7 +315,7 @@ static void shutdown_runtime_environment()
     {
         GO the_environment->write_file();
 
-		delete GO the_environment;
+        delete GO the_environment;
         delete GO the_io_manager;
 
         GO_LOGFILE_INFO("Go was successfully shut down.\n");
@@ -323,9 +323,9 @@ static void shutdown_runtime_environment()
         delete GO the_logger;
         delete GO the_platform_info;
 
-		UnregisterUnhandledExceptionFilter();
+        UnregisterUnhandledExceptionFilter();
 
-		g_runtimeEnvironmentInitialized = false;
+        g_runtimeEnvironmentInitialized = false;
     }
 }
 
@@ -333,10 +333,10 @@ static void shutdown_runtime_environment()
 static void initialize_gpu_display(go::gfx_display_configuration *driverConfig)
 {
     if(driverConfig)
-	{
-		// Create global display driver
-		new GO gfx_display(*driverConfig);
-	}
+    {
+        // Create global display driver
+        new GO gfx_display(*driverConfig);
+    }
 }
 
 

@@ -80,23 +80,23 @@ static void initialize_dxgi_mode_desc(DXGI_MODE_DESC &md, int32_t viewportWidth,
 
 go::gfx_display_configuration_ex::gfx_display_configuration_ex(const cdefault_value &)
 {
-	targetWindow = 0;
-	mode = !gfx_display::fullscreen; // Windowed mode
-	viewportWidth = 800;
-	viewportHeight = 600;
+    targetWindow = 0;
+    mode = !gfx_display::fullscreen; // Windowed mode
+    viewportWidth = 800;
+    viewportHeight = 600;
 }
 
 
 go::gfx_display_configuration_ex::gfx_display_configuration_ex(const cenvironment_value &)
 {
-	targetWindow = (HWND)(GO_CVAR(application_window).valuel());
-	mode = GO_CVAR(display_mode).valuei();
+    targetWindow = (HWND)(GO_CVAR(application_window).valuel());
+    mode = GO_CVAR(display_mode).valuei();
 
-	auto viewportSize = mode & gfx_display::fullscreen ?
+    auto viewportSize = mode & gfx_display::fullscreen ?
         string_to_vector2l<DirectX::XMINT2>(GO_CVAR(fullscreen_viewport).value().c_str()) :
         string_to_vector2l<DirectX::XMINT2>(GO_CVAR(windowed_viewport).value().c_str());
-	viewportWidth = viewportSize.x;
-	viewportHeight = viewportSize.y;
+    viewportWidth = viewportSize.x;
+    viewportHeight = viewportSize.y;
 }
 
 
@@ -112,9 +112,9 @@ go::gfx_display::~gfx_display()
         m_dxgiSwapChain->SetFullscreenState(FALSE, nullptr);
     }
 
-	// This will not be called if the initialization throws an exception.
-	// If that happens, the runtime will be shutdown anyways so we don't have to worry about
-	// invalid pointers. (not a nice solution but it works)
+    // This will not be called if the initialization throws an exception.
+    // If that happens, the runtime will be shutdown anyways so we don't have to worry about
+    // invalid pointers. (not a nice solution but it works)
     m_uiSystem.reset();
     m_worldRenderer.reset();
     m_worldDevice.reset();
@@ -145,34 +145,34 @@ go::gfx_display::~gfx_display()
 
 
 go::gfx_display::gfx_display(const gfx_display_configuration &config)
-	: singleton<gfx_display>(the_display),
+    : singleton<gfx_display>(the_display),
     observable<gfx_display, gfx_display_event_data &>(), m_canRender(true)
 {
     GO_LOGFILE_INFO("Initializing Direct3D11 display driver...\n");
 
     if(!is_viewport_size_valid(config.viewportWidth, config.viewportHeight))
     {
-		GO_THROW(std::invalid_argument, "Invalid viewport size.");
+        GO_THROW(std::invalid_argument, "Invalid viewport size.");
     }
 
-	// Query display DPI
-	auto hdc = GetDC(NULL);
-	if (hdc)
-	{
-		m_dpiScaleX = (float)GetDeviceCaps(hdc, LOGPIXELSX) / GO_DISPLAY_DEFAULT_DPI_X;
-		m_dpiScaleY = (float)GetDeviceCaps(hdc, LOGPIXELSY) / GO_DISPLAY_DEFAULT_DPI_Y;
-		ReleaseDC(NULL, hdc);
-	}
-	else
-	{
-		m_dpiScaleX = GO_DISPLAY_DEFAULT_DPI_X;
-		m_dpiScaleY = GO_DISPLAY_DEFAULT_DPI_Y;
-	}
+    // Query display DPI
+    auto hdc = GetDC(NULL);
+    if (hdc)
+    {
+        m_dpiScaleX = (float)GetDeviceCaps(hdc, LOGPIXELSX) / GO_DISPLAY_DEFAULT_DPI_X;
+        m_dpiScaleY = (float)GetDeviceCaps(hdc, LOGPIXELSY) / GO_DISPLAY_DEFAULT_DPI_Y;
+        ReleaseDC(NULL, hdc);
+    }
+    else
+    {
+        m_dpiScaleX = GO_DISPLAY_DEFAULT_DPI_X;
+        m_dpiScaleY = GO_DISPLAY_DEFAULT_DPI_Y;
+    }
 
     // Initialize D3D11
     initialize_d3d11(config);
 
-	m_config = config;
+    m_config = config;
 
     initialize_world_and_ui();
 }
@@ -205,7 +205,7 @@ void go::gfx_display::initialize_d3d11(const gfx_display_configuration &config)
     int32_t numFeatureLevels = _countof(featureLevels);
 
     DXGI_SWAP_CHAIN_DESC backBufferDesc;
-	memset(&backBufferDesc, 0, sizeof(backBufferDesc));
+    memset(&backBufferDesc, 0, sizeof(backBufferDesc));
     initialize_dxgi_mode_desc(backBufferDesc.BufferDesc, config.viewportWidth, config.viewportHeight, config.mode);
     
     backBufferDesc.BufferCount = 2;
@@ -217,13 +217,13 @@ void go::gfx_display::initialize_d3d11(const gfx_display_configuration &config)
     backBufferDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
     backBufferDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
-	GO_THROW_HRESULT
+    GO_THROW_HRESULT
     (
-		D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr,
-			createDeviceFlags, featureLevels, numFeatureLevels, D3D11_SDK_VERSION,
-			&backBufferDesc, &m_dxgiSwapChain, &m_d3dDevice, nullptr, &m_d3dImmediateContext),
+        D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr,
+            createDeviceFlags, featureLevels, numFeatureLevels, D3D11_SDK_VERSION,
+            &backBufferDesc, &m_dxgiSwapChain, &m_d3dDevice, nullptr, &m_d3dImmediateContext),
         "could not create D3D11 device and swap chain"
-	);
+    );
 
     // Disable ALT+ENTER
     Microsoft::WRL::ComPtr<IDXGIDevice> dxgiDevice;
@@ -262,9 +262,9 @@ void go::gfx_display::initialize_d3d11(const gfx_display_configuration &config)
     }
 #endif
 
-	GO_INTERNAL g_dxgiSwapChain = m_dxgiSwapChain.Get();
-	GO_INTERNAL g_d3d11Device = m_d3dDevice.Get();
-	GO_INTERNAL g_d3d11ImmediateContext = m_d3dImmediateContext.Get();
+    GO_INTERNAL g_dxgiSwapChain = m_dxgiSwapChain.Get();
+    GO_INTERNAL g_d3d11Device = m_d3dDevice.Get();
+    GO_INTERNAL g_d3d11ImmediateContext = m_d3dImmediateContext.Get();
 
     d3d_debug_name(m_d3dDevice, "Main D3D device");
     d3d_debug_name(m_d3dImmediateContext, "Main D3D context");
@@ -340,7 +340,7 @@ bool go::gfx_display::resize(int32_t viewportWidth, int32_t viewportHeight)
     m_config.viewportWidth = viewportWidth;
     m_config.viewportHeight = viewportHeight;
 
-	post_resized_event();
+    post_resized_event();
 
     m_canRender = true;
 
@@ -383,7 +383,7 @@ bool go::gfx_display::change_mode(uint32_t mode)
         m_dxgiSwapChain->ResizeTarget(&md);
 
         m_config.viewportWidth = md.Width;
-		m_config.viewportHeight = md.Height;
+        m_config.viewportHeight = md.Height;
         m_config.mode = mode;
 
         post_post_enter_fullscreen_event();
@@ -410,62 +410,62 @@ bool go::gfx_display::change_mode(uint32_t mode)
 
 int32_t go::gfx_display::width() const
 {
-	return m_config.viewportWidth;
+    return m_config.viewportWidth;
 }
 
 
 int32_t go::gfx_display::height() const
 {
-	return m_config.viewportHeight;
+    return m_config.viewportHeight;
 }
 
 
 uint32_t go::gfx_display::mode() const
 {
-	return m_config.mode;
+    return m_config.mode;
 }
 
 
 bool go::gfx_display::is_fullscreen() const
 {
-	return m_config.mode & fullscreen;
+    return m_config.mode & fullscreen;
 }
 
 
 float go::gfx_display::aspect_ratio() const
 {
-	return (float)m_config.viewportWidth / (float)m_config.viewportHeight;
+    return (float)m_config.viewportWidth / (float)m_config.viewportHeight;
 }
 
 
 float go::gfx_display::dpi_scale_x() const
 {
-	return m_dpiScaleX;
+    return m_dpiScaleX;
 }
 
 
 float go::gfx_display::dpi_scale_y() const
 {
-	return m_dpiScaleY;
+    return m_dpiScaleY;
 }
 
 
 DirectX::XMFLOAT2 go::gfx_display::dpi_scale() const
 {
-	return DirectX::XMFLOAT2(m_dpiScaleX, m_dpiScaleY);
+    return DirectX::XMFLOAT2(m_dpiScaleX, m_dpiScaleY);
 }
 
 
 auto go::gfx_display::config() const -> const gfx_display_configuration &
 {
-	return m_config;
+    return m_config;
 }
 
 
 void go::gfx_display::post_resized_event()
 {
-	gfx_display_event_data e = { gfx_display_event_data::event::resized };
-	post_event(e);
+    gfx_display_event_data e = { gfx_display_event_data::event::resized };
+    post_event(e);
 
     e.msg = gfx_display_event_data::event::late_resized;
     post_event(e);
@@ -474,34 +474,34 @@ void go::gfx_display::post_resized_event()
 
 void go::gfx_display::post_resizing_event()
 {
-	gfx_display_event_data e = { gfx_display_event_data::event::resizing };
-	post_event(e);
+    gfx_display_event_data e = { gfx_display_event_data::event::resizing };
+    post_event(e);
 }
 
 
 void go::gfx_display::post_pre_enter_fullscreen_event()
 {
-	gfx_display_event_data e = { gfx_display_event_data::event::pre_enter_fullscreen };
-	post_event(e);
+    gfx_display_event_data e = { gfx_display_event_data::event::pre_enter_fullscreen };
+    post_event(e);
 }
 
 
 void go::gfx_display::post_post_enter_fullscreen_event()
 {
-	gfx_display_event_data e = { gfx_display_event_data::event::post_enter_fullscreen };
-	post_event(e);
+    gfx_display_event_data e = { gfx_display_event_data::event::post_enter_fullscreen };
+    post_event(e);
 }
 
 
 void go::gfx_display::post_pre_exit_fullscreen_event()
 {
-	gfx_display_event_data e = { gfx_display_event_data::event::pre_exit_fullscreen };
-	post_event(e);
+    gfx_display_event_data e = { gfx_display_event_data::event::pre_exit_fullscreen };
+    post_event(e);
 }
 
 
 void go::gfx_display::post_post_exit_fullscreen_event()
 {
-	gfx_display_event_data e = { gfx_display_event_data::event::post_exit_fullscreen };
-	post_event(e);
+    gfx_display_event_data e = { gfx_display_event_data::event::post_exit_fullscreen };
+    post_event(e);
 }

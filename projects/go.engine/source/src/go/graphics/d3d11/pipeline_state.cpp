@@ -437,7 +437,7 @@ void go::internal::gfx_rasterizer_stage::reset()
 {
     rasterizerState = nullptr;
     numViewports = 0;
-	viewports.fill(CD3D11_VIEWPORT(0.0f, 0.0f, 1.0f, 1.0f));
+    viewports.fill(CD3D11_VIEWPORT(0.0f, 0.0f, 1.0f, 1.0f));
 }
 
 
@@ -504,14 +504,14 @@ void go::internal::gfx_output_merger_stage::reset()
     numUAVs = 0;
     forceRTVRebind = false;
     
-	rtvs.fill(nullptr);
-	d3dRTVs.fill(nullptr);
+    rtvs.fill(nullptr);
+    d3dRTVs.fill(nullptr);
 
-	uavs.fill(nullptr);
-	d3dRTVs.fill(nullptr);
-	uavInitialCount.fill(0);
+    uavs.fill(nullptr);
+    d3dRTVs.fill(nullptr);
+    uavInitialCount.fill(0);
 
-	blendFactor.fill(0.0f);
+    blendFactor.fill(0.0f);
 }
 
 
@@ -571,16 +571,16 @@ void go::internal::gfx_output_merger_stage::bind(gfx_output_merger_stage &curren
         if(numUAVs > 0)
         {
             GO_INTERNAL g_d3d11ImmediateContext->OMSetRenderTargetsAndUnorderedAccessViews(
-				numRTVs, d3dRTVs.data(),
+                numRTVs, d3dRTVs.data(),
                 depthStencilBuffer ? depthStencilBuffer->d3d_dsv(depthStencilIndex) : nullptr,
-				numRTVs, numUAVs,
-				d3dUAVs.data(), uavInitialCount.data());
+                numRTVs, numUAVs,
+                d3dUAVs.data(), uavInitialCount.data());
         }
         else
         {
             GO_INTERNAL g_d3d11ImmediateContext->OMSetRenderTargets(
-				numRTVs, d3dRTVs.data(),
-				depthStencilBuffer ? depthStencilBuffer->d3d_dsv(depthStencilIndex) : nullptr);
+                numRTVs, d3dRTVs.data(),
+                depthStencilBuffer ? depthStencilBuffer->d3d_dsv(depthStencilIndex) : nullptr);
         }
     }
 }

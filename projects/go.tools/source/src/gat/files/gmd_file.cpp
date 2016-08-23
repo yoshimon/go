@@ -67,20 +67,20 @@ void gat::gmd_file::save(const go::file_path &filePath) const
         f.write((char *)unskinnedMeshes.data(), unskinnedMeshes.size() * sizeof(go::gmd_file::submesh_t));
         f.write((char *)skinnedMeshes.data(), skinnedMeshes.size() * sizeof(go::gmd_file::submesh_t));
 
-		// Convert to 16-bit indices if possible
-		if(header.numUnskinnedVertices + header.numSkinnedVertices <= USHRT_MAX)
-		{
-			// Conversion
-			std::vector<go::gmd_file::index16_t> indices16;
-			indices16.reserve(indices.size());
-			std::copy(std::begin(indices), std::end(indices), std::back_inserter(indices16));
-			
-			f.write((char *)indices16.data(), indices16.size() * sizeof(go::gmd_file::index16_t));
-		}
-		else
-		{
-			f.write((char *)indices.data(), indices.size() * sizeof(go::gmd_file::index32_t));
-		}
+        // Convert to 16-bit indices if possible
+        if(header.numUnskinnedVertices + header.numSkinnedVertices <= USHRT_MAX)
+        {
+            // Conversion
+            std::vector<go::gmd_file::index16_t> indices16;
+            indices16.reserve(indices.size());
+            std::copy(std::begin(indices), std::end(indices), std::back_inserter(indices16));
+            
+            f.write((char *)indices16.data(), indices16.size() * sizeof(go::gmd_file::index16_t));
+        }
+        else
+        {
+            f.write((char *)indices.data(), indices.size() * sizeof(go::gmd_file::index32_t));
+        }
 
         f.write((char *)unskinnedVertices.data(), unskinnedVertices.size() * sizeof(go::gmd_file::unskinned_vertex_t));
         f.write((char *)skinnedVertices.data(), skinnedVertices.size() * sizeof(go::gmd_file::skinned_vertex_t));

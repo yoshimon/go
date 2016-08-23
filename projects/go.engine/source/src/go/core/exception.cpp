@@ -36,13 +36,13 @@
 // ================================================================================ //
 
 go::exception::exception(const std::string &whatArg)
-	: m_whatArg(whatArg)
+    : m_whatArg(whatArg)
 {
 }
 
 
 go::exception::exception(const char *whatArg)
-	: m_whatArg(whatArg)
+    : m_whatArg(whatArg)
 {
 }
 
@@ -54,7 +54,7 @@ go::exception::~exception()
 
 const std::string &go::exception::what() const noexcept
 {
-	return m_whatArg;
+    return m_whatArg;
 }
 
 

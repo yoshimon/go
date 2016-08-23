@@ -45,9 +45,9 @@ go::file::file()
 
 
 go::file::file(const file_path &name, open_mode mode, bool discardContent)
-	: m_isBinary(true)
+    : m_isBinary(true)
 {
-	open(name, mode, discardContent);
+    open(name, mode, discardContent);
 }
 
 
@@ -164,7 +164,7 @@ void go::file::flush()
 
 bool go::file::is_open() const noexcept
 {
-	return m_stream.is_open();
+    return m_stream.is_open();
 }
 
 
@@ -180,14 +180,14 @@ std::fstream &go::file::internal_stream() noexcept
 
 go::byte_vector go::binary_file::read(const file_path &filePath)
 {
-	binary_file f(filePath);
-	if(!f.is_open())
-	{
+    binary_file f(filePath);
+    if(!f.is_open())
+    {
         _tprintf("Could not open binary file '%s'.\n", filePath.c_str());
         GO_THROW(std::invalid_argument, "Could not open binary file.");
-	}
+    }
 
-	return f.read();
+    return f.read();
 }
 
 
@@ -205,13 +205,13 @@ auto go::binary_file::read_string(const file_path &filePath, std::string &out) -
 
 
 go::binary_file::binary_file()
-	: file()
+    : file()
 {
 }
 
 
 go::binary_file::binary_file(const file_path &name, open_mode mode, bool discardContent)
-	: file(name, mode, discardContent)
+    : file(name, mode, discardContent)
 {
 }
 
@@ -313,7 +313,7 @@ go::text_file::text_file()
 
 
 go::text_file::text_file(const file_path &name, open_mode mode /* = open_mode::read */, bool discardContent /* = false */)
-	: file(name, mode, discardContent)
+    : file(name, mode, discardContent)
 {
 }
 

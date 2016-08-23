@@ -115,8 +115,8 @@ public:
         auto &entityData = s->entity_data();
         auto &entityPositions = entityData.positions;
         auto &entityScales = entityData.scales;
-		auto &entityTransforms = entityData.worldTransforms;
-		auto &entityRotations = entityData.rotations;
+        auto &entityTransforms = entityData.worldTransforms;
+        auto &entityRotations = entityData.rotations;
         auto &renderContext = s->render_context();
 
         // Cache camera position
@@ -159,12 +159,12 @@ public:
         }
 
         tbb::parallel_for(0, (int)m_data.size(), [&](int i)
-		//auto i = -1;
-		//for(auto &hModel : m_models)
+        //auto i = -1;
+        //for(auto &hModel : m_models)
         {
-			//++i;
+            //++i;
 
-			auto &&data = m_data[i];
+            auto &&data = m_data[i];
             if(data.hModel)
             {
                 // Lookup model pointer
@@ -178,7 +178,7 @@ public:
                 // Convert index to entity ID
                 auto id = index_to_id(i);
 
-				auto &&entityScale = entityScales[id];
+                auto &&entityScale = entityScales[id];
 
                 // Grab the entity bounding sphere
                 auto &&sphere = model->definition->boundingSphere;
@@ -187,23 +187,23 @@ public:
 
                 // Transform the bounding sphere to follow the entity
                 auto &&mEntityTransform = XMLoadFloat4x4(&entityTransforms[id]);
-				auto &&mEntityRotation = XMLoadFloat4(&entityRotations[id]);
+                auto &&mEntityRotation = XMLoadFloat4(&entityRotations[id]);
                 vEntityBoundingSphere = XMVector3TransformCoord(vEntityBoundingSphere, mEntityTransform);
 
-				// Load the AABB corners
-				auto &&vAABBExtents = entityScale * XMLoadFloat4A(&model->definition->aabbExtents);
-				
-				auto &&vOBBCenter = vEntityBoundingSphere;
-				auto &&mOBBAxis = XMMatrixRotationQuaternion(mEntityRotation);
+                // Load the AABB corners
+                auto &&vAABBExtents = entityScale * XMLoadFloat4A(&model->definition->aabbExtents);
+                
+                auto &&vOBBCenter = vEntityBoundingSphere;
+                auto &&mOBBAxis = XMMatrixRotationQuaternion(mEntityRotation);
 
                 // Setup command
-				// The render command (can be down-cast to a static-render command)
-				gfx_dynamic_model_render_command command;
+                // The render command (can be down-cast to a static-render command)
+                gfx_dynamic_model_render_command command;
                 command.model = model;
 
-				// Calculate approximate distance of entity to camera
-				auto &&distance = XMVectorGetX(XMVector3LengthSq(vEntityBoundingSphere - vCamPos)) - entityBoundingSphereRadius;
-				command.viewZ = std::max(0.0f, distance);
+                // Calculate approximate distance of entity to camera
+                auto &&distance = XMVectorGetX(XMVector3LengthSq(vEntityBoundingSphere - vCamPos)) - entityBoundingSphereRadius;
+                command.viewZ = std::max(0.0f, distance);
                 command.worldTransform = &entityTransforms[id]; // Point to this transform
 
                 // Main camera
@@ -301,18 +301,18 @@ public:
                     }
                 }
 
-				auto isVisible = mainCamVisible || castsShadows;
-				if(isVisible)
-				{
-					// Issue an async request for the material textures upfront
-					// TODO: material textures might not be needed if it casts shadows only and it doesn't use alpha testing
-					for(auto &material : model->definition->materials)
-					{
-						matMgr.load_material_textures(material);
-					}
-				}
+                auto isVisible = mainCamVisible || castsShadows;
+                if(isVisible)
+                {
+                    // Issue an async request for the material textures upfront
+                    // TODO: material textures might not be needed if it casts shadows only and it doesn't use alpha testing
+                    for(auto &material : model->definition->materials)
+                    {
+                        matMgr.load_material_textures(material);
+                    }
+                }
             }
-		});
+        });
     }
     void handle_attach_entity(go::gfx_entity_id id) override
     {

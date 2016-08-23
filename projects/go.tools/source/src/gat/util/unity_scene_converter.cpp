@@ -125,7 +125,7 @@ void gat::unity_scene_converter::save(const config_file &cfg,
 
                 go::xml_add_child(modelXMLNode, "castsShadows", std::to_string(entity.castsShadows).c_str());
                 go::xml_add_child(modelXMLNode, "castsShadowsOnly", std::to_string(entity.castsShadowsOnly).c_str());
-			}
+            }
 
             if(entity.components.hasLight)
             {

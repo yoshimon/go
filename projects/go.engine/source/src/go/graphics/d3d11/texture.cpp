@@ -514,10 +514,10 @@ void go::gfx_depth_stencil_buffer::reset(gfx_texture_format &format, void *)
     format.flags = 0;
     format.sampleCount = 1;
 
-	auto d3dFmt = color_format_to_dxgi_format(format.colorFormat);
-	auto d3dViewDim = format.arraySize == 1 ? D3D11_DSV_DIMENSION_TEXTURE2D : D3D11_DSV_DIMENSION_TEXTURE2DARRAY;
+    auto d3dFmt = color_format_to_dxgi_format(format.colorFormat);
+    auto d3dViewDim = format.arraySize == 1 ? D3D11_DSV_DIMENSION_TEXTURE2D : D3D11_DSV_DIMENSION_TEXTURE2DARRAY;
 
-	CD3D11_DEPTH_STENCIL_VIEW_DESC dsvd{ d3dViewDim, d3dFmt, 0, 0, 1 };
+    CD3D11_DEPTH_STENCIL_VIEW_DESC dsvd{ d3dViewDim, d3dFmt, 0, 0, 1 };
 
     DXGI_FORMAT texFmt = dxgi_dsv_to_srvtex_format(dsvd.Format);
     DXGI_FORMAT srvFmt = dxgi_tex_to_srv_format(texFmt);

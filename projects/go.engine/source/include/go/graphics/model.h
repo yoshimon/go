@@ -53,9 +53,9 @@ struct gfx_mesh
     //! The first index in the index buffer.
     uint32_t startIndex;
     //! The number of indices in the index buffer.
-	uint32_t indexCount;
+    uint32_t indexCount;
     //! The vertex offset.
-	uint32_t startVertex;
+    uint32_t startVertex;
     //! The material instance.
     gfx_material_definition *material = nullptr;
 };
@@ -92,22 +92,22 @@ public:
         //! The UV coordinates for lightmapping.
         DirectX::XMFLOAT2 lightmapUV;
     };
-	//! A structure, which represents an unskinned mesh vertex.
-	struct unskinned_uv_vertex_t
-	{
-		/*!
-			Equality-operator.
+    //! A structure, which represents an unskinned mesh vertex.
+    struct unskinned_uv_vertex_t
+    {
+        /*!
+            Equality-operator.
 
-			\param o The vertex to compare with.
+            \param o The vertex to compare with.
 
-			\return True, if both vertices are equal. Otherwise false.
-		 */
-		bool operator==(const unskinned_uv_vertex_t &o) const { return memcmp(this, &o, sizeof(unskinned_uv_vertex_t)) == 0; }
-		//! The position.
-		DirectX::XMFLOAT3 position;
-		//! The UV coordinates.
-		DirectX::XMFLOAT2 uv;
-	};
+            \return True, if both vertices are equal. Otherwise false.
+         */
+        bool operator==(const unskinned_uv_vertex_t &o) const { return memcmp(this, &o, sizeof(unskinned_uv_vertex_t)) == 0; }
+        //! The position.
+        DirectX::XMFLOAT3 position;
+        //! The UV coordinates.
+        DirectX::XMFLOAT2 uv;
+    };
     //! A structure, which represents a skinned vertex.
     struct skinned_vertex_t
     {
@@ -142,12 +142,12 @@ public:
         \param skinnedVertexCount The number of skinned vertices.
         \param indices The index data.
         \param indexCount The number of indices.
-		\param indexSize The size of a single index in bytes.
-	 */
+        \param indexSize The size of a single index in bytes.
+     */
     gfx_model(
         const unskinned_vertex_t *unskinnedVertices, uint32_t unskinnedVertexCount,
         const skinned_vertex_t *skinnedVertices, uint32_t skinnedVertexCount,
-		const void *indices, uint32_t indexCount, size_t indexSize);
+        const void *indices, uint32_t indexCount, size_t indexSize);
     //! \overload
     gfx_model() = default;
     //! Destructor.
@@ -166,12 +166,12 @@ public:
         \return The unskinned vertex buffer.
      */
     gfx_vertex_buffer &unskinned_vertex_buffer() noexcept{ return m_unskinnedVertexBuffer; }
-	/*!
-		Returns the unskinned UV vertex buffer.
+    /*!
+        Returns the unskinned UV vertex buffer.
 
-		\return The unskinned UV vertex buffer.
-	 */
-	gfx_vertex_buffer &unskinned_uv_vertex_buffer() noexcept { return m_unskinnedUVVertexBuffer; }
+        \return The unskinned UV vertex buffer.
+     */
+    gfx_vertex_buffer &unskinned_uv_vertex_buffer() noexcept { return m_unskinnedUVVertexBuffer; }
     /*!
         Returns the skinned vertex buffer.
 
@@ -193,7 +193,7 @@ public:
         \param skinnedVertexCount The number of skinned vertices.
         \param indices The index data.
         \param indexCount The number of indices.
-		\param indexSize The size of a single index in bytes.
+        \param indexSize The size of a single index in bytes.
      */
     virtual void reset(const unskinned_vertex_t *unskinnedVertices, uint32_t unskinnedVertexCount,
         const skinned_vertex_t *skinnedVertices, uint32_t skinnedVertexCount,
@@ -202,9 +202,9 @@ public:
     void release();
 private:
     //! The unskinned vertex buffer.
-	gfx_vertex_buffer m_unskinnedVertexBuffer;
-	//! The unskinned vertex buffer.
-	gfx_vertex_buffer m_unskinnedUVVertexBuffer;
+    gfx_vertex_buffer m_unskinnedVertexBuffer;
+    //! The unskinned vertex buffer.
+    gfx_vertex_buffer m_unskinnedUVVertexBuffer;
     //! The skinned vertex buffer.
     gfx_vertex_buffer m_skinnedVertexBuffer;
     //! The mesh index buffer.

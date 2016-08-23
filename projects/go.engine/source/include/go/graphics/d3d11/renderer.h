@@ -191,8 +191,8 @@ public:
     void match_viewports(const gfx_texture *renderTarget, uint32_t numViewportsX, float yOffset, float height);
     //! \overload
     void match_viewport(float x, float y, float w, float h);
-	//! \overload
-	void match_viewport(const go::rect<float> &bounds);
+    //! \overload
+    void match_viewport(const go::rect<float> &bounds);
     /*!
         Binds a render-target to the pipeline.
 

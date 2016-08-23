@@ -64,16 +64,16 @@ namespace dfx_effects
             gfx_structured_buffer *tileIndices;
         };
 
-		//! A structure, containing all shadow maps.
-		struct shadow_maps
-		{
-			//! The shadow map for the directional light.
-			gfx_depth_stencil_buffer *directionalLight;
-			//! The shadow map atlas for point lights.
-			gfx_depth_stencil_buffer_regular_atlas *pointLightAtlas;
-			//! The shadow map atlas for spot lights.
-			gfx_depth_stencil_buffer_regular_atlas *spotLightAtlas;
-		};
+        //! A structure, containing all shadow maps.
+        struct shadow_maps
+        {
+            //! The shadow map for the directional light.
+            gfx_depth_stencil_buffer *directionalLight;
+            //! The shadow map atlas for point lights.
+            gfx_depth_stencil_buffer_regular_atlas *pointLightAtlas;
+            //! The shadow map atlas for spot lights.
+            gfx_depth_stencil_buffer_regular_atlas *spotLightAtlas;
+        };
 
         //! A structure, which contains the shading parameters.
         struct shading_parameters : public dfx_util::effect_parameters
@@ -88,8 +88,8 @@ namespace dfx_effects
                 scene_lights sphericalLights;
                 //! The disk lights.
                 scene_lights diskLights;
-				//! The shadow maps.
-				shadow_maps shadowMaps;
+                //! The shadow maps.
+                shadow_maps shadowMaps;
             } in;
             struct
             {

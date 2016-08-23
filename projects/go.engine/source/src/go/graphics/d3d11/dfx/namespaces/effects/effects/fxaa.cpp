@@ -69,11 +69,11 @@ void dfx::effects::fxaa::on_begin_run(void *userData)
     // Setup the next pass
     dfx_hlsl::effects::fxaa::g_colorTexture = parameters->in.colorTexture;
 
-	// Bind shaders
-	auto renderPath = (go::dfx_forward_plus_render_path *)go::the_gfx_renderer->render_path();
-	auto &shaderCache = renderPath->renderer_helper().shader_cache();
-	m_pass0VS = shaderCache.common.fsTriangleVS;
-	m_pass0PS = shaderCache.fxaaEffect.fxaaPS;
+    // Bind shaders
+    auto renderPath = (go::dfx_forward_plus_render_path *)go::the_gfx_renderer->render_path();
+    auto &shaderCache = renderPath->renderer_helper().shader_cache();
+    m_pass0VS = shaderCache.common.fsTriangleVS;
+    m_pass0PS = shaderCache.fxaaEffect.fxaaPS;
 }
 
 

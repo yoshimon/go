@@ -45,15 +45,15 @@ go::timer_pool::timer_pool(size_t timerCountHint)
 
 go::timer_pool::timer_pool(timer_pool &&other) noexcept
 {
-	*this = std::move(other);
+    *this = std::move(other);
 }
 
 
 go::timer_pool &go::timer_pool::operator=(timer_pool &&other) noexcept
 {
-	m_timers = std::move(other.m_timers);
-	m_timerValues = std::move(other.m_timerValues);
-	return *this;
+    m_timers = std::move(other.m_timers);
+    m_timerValues = std::move(other.m_timerValues);
+    return *this;
 }
 
 

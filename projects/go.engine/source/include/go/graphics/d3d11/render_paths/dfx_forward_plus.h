@@ -72,8 +72,8 @@ public:
     //! A structure, which holds all effects in the render-path.
     struct effects_t
     {
-		//! The bilateral blur effect.
-		dfx::effects::bilateral_blur bilateralBlur;
+        //! The bilateral blur effect.
+        dfx::effects::bilateral_blur bilateralBlur;
         //! The DoF effect.
         dfx::effects::dof dof;
         //! The film-grain effect.
@@ -82,8 +82,8 @@ public:
         dfx::effects::fxaa fxaa;
         //! The Gaussian-blur effect.
         dfx::effects::gaussian_blur gaussianBlur;
-		//! The half-resolution upsampling effect.
-		dfx::effects::halfres_upsample halfresUpsample;
+        //! The half-resolution upsampling effect.
+        dfx::effects::halfres_upsample halfresUpsample;
         //! The HDR-Bloom effect.
         dfx::effects::hdr_bloom hdrBloom;
         //! The MinZ downsampling effect.
@@ -98,8 +98,8 @@ public:
         dfx::effects::tonemapping tonemapping;
         //! The screen-space vignette effect.
         dfx::effects::vignette vignette;
-		//! The volumetric-lighting effect.
-		dfx::effects::volumetric_lighting volumetricLighting;
+        //! The volumetric-lighting effect.
+        dfx::effects::volumetric_lighting volumetricLighting;
         //! A structure, holding the forward-plus specific effects.
         struct forward_plus_t
         {
@@ -167,28 +167,28 @@ public:
         //! A scratch buffer.
         gfx_texture blurredBrightness;
     };
-	//! A structure, containing temporary buffers.
-	struct temp_buffers_t
-	{
-		//! Same size and format of the back buffer.
-		gfx_render_target backBufferMirror;
-	};
-	//! A structure, containing the shadow maps.
-	struct shadow_maps_t
-	{
-		//! The shadow map for the directional light.
-		gfx_depth_stencil_buffer directionalLight;
-		//! Cache of cube-shadow maps.
-		gfx_depth_stencil_buffer_regular_atlas pointLightAtlas;
-		//! Cache of spot-light shadow maps.
-		gfx_depth_stencil_buffer_regular_atlas spotLightAtlas;
-	};
-	//! A structure, containing the buffers for the volumetric lighting effect.
-	struct volumetric_lighting_buffers_t
-	{
-		//! The volumetric lighting buffer.
-		gfx_render_target output;
-	};
+    //! A structure, containing temporary buffers.
+    struct temp_buffers_t
+    {
+        //! Same size and format of the back buffer.
+        gfx_render_target backBufferMirror;
+    };
+    //! A structure, containing the shadow maps.
+    struct shadow_maps_t
+    {
+        //! The shadow map for the directional light.
+        gfx_depth_stencil_buffer directionalLight;
+        //! Cache of cube-shadow maps.
+        gfx_depth_stencil_buffer_regular_atlas pointLightAtlas;
+        //! Cache of spot-light shadow maps.
+        gfx_depth_stencil_buffer_regular_atlas spotLightAtlas;
+    };
+    //! A structure, containing the buffers for the volumetric lighting effect.
+    struct volumetric_lighting_buffers_t
+    {
+        //! The volumetric lighting buffer.
+        gfx_render_target output;
+    };
 public:
     /*!
         Constructor.
@@ -315,27 +315,27 @@ private:
         \param assetContext The asset context.
      */
     void run_shadow_maps_effect(const gfx_render_context &renderContext, gfx_asset_context &assetContext);
-	/*!
-		Runs the FXAA effect.
+    /*!
+        Runs the FXAA effect.
 
-		\param renderContext The render context.
-		\param assetContext The asset context.
-	*/
-	void run_fxaa_effect(const gfx_render_context &renderContext, gfx_asset_context &assetContext);
-	/*!
-		Runs the volumetric lighting effect.
+        \param renderContext The render context.
+        \param assetContext The asset context.
+    */
+    void run_fxaa_effect(const gfx_render_context &renderContext, gfx_asset_context &assetContext);
+    /*!
+        Runs the volumetric lighting effect.
 
-		\param renderContext The render context.
-		\param assetContext The asset context.
-	 */
-	void run_volumetric_lighting_effect(const gfx_render_context &renderContext, gfx_asset_context &assetContext);
-	/*!
-		Runs the MinZ depth downsample effect effect.
+        \param renderContext The render context.
+        \param assetContext The asset context.
+     */
+    void run_volumetric_lighting_effect(const gfx_render_context &renderContext, gfx_asset_context &assetContext);
+    /*!
+        Runs the MinZ depth downsample effect effect.
 
-		\param renderContext The render context.
-		\param assetContext The asset context.
-	 */
-	void run_min_z_downsample(const gfx_render_context &renderContext, gfx_asset_context &assetContext);
+        \param renderContext The render context.
+        \param assetContext The asset context.
+     */
+    void run_min_z_downsample(const gfx_render_context &renderContext, gfx_asset_context &assetContext);
 private:
     //! The effects in this path.
     effects_t m_effects;
@@ -345,12 +345,12 @@ private:
     gbuffer_t m_gbuffer;
     //! HDR buffers.
     hdr_buffers_t m_hdrBuffers;
-	//! Temporary buffers for ping-pong rendering between two passes.
-	temp_buffers_t m_tempBuffers;
-	//! The shadow maps.
-	shadow_maps_t m_shadowMaps;
-	//! The buffers to use for the volumetric lighting effects.
-	volumetric_lighting_buffers_t m_volumetricLightingBuffers;
+    //! Temporary buffers for ping-pong rendering between two passes.
+    temp_buffers_t m_tempBuffers;
+    //! The shadow maps.
+    shadow_maps_t m_shadowMaps;
+    //! The buffers to use for the volumetric lighting effects.
+    volumetric_lighting_buffers_t m_volumetricLightingBuffers;
     //! Helper to render with Forward+.
     dfx_util::forward_plus_renderer m_helperRenderer;
     //! The material database that was used previousl.

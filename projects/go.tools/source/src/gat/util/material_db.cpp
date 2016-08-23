@@ -77,8 +77,8 @@ void gat::material_db::import(const asset_meta_file &metaFile, const std::string
 
     // Constants
     auto &&nConstants = go::xml_require_child(nMaterial, "constants");
-	for(auto &&c : mtlFile.constants)
-	{
-		go::xml_add_child(nConstants, c.first.c_str(), c.second.c_str());
-	}
+    for(auto &&c : mtlFile.constants)
+    {
+        go::xml_add_child(nConstants, c.first.c_str(), c.second.c_str());
+    }
 }

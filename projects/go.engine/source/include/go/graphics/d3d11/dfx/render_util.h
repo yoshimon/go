@@ -57,16 +57,16 @@ namespace dfx_util
             gfx_shader *skyVS;
             //! Unskinned geometry shader.
             gfx_shader *unskinnedGeometryVS;
-			//! Unskinned depth-only geometry shader.
-			gfx_shader *unskinnedDepthGeometryVS;
+            //! Unskinned depth-only geometry shader.
+            gfx_shader *unskinnedDepthGeometryVS;
             //! Depth-only material shaders.
             gfx_shader *materialDepthOnlyPSTable[(uint32_t)go::gfx_material_type::count];
         } common;
-		struct
-		{
-			//! Shadow map shader.
-			gfx_shader *unskinnedGeometryVS;
-		} shadowMapsEffect;
+        struct
+        {
+            //! Shadow map shader.
+            gfx_shader *unskinnedGeometryVS;
+        } shadowMapsEffect;
         struct
         {
             //! MinZ downsampling shader.
@@ -79,18 +79,18 @@ namespace dfx_util
             //! Gaussian blur shader.
             gfx_shader *blurYCS;
         } gaussianBlurEffect;
-		struct
-		{
-			//! Bilateral blur shader.
-			gfx_shader *blurXCS;
-			//! Bilateral blur shader.
-			gfx_shader *blurYCS;
-		} bilateralBlurEffect;
-		struct
-		{
-			//! Overlay shader.
-			gfx_shader *overlayPS;
-		} overlayEffect;
+        struct
+        {
+            //! Bilateral blur shader.
+            gfx_shader *blurXCS;
+            //! Bilateral blur shader.
+            gfx_shader *blurYCS;
+        } bilateralBlurEffect;
+        struct
+        {
+            //! Overlay shader.
+            gfx_shader *overlayPS;
+        } overlayEffect;
         struct
         {
             //! Luminance brightness shader.
@@ -115,23 +115,23 @@ namespace dfx_util
             //! Vignette shader.
             gfx_shader *vignettePS;
         } vignetteEffect;
-		struct
-		{
-			//! FXAA shader.
-			gfx_shader *fxaaPS;
-		} fxaaEffect;
-		struct
-		{
-			//! Volumetric lighting shader.
+        struct
+        {
+            //! FXAA shader.
+            gfx_shader *fxaaPS;
+        } fxaaEffect;
+        struct
+        {
+            //! Volumetric lighting shader.
             gfx_shader *volumetricLightingCS;
             //! Applies the transmittance to the incident radiance.
             gfx_shader *applyTransmittancePS;
-		} volumetricLightingEffect;
-		struct
-		{
-			//! Half-resolution upsampling shader.
-			gfx_shader *halfresUpsamplePS;
-		} halfresUpsampleEffect;
+        } volumetricLightingEffect;
+        struct
+        {
+            //! Half-resolution upsampling shader.
+            gfx_shader *halfresUpsamplePS;
+        } halfresUpsampleEffect;
         //! Resets the shader cache.
         virtual void reset(gfx_shader_manager *manager);
     };

@@ -110,85 +110,85 @@ void update_spherical_lights(
     auto &positions = entityData.positions;
     auto &scales = entityData.scales;
 
-	auto &lightShapes = sphericalLights.shapes;
+    auto &lightShapes = sphericalLights.shapes;
 
     go::gfx_entity_id lightIndex = 0;
     for(auto entityIndex : lights)
     {
         // Copy light position & radius
         auto &shape = lightShapes[lightIndex];
-		go::copy_float3(shape.center, positions[entityIndex]);
-		shape.radius = scales[entityIndex];
-		++lightIndex;
+        go::copy_float3(shape.center, positions[entityIndex]);
+        shape.radius = scales[entityIndex];
+        ++lightIndex;
     }
 }
 
 
 /*!
-	Updates a set of spherical light sources with their new positions based on the current entity state.
+    Updates a set of spherical light sources with their new positions based on the current entity state.
 
-	\param entityData The entity data.
-	\param lights The lights.
-	\param lightShapes The light shapes.
+    \param entityData The entity data.
+    \param lights The lights.
+    \param lightShapes The light shapes.
  */
 void update_disk_lights(
-	const go::gfx_scene::entity_data_t &entityData,
-	const go::gfx_entity_id_vector &lights,
-	go::gfx_scene::disk_light_data_vector_t &diskLightData,
-	go::gfx_disk_lights &diskLights)
+    const go::gfx_scene::entity_data_t &entityData,
+    const go::gfx_entity_id_vector &lights,
+    go::gfx_scene::disk_light_data_vector_t &diskLightData,
+    go::gfx_disk_lights &diskLights)
 {
-	auto &positions = entityData.positions;
-	auto &orientations = entityData.orientations;
-	auto &scales = entityData.scales;
+    auto &positions = entityData.positions;
+    auto &orientations = entityData.orientations;
+    auto &scales = entityData.scales;
 
-	auto &lightShapes = diskLights.shapes;
-	auto &lightParameters = diskLights.parameters;
+    auto &lightShapes = diskLights.shapes;
+    auto &lightParameters = diskLights.parameters;
 
-	go::gfx_entity_id lightIndex = 0;
-	for(auto entityIndex : lights)
-	{
-		// Copy light position & radius
-		auto &shape = lightShapes[lightIndex];
-		auto &params = lightParameters[lightIndex];
-		go::copy_float3(shape.center, positions[entityIndex]);
-		shape.radius = scales[entityIndex];
-		go::copy_float3(params.directionWS, orientations[entityIndex]);
+    go::gfx_entity_id lightIndex = 0;
+    for(auto entityIndex : lights)
+    {
+        // Copy light position & radius
+        auto &shape = lightShapes[lightIndex];
+        auto &params = lightParameters[lightIndex];
+        go::copy_float3(shape.center, positions[entityIndex]);
+        shape.radius = scales[entityIndex];
+        go::copy_float3(params.directionWS, orientations[entityIndex]);
 
-		auto &data = diskLightData[lightIndex];
+        auto &data = diskLightData[lightIndex];
 
-		// Virtual spot light position
-		auto vLightPosWS = XMLoadFloat3((XMFLOAT3 *)&shape.center);
-		auto vLightDirWS = XMLoadFloat3((XMFLOAT3 *)&params.directionWS);
-		auto vVirtualPosWS = vLightPosWS - vLightDirWS * (params.radiusWS * data.rcpTanHalfOuterAngle);
-		XMStoreFloat3((XMFLOAT3 *)params.virtualPositionWS, vVirtualPosWS);
+        // Virtual spot light position
+        auto vLightPosWS = XMLoadFloat3((XMFLOAT3 *)&shape.center);
+        auto vLightDirWS = XMLoadFloat3((XMFLOAT3 *)&params.directionWS);
+        auto vVirtualPosWS = vLightPosWS - vLightDirWS * (params.radiusWS * data.rcpTanHalfOuterAngle);
+        XMStoreFloat3((XMFLOAT3 *)params.virtualPositionWS, vVirtualPosWS);
 
-		// Update attenuation data
-		params.angleScale = data.angleScale;
-		params.angleBias = data.angleBias;
+        // Update attenuation data
+        params.angleScale = data.angleScale;
+        params.angleBias = data.angleBias;
 
-		++lightIndex;
-	}
+        ++lightIndex;
+    }
 }
 
 
 /*!
-	Performs coarse culling of proxy-sphere-shaped shadow casting lights.
+    Performs coarse culling of proxy-sphere-shaped shadow casting lights.
 
-	...
+    ...
  */
 template<class LightShapes>
 void cull_sphere_proxy_shadow_casting_lights(
-	size_t maxNumShadowCastingLights,
+    size_t maxNumShadowCastingLights,
     FXMVECTOR vCamFrustumBoundingSphere, float camFrustumBoundingSphereRadius,
     GXMVECTOR vCamFrustumConeApex, HXMVECTOR vCamFrustumConeDir, float camFrustumConeCos, float camFrustumConeSin,
     XMVECTOR *vCamFrustumPlanes,
     XMVECTOR vCamPos,
     const go::gfx_scene::float4_vector_t &entityPositions,
-	const go::gfx_scene::shadow_caster_flag_vector_t &shadowCasterFlags,
+    const go::gfx_scene::shadow_caster_flag_vector_t &shadowCasterFlags,
     const go::gfx_entity_id_vector &entityLights,
-	const LightShapes &lightShapes,
-	go::gfx_entity_id_vector &visibleLights,
-	go::index_vector &shadowCastingLights)
+    const LightShapes &lightShapes,
+    go::gfx_entity_id_vector &visibleLights,
+    go::index_vector &shadowCastingLights)
 {
     // Light distance cache
     auto lightDistCache = (float *)alloca(sizeof(float) * entityLights.size());
@@ -207,10 +207,10 @@ void cull_sphere_proxy_shadow_casting_lights(
         // Make sure the light is at least partially inside the view-frustum
         if(go::intersection_tests::sphere_sphere(vCamFrustumBoundingSphere, camFrustumBoundingSphereRadius, vLightPos, shape.radius) &&
            go::intersection_tests::cone_sphere(vCamFrustumConeApex, vCamFrustumConeDir, camFrustumConeCos, camFrustumConeSin, vLightPos, shape.radius) != go::intersection_tests::result_t::disjoint &&
-		   go::intersection_tests::frustum_sphere(vCamFrustumPlanes, vLightPos, shape.radius) != go::intersection_tests::result_t::disjoint)
+           go::intersection_tests::frustum_sphere(vCamFrustumPlanes, vLightPos, shape.radius) != go::intersection_tests::result_t::disjoint)
         {
             // Determine distance to viewer
-			auto lightDistanceSq = XMVectorGetX(XMVector3LengthSq(vLightPos - vCamPos));
+            auto lightDistanceSq = XMVectorGetX(XMVector3LengthSq(vLightPos - vCamPos));
             auto distance = std::max(0.f, lightDistanceSq - shape.radius);
 
             // Cache the distance for this light
@@ -246,27 +246,27 @@ void cull_sphere_proxy_shadow_casting_lights(
 
 
 /*!
-	Performs coarse culling of shadow-casting point lights.
-	...
+    Performs coarse culling of shadow-casting point lights.
+    ...
  */
 template<class LightParams>
 void update_shadow_casting_point_lights(
-	FXMVECTOR vCamFrustumBoundingSphere, float camFrustumBoundingSphereRadius,
-	GXMVECTOR vCamFrustumConeApex, HXMVECTOR vCamFrustumConeDir, float camFrustumConeCos, float camFrustumConeSin,
-	XMVECTOR *vCamFrustumPlanes,
-	XMVECTOR vCamPos,
-	const go::gfx_scene::float4_vector_t &entityPositions,
-	const go::gfx_scene::shadow_caster_flag_vector_t &shadowCasterFlags,
-	const go::gfx_entity_id_vector &entityLights,
-	go::gfx_cube_render_point *renderPoints,
-	const go::gfx_spherical_lights::shape_array_t &lightShapes,
-	LightParams &lightParams,
-	go::gfx_entity_id_vector &visibleLights,
-	go::index_vector &shadowCastingLights)
+    FXMVECTOR vCamFrustumBoundingSphere, float camFrustumBoundingSphereRadius,
+    GXMVECTOR vCamFrustumConeApex, HXMVECTOR vCamFrustumConeDir, float camFrustumConeCos, float camFrustumConeSin,
+    XMVECTOR *vCamFrustumPlanes,
+    XMVECTOR vCamPos,
+    const go::gfx_scene::float4_vector_t &entityPositions,
+    const go::gfx_scene::shadow_caster_flag_vector_t &shadowCasterFlags,
+    const go::gfx_entity_id_vector &entityLights,
+    go::gfx_cube_render_point *renderPoints,
+    const go::gfx_spherical_lights::shape_array_t &lightShapes,
+    LightParams &lightParams,
+    go::gfx_entity_id_vector &visibleLights,
+    go::index_vector &shadowCastingLights)
 {
-	// Cull the lights
-	cull_sphere_proxy_shadow_casting_lights(
-		DFX_MAX_NUM_SHADOW_CASTING_POINT_LIGHTS,
+    // Cull the lights
+    cull_sphere_proxy_shadow_casting_lights(
+        DFX_MAX_NUM_SHADOW_CASTING_POINT_LIGHTS,
         vCamFrustumBoundingSphere, camFrustumBoundingSphereRadius,
         vCamFrustumConeApex, vCamFrustumConeDir, camFrustumConeCos, camFrustumConeSin,
         vCamFrustumPlanes,
@@ -278,7 +278,7 @@ void update_shadow_casting_point_lights(
         visibleLights,
         shadowCastingLights);
 
-	// Setup the transforms
+    // Setup the transforms
     // NOTE: don't change this! The shaders expect this order
     XMVECTOR vDir[] =
     {
@@ -302,15 +302,15 @@ void update_shadow_casting_point_lights(
     // Omni-directional light constants
     const auto kFovY = XM_PIDIV2;
     const auto kAspectRatio = 1.f;
-	const auto kNearClip = 0.2f;
-	const auto kMinFarClip = 0.001f;
+    const auto kNearClip = 0.2f;
+    const auto kMinFarClip = 0.001f;
 
     size_t sclIndex = 0;
     for(auto scl : shadowCastingLights)
     {
         auto &&renderPoint = renderPoints[sclIndex];
         auto &&shape = lightShapes[scl];
-		auto &&parameters = lightParams[scl];
+        auto &&parameters = lightParams[scl];
 
         auto &faceTransforms = renderPoint.faceTransforms;
         auto &isFaceActive = renderPoint.isFaceActive;
@@ -319,8 +319,8 @@ void update_shadow_casting_point_lights(
         auto farClip = std::max(kMinFarClip, shape.radius);
 
         // Calculate subset of the 6 frustums that is actually visible
-		renderPoint.id = scl;
-		renderPoint.isActive = false;
+        renderPoint.id = scl;
+        renderPoint.isActive = false;
         renderPoint.kind = go::gfx_render_point_kind::spherical_light;
         for(auto i = 0; i < 6; ++i)
         {
@@ -335,16 +335,16 @@ void update_shadow_casting_point_lights(
             auto &frustum = faceTransforms[i].frustum;
             frustum.reset(vPos, vDir[i], vUpDir[i], kNearClip, farClip, kFovY, kAspectRatio);
 
-			// TODO: per-face frustum culling
-			// go::intersection_tests::frustum_frustum
-			isFaceActive[i] = true;
-			renderPoint.isActive |= isFaceActive[i];
-		}
+            // TODO: per-face frustum culling
+            // go::intersection_tests::frustum_frustum
+            isFaceActive[i] = true;
+            renderPoint.isActive |= isFaceActive[i];
+        }
 
-		// TODO: calculate importance based on projected area
+        // TODO: calculate importance based on projected area
 
-		// Point this light to the correct shadow caster slot
-		parameters.shadowCasterIndex = (float)sclIndex;
+        // Point this light to the correct shadow caster slot
+        parameters.shadowCasterIndex = (float)sclIndex;
 
         ++sclIndex;
     }
@@ -352,89 +352,89 @@ void update_shadow_casting_point_lights(
 
 
 /*!
-	Performs coarse culling of shadow-casting spot lights.
+    Performs coarse culling of shadow-casting spot lights.
 
  */
 template<class LightParams>
 void update_shadow_casting_spot_lights(
-	FXMVECTOR vCamFrustumBoundingSphere, float camFrustumBoundingSphereRadius,
-	GXMVECTOR vCamFrustumConeApex, HXMVECTOR vCamFrustumConeDir, float camFrustumConeCos, float camFrustumConeSin,
-	XMVECTOR *vCamFrustumPlanes,
-	XMVECTOR vCamPos,
-	const go::gfx_scene::float4_vector_t &entityPositions,
-	const go::gfx_scene::float4_vector_t &entityOrientations,
-	const go::gfx_scene::shadow_caster_flag_vector_t &shadowCasterFlags,
-	const go::gfx_entity_id_vector &entityLights,
-	go::gfx_perspective_render_point *renderPoints,
-	const go::gfx_disk_lights::shape_array_t &lightShapes,
-	LightParams &lightParams,
-	const go::gfx_scene::disk_light_data_vector_t &lightData,
-	go::index_vector &visibleLights,
-	go::index_vector &shadowCastingLights)
+    FXMVECTOR vCamFrustumBoundingSphere, float camFrustumBoundingSphereRadius,
+    GXMVECTOR vCamFrustumConeApex, HXMVECTOR vCamFrustumConeDir, float camFrustumConeCos, float camFrustumConeSin,
+    XMVECTOR *vCamFrustumPlanes,
+    XMVECTOR vCamPos,
+    const go::gfx_scene::float4_vector_t &entityPositions,
+    const go::gfx_scene::float4_vector_t &entityOrientations,
+    const go::gfx_scene::shadow_caster_flag_vector_t &shadowCasterFlags,
+    const go::gfx_entity_id_vector &entityLights,
+    go::gfx_perspective_render_point *renderPoints,
+    const go::gfx_disk_lights::shape_array_t &lightShapes,
+    LightParams &lightParams,
+    const go::gfx_scene::disk_light_data_vector_t &lightData,
+    go::index_vector &visibleLights,
+    go::index_vector &shadowCastingLights)
 {
-	// Cull the lights
-	cull_sphere_proxy_shadow_casting_lights(
-		DFX_MAX_NUM_SHADOW_CASTING_SPOT_LIGHTS,
-		vCamFrustumBoundingSphere, camFrustumBoundingSphereRadius,
-		vCamFrustumConeApex, vCamFrustumConeDir, camFrustumConeCos, camFrustumConeSin,
-		vCamFrustumPlanes,
-		vCamPos,
-		entityPositions,
-		shadowCasterFlags,
-		entityLights,
-		lightShapes,
-		visibleLights,
-		shadowCastingLights);
+    // Cull the lights
+    cull_sphere_proxy_shadow_casting_lights(
+        DFX_MAX_NUM_SHADOW_CASTING_SPOT_LIGHTS,
+        vCamFrustumBoundingSphere, camFrustumBoundingSphereRadius,
+        vCamFrustumConeApex, vCamFrustumConeDir, camFrustumConeCos, camFrustumConeSin,
+        vCamFrustumPlanes,
+        vCamPos,
+        entityPositions,
+        shadowCasterFlags,
+        entityLights,
+        lightShapes,
+        visibleLights,
+        shadowCastingLights);
 
-	// Setup the transforms
-	auto kNearClip = 0.2f;
-	auto kMinFarClip = kNearClip + 0.1f;
-	auto kAspectRatio = 1.0f;
+    // Setup the transforms
+    auto kNearClip = 0.2f;
+    auto kMinFarClip = kNearClip + 0.1f;
+    auto kAspectRatio = 1.0f;
 
-	size_t sclIndex = 0;
-	for(auto scl : shadowCastingLights)
-	{
-		auto &&renderPoint = renderPoints[sclIndex];
-		auto &&shape = lightShapes[scl];
-		auto &&parameters = lightParams[scl];
-		auto &&data = lightData[scl];
-		auto entityIndex = entityLights[scl];
-		auto &&transform = renderPoint.transform;
+    size_t sclIndex = 0;
+    for(auto scl : shadowCastingLights)
+    {
+        auto &&renderPoint = renderPoints[sclIndex];
+        auto &&shape = lightShapes[scl];
+        auto &&parameters = lightParams[scl];
+        auto &&data = lightData[scl];
+        auto entityIndex = entityLights[scl];
+        auto &&transform = renderPoint.transform;
 
-		auto vPos = XMVectorSet(shape.center[0], shape.center[1], shape.center[2], 1.f);
-		auto vDir = XMLoadFloat4A(&entityOrientations[entityIndex]);
-		auto vSide = XMVector3Normalize(XMVector3Cross(g_XMIdentityR1, vDir));
-		if(XMVectorGetX(XMVector3Length(vSide)) <= FLT_EPSILON)
-		{
-			vSide = g_XMIdentityR2;
-		}
-		auto vUpDir = XMVector3Normalize(XMVector3Cross(vDir, vSide));
-		auto fovY = data.halfOuterAngle * 2.0f;
-		auto farClip = std::max(kMinFarClip, shape.radius);
+        auto vPos = XMVectorSet(shape.center[0], shape.center[1], shape.center[2], 1.f);
+        auto vDir = XMLoadFloat4A(&entityOrientations[entityIndex]);
+        auto vSide = XMVector3Normalize(XMVector3Cross(g_XMIdentityR1, vDir));
+        if(XMVectorGetX(XMVector3Length(vSide)) <= FLT_EPSILON)
+        {
+            vSide = g_XMIdentityR2;
+        }
+        auto vUpDir = XMVector3Normalize(XMVector3Cross(vDir, vSide));
+        auto fovY = data.halfOuterAngle * 2.0f;
+        auto farClip = std::max(kMinFarClip, shape.radius);
 
-		// Update point light frustum
-		auto view = DirectX::XMMatrixLookToLH(vPos, vDir, vUpDir);
-		auto proj = DirectX::XMMatrixPerspectiveFovLH(fovY, kAspectRatio, kNearClip, farClip);
-		auto viewProj = view * proj;
-		XMStoreFloat4x4(&transform.viewMatrix, view);
-		XMStoreFloat4x4(&transform.projectionMatrix, proj);
-		XMStoreFloat4x4(&transform.viewProjectionMatrix, viewProj);
+        // Update point light frustum
+        auto view = DirectX::XMMatrixLookToLH(vPos, vDir, vUpDir);
+        auto proj = DirectX::XMMatrixPerspectiveFovLH(fovY, kAspectRatio, kNearClip, farClip);
+        auto viewProj = view * proj;
+        XMStoreFloat4x4(&transform.viewMatrix, view);
+        XMStoreFloat4x4(&transform.projectionMatrix, proj);
+        XMStoreFloat4x4(&transform.viewProjectionMatrix, viewProj);
 
-		auto &frustum = transform.frustum;
-		frustum.reset(vPos, vDir, vUpDir, kNearClip, farClip, fovY, kAspectRatio);
+        auto &frustum = transform.frustum;
+        frustum.reset(vPos, vDir, vUpDir, kNearClip, farClip, fovY, kAspectRatio);
 
-		// TODO: frustum-frustum culling
+        // TODO: frustum-frustum culling
         renderPoint.id = scl;
         renderPoint.kind = go::gfx_render_point_kind::disk_light;
         renderPoint.isActive = true;
 
-		// TODO: calculate importance based on projected area
+        // TODO: calculate importance based on projected area
 
-		// Point this light to the correct shadow caster slot
-		parameters.shadowCasterIndex = (float)sclIndex;
-		
-		++sclIndex;
-	}
+        // Point this light to the correct shadow caster slot
+        parameters.shadowCasterIndex = (float)sclIndex;
+        
+        ++sclIndex;
+    }
 }
 
 
@@ -574,7 +574,7 @@ auto go::gfx_scene::find_entity(gfx_entity_id id) -> gfx_entity *
 
 void go::gfx_scene::find_entity(const entity_name_t &name, entity_vector_t &outEntities)
 {
-	// TODO: replace with unordered_map
+    // TODO: replace with unordered_map
     auto i = 0;
     for(auto &n : m_entityNames)
     {
@@ -643,7 +643,7 @@ void go::gfx_scene::grow_entity_cache(size_t newCacheSize)
     // Disk light cache
     m_entityDiskLights.reserve(newCacheSize);
     m_entityDiskLightShadowCasterFlags.reserve(newCacheSize);
-	m_diskLightData.reserve(newCacheSize);
+    m_diskLightData.reserve(newCacheSize);
 }
 
 
@@ -680,7 +680,7 @@ void go::gfx_scene::determine_shadow_casting_lights()
 {
     // Update lights to match entity transformation
     auto &entityPositions = m_entityData.positions;
-	auto &entityOrientations = m_entityData.orientations;
+    auto &entityOrientations = m_entityData.orientations;
 
     // Camera position
     auto vCamPos = XMLoadFloat4A(&entityPositions[m_activeCamera]);
@@ -716,38 +716,38 @@ void go::gfx_scene::determine_shadow_casting_lights()
         m_renderContext.lights.shadowCasting.spherical);
 
     // Disk lights
-	update_shadow_casting_spot_lights(
+    update_shadow_casting_spot_lights(
         vCamFrustumBoundingSphere, camFrustumBoundingSphereRadius,
         vCamFrustumConeApex, vCamFrustumConeDir, camFrustumConeCos, camFrustumConeSin,
         vCamFrustumPlanes,
         vCamPos,
         entityPositions,
-		entityOrientations,
+        entityOrientations,
         m_entityDiskLightShadowCasterFlags,
         m_entityDiskLights,
-		m_renderContext.renderPoints.spotLights.data(),
-		m_renderContext.lights.disk.shapes,
-		m_renderContext.lights.disk.parameters,
-		m_diskLightData,
-		m_renderContext.lights.visible.disk,
-		m_renderContext.lights.shadowCasting.disk);
+        m_renderContext.renderPoints.spotLights.data(),
+        m_renderContext.lights.disk.shapes,
+        m_renderContext.lights.disk.parameters,
+        m_diskLightData,
+        m_renderContext.lights.visible.disk,
+        m_renderContext.lights.shadowCasting.disk);
 }
 
 
 void go::gfx_scene::update()
 {
-	// All components should be updated first
-	update_component_managers();
+    // All components should be updated first
+    update_component_managers();
 
-	if(m_activeCamera < m_entities.size())
-	{
-		// Then we update the world-transform matrices for the modified entities
-		calculate_world_transforms();
+    if(m_activeCamera < m_entities.size())
+    {
+        // Then we update the world-transform matrices for the modified entities
+        calculate_world_transforms();
 
-		// Then we update the light-transform shapes according to the new entity data
-		update_spherical_lights(m_entityData, m_entitySphericalLights, m_renderContext.lights.spherical);
-		update_disk_lights(m_entityData, m_entityDiskLights, m_diskLightData, m_renderContext.lights.disk);
-	}
+        // Then we update the light-transform shapes according to the new entity data
+        update_spherical_lights(m_entityData, m_entitySphericalLights, m_renderContext.lights.spherical);
+        update_disk_lights(m_entityData, m_entityDiskLights, m_diskLightData, m_renderContext.lights.disk);
+    }
 }
 
 
@@ -786,7 +786,7 @@ void go::gfx_scene::compute_camera_frustum()
 
 void go::gfx_scene::compute_directional_light_frustum()
 {
-	auto &camFrustum = m_renderContext.renderPoints.main.transform.frustum;
+    auto &camFrustum = m_renderContext.renderPoints.main.transform.frustum;
 
     // Load camera info
     auto vCamPos = XMLoadFloat4A(&m_entityData.positions[m_activeCamera]);
@@ -799,39 +799,39 @@ void go::gfx_scene::compute_directional_light_frustum()
     auto vSunSide = isSunDirUpParallel ? g_XMIdentityR2 : XMVector3Normalize(XMVector3Cross(g_XMIdentityR1, vSunDir));
     auto vSunUp = XMVector3Normalize(XMVector3Cross(vSunDir, vSunSide));
 
-	// Load the camera frustum bounding sphere
-	auto vFrustumBSCenter = XMLoadFloat4A(&camFrustum.boundingSphereCenter);
-	auto frustumBSRadius = std::ceil(camFrustum.boundingSphereRadius * 16.0f) / 16.0f; // NOTE: round up to prevent precision problems from recalc
-	auto frustumBSDiameter = frustumBSRadius * 2.0f;
+    // Load the camera frustum bounding sphere
+    auto vFrustumBSCenter = XMLoadFloat4A(&camFrustum.boundingSphereCenter);
+    auto frustumBSRadius = std::ceil(camFrustum.boundingSphereRadius * 16.0f) / 16.0f; // NOTE: round up to prevent precision problems from recalc
+    auto frustumBSDiameter = frustumBSRadius * 2.0f;
 
-	// Push the light back
-	const auto lightNearClip = 1.0f;
-	const auto extraBackupDist = 1000.0f; // TODO: for culling
-	const auto backupDist = extraBackupDist + lightNearClip + frustumBSRadius;
-	auto vLightPos = vFrustumBSCenter + vToSunDir * backupDist;
+    // Push the light back
+    const auto lightNearClip = 1.0f;
+    const auto extraBackupDist = 1000.0f; // TODO: for culling
+    const auto backupDist = extraBackupDist + lightNearClip + frustumBSRadius;
+    auto vLightPos = vFrustumBSCenter + vToSunDir * backupDist;
 
-	// Build the light view matrix
-	auto mLightView = DirectX::XMMatrixLookAtLH(vLightPos, vFrustumBSCenter, vSunUp);
+    // Build the light view matrix
+    auto mLightView = DirectX::XMMatrixLookAtLH(vLightPos, vFrustumBSCenter, vSunUp);
 
-	// Build the projection matrix
-	auto bounds = frustumBSDiameter;
-	auto lightFarClip = backupDist + frustumBSRadius;
-	auto mLightProj = XMMatrixOrthographicLH(bounds, bounds, lightNearClip, lightFarClip);
+    // Build the projection matrix
+    auto bounds = frustumBSDiameter;
+    auto lightFarClip = backupDist + frustumBSRadius;
+    auto mLightProj = XMMatrixOrthographicLH(bounds, bounds, lightNearClip, lightFarClip);
 
     // Combine them
     auto mLightViewProj = mLightView * mLightProj;
 
-	// Snap texels
-	auto halfShadowMapSize = DFX_DIRECTIONAL_LIGHT_SHADOW_MAP_SIZE * 0.5f;
-	auto originLS = XMVector3TransformCoord(g_XMIdentityR3, mLightViewProj);
-	originLS *= halfShadowMapSize;
-	auto roundedOriginLS = XMVectorRound(originLS);
-	auto rounding = roundedOriginLS - originLS;
-	rounding /= halfShadowMapSize;
+    // Snap texels
+    auto halfShadowMapSize = DFX_DIRECTIONAL_LIGHT_SHADOW_MAP_SIZE * 0.5f;
+    auto originLS = XMVector3TransformCoord(g_XMIdentityR3, mLightViewProj);
+    originLS *= halfShadowMapSize;
+    auto roundedOriginLS = XMVectorRound(originLS);
+    auto rounding = roundedOriginLS - originLS;
+    rounding /= halfShadowMapSize;
 
-	auto roundMatrix = DirectX::XMMatrixTranslationFromVector(rounding);
+    auto roundMatrix = DirectX::XMMatrixTranslationFromVector(rounding);
 
-	mLightViewProj *= roundMatrix;
+    mLightViewProj *= roundMatrix;
 
     // Save results
     auto &lightSplit = m_renderContext.renderPoints.directionalLight[0];
@@ -900,23 +900,23 @@ void go::gfx_scene::attach_spherical_light(gfx_entity_id id, const DirectX::XMFL
 {
     go::gfx_spherical_lights::parameters_t lightParams;
     
-	// Convert luminous power (lm) to luminance (cd/m^2)
-	auto luminance = luminousPower / (4.0f * size * size * XM_PI * XM_PI);
+    // Convert luminous power (lm) to luminance (cd/m^2)
+    auto luminance = luminousPower / (4.0f * size * size * XM_PI * XM_PI);
 
-	// Pre-scale the color
-	auto vColor = XMLoadFloat3(&color);
-	vColor *= luminance;
-	XMStoreFloat3((XMFLOAT3 *)lightParams.color, vColor);
-	
-	// Area light radius
-	lightParams.radiusWS = size;
-	
-	// The shadow caster index
-	lightParams.shadowCasterIndex = -1;
+    // Pre-scale the color
+    auto vColor = XMLoadFloat3(&color);
+    vColor *= luminance;
+    XMStoreFloat3((XMFLOAT3 *)lightParams.color, vColor);
+    
+    // Area light radius
+    lightParams.radiusWS = size;
+    
+    // The shadow caster index
+    lightParams.shadowCasterIndex = -1;
 
     go::gfx_spherical_lights::proxy_shape_t lightShape;
     auto &p = m_entityData.positions[id];
-	go::copy_float3(lightShape.center, p);
+    go::copy_float3(lightShape.center, p);
     lightShape.radius = 1.0f; // Updated with the entity radius later
 
     attach_light(
@@ -931,16 +931,16 @@ void go::gfx_scene::attach_spherical_light(gfx_entity_id id, const DirectX::XMFL
 
 void go::gfx_scene::detach_spherical_light(gfx_entity_id id)
 {
-	auto it = std::find(m_entitySphericalLights.begin(), m_entitySphericalLights.end(), id);
-	if(it != m_entitySphericalLights.end())
-	{
-		auto lightIndex = it - m_entitySphericalLights.begin();
+    auto it = std::find(m_entitySphericalLights.begin(), m_entitySphericalLights.end(), id);
+    if(it != m_entitySphericalLights.end())
+    {
+        auto lightIndex = it - m_entitySphericalLights.begin();
 
-		go::swap_erase(m_entitySphericalLights, lightIndex);
-		go::swap_erase(m_entitySphericalLightShadowCasterFlags, lightIndex);
-		go::swap_erase(m_renderContext.lights.spherical.parameters, lightIndex);
-		go::swap_erase(m_renderContext.lights.spherical.shapes, lightIndex);
-	}
+        go::swap_erase(m_entitySphericalLights, lightIndex);
+        go::swap_erase(m_entitySphericalLightShadowCasterFlags, lightIndex);
+        go::swap_erase(m_renderContext.lights.spherical.parameters, lightIndex);
+        go::swap_erase(m_renderContext.lights.spherical.shapes, lightIndex);
+    }
 }
 
 
@@ -952,28 +952,28 @@ const go::gfx_spherical_lights &go::gfx_scene::spherical_lights() const noexcept
 
 void go::gfx_scene::attach_disk_light(gfx_entity_id id, const DirectX::XMFLOAT3 &color, float luminousPower, float size, float coneOuterAngle, float coneInnerAngle, bool castsShadows)
 {
-	go::gfx_disk_lights::parameters_t lightParams;
+    go::gfx_disk_lights::parameters_t lightParams;
 
-	// Area light radius
+    // Area light radius
     lightParams.radiusWS = size;
 
     go::gfx_disk_lights::proxy_shape_t lightShape;
     auto &p = m_entityData.positions[id];
-	go::copy_float3(lightShape.center, p);
+    go::copy_float3(lightShape.center, p);
     lightShape.radius = 1.0f; // Updated with the entity radius later
 
-	// The shadow caster index
-	lightParams.shadowCasterIndex = -1;
+    // The shadow caster index
+    lightParams.shadowCasterIndex = -1;
 
-	// Add the disk light data
-	disk_light_data diskLightData;
-	diskLightData.halfOuterAngle = coneOuterAngle * 0.5f;
-	diskLightData.rcpTanHalfOuterAngle = 1.0f / std::tan(diskLightData.halfOuterAngle);
-	diskLightData.cosOuter = std::cos(coneOuterAngle * 0.5f);
-	diskLightData.cosInner = std::cos(std::min(coneInnerAngle, coneOuterAngle - FLT_EPSILON) * 0.5f);
-	diskLightData.angleScale = 1.0f / std::max(0.001f, diskLightData.cosInner - diskLightData.cosOuter);
-	diskLightData.angleBias = -diskLightData.cosOuter * diskLightData.angleScale;
-	m_diskLightData.push_back(std::move(diskLightData));
+    // Add the disk light data
+    disk_light_data diskLightData;
+    diskLightData.halfOuterAngle = coneOuterAngle * 0.5f;
+    diskLightData.rcpTanHalfOuterAngle = 1.0f / std::tan(diskLightData.halfOuterAngle);
+    diskLightData.cosOuter = std::cos(coneOuterAngle * 0.5f);
+    diskLightData.cosInner = std::cos(std::min(coneInnerAngle, coneOuterAngle - FLT_EPSILON) * 0.5f);
+    diskLightData.angleScale = 1.0f / std::max(0.001f, diskLightData.cosInner - diskLightData.cosOuter);
+    diskLightData.angleBias = -diskLightData.cosOuter * diskLightData.angleScale;
+    m_diskLightData.push_back(std::move(diskLightData));
 
     attach_light(
         id,
@@ -983,24 +983,24 @@ void go::gfx_scene::attach_disk_light(gfx_entity_id id, const DirectX::XMFLOAT3 
         castsShadows, lightParams, lightShape
     );
 
-	// Change the color
-	change_disk_light_color(m_diskLightData.size() - 1, color, luminousPower);
+    // Change the color
+    change_disk_light_color(m_diskLightData.size() - 1, color, luminousPower);
 }
 
 
 void go::gfx_scene::detach_disk_light(gfx_entity_id id)
 {
-	auto it = std::find(m_entityDiskLights.begin(), m_entityDiskLights.end(), id);
-	if(it != m_entityDiskLights.end())
-	{
-		auto lightIndex = it - m_entityDiskLights.begin();
+    auto it = std::find(m_entityDiskLights.begin(), m_entityDiskLights.end(), id);
+    if(it != m_entityDiskLights.end())
+    {
+        auto lightIndex = it - m_entityDiskLights.begin();
 
-		go::swap_erase(m_entityDiskLights, lightIndex);
-		go::swap_erase(m_entityDiskLightShadowCasterFlags, lightIndex);
-		go::swap_erase(m_diskLightData, lightIndex);
-		go::swap_erase(m_renderContext.lights.disk.parameters, lightIndex);
-		go::swap_erase(m_renderContext.lights.disk.shapes, lightIndex);
-	}
+        go::swap_erase(m_entityDiskLights, lightIndex);
+        go::swap_erase(m_entityDiskLightShadowCasterFlags, lightIndex);
+        go::swap_erase(m_diskLightData, lightIndex);
+        go::swap_erase(m_renderContext.lights.disk.parameters, lightIndex);
+        go::swap_erase(m_renderContext.lights.disk.shapes, lightIndex);
+    }
 }
 
 
@@ -1012,18 +1012,18 @@ const go::gfx_disk_lights &go::gfx_scene::disk_lights() const noexcept
 
 const go::gfx_entity_id_vector &go::gfx_scene::disk_light_entities() const noexcept
 {
-	return m_entityDiskLights;
+    return m_entityDiskLights;
 }
 
 
 void go::gfx_scene::change_disk_light_color(int32_t lightIndex, const DirectX::XMFLOAT3 &color, float luminousPower)
 {
-	// Convert luminous power (lm) to luminance (cd/m^2)
-	auto lightRadius = m_renderContext.lights.disk.parameters[lightIndex].radiusWS;
-	auto luminance = luminousPower / (lightRadius * lightRadius * XM_PI * XM_PI);
+    // Convert luminous power (lm) to luminance (cd/m^2)
+    auto lightRadius = m_renderContext.lights.disk.parameters[lightIndex].radiusWS;
+    auto luminance = luminousPower / (lightRadius * lightRadius * XM_PI * XM_PI);
 
     // Update the color
-	XMStoreFloat3((XMFLOAT3 *)m_renderContext.lights.disk.parameters[lightIndex].color, XMLoadFloat3(&color) * luminance);
+    XMStoreFloat3((XMFLOAT3 *)m_renderContext.lights.disk.parameters[lightIndex].color, XMLoadFloat3(&color) * luminance);
 }
 
 

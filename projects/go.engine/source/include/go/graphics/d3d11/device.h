@@ -84,9 +84,9 @@ public:
         gfx_sampler_state linearClamp;
         //! Anisotropic (4x) sampler using wrap addressing mode.
         gfx_sampler_state anisotropic4xWrap;
-		//! Anisotropic (4x) sampler using clamp addressing mode.
-		gfx_sampler_state anisotropic4xClamp;
-		//! Shadow map linear sampler.
+        //! Anisotropic (4x) sampler using clamp addressing mode.
+        gfx_sampler_state anisotropic4xClamp;
+        //! Shadow map linear sampler.
         gfx_sampler_state shadowMapLinear;
         //! Shadow map point sampler.
         gfx_sampler_state shadowMapPoint;

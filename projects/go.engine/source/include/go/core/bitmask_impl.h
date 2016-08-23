@@ -107,7 +107,7 @@ template<size_t BitCount>
 inline auto bitmask<BitCount>::operator&=(const bitmask<BitCount> &other) noexcept
     -> bitmask<BitCount> &
 {
-	for(size_t i = 0, end = m_masks.max_size(); i < end; ++i)
+    for(size_t i = 0, end = m_masks.max_size(); i < end; ++i)
     {
         m_masks[i] &= other.m_masks[i];
     }
@@ -144,26 +144,26 @@ inline void bitmask<BitCount>::clear(size_t index)
 template<size_t BitCount>
 inline bool bitmask<BitCount>::forward_null_scan(uint32_t *index)
 {
-	for(size_t i = 0, end = m_masks.max_size(); i < end; ++i)
-	{
-		auto j = i * 8 * sizeof(submask_t);
-		auto m = ~m_masks[i]; // NOTE: invert the mask
+    for(size_t i = 0, end = m_masks.max_size(); i < end; ++i)
+    {
+        auto j = i * 8 * sizeof(submask_t);
+        auto m = ~m_masks[i]; // NOTE: invert the mask
 
-		unsigned long s;
+        unsigned long s;
 #ifdef _WIN64
-		auto bitFound = BitScanForward64(&s, m);
+        auto bitFound = BitScanForward64(&s, m);
 #else
-		auto bitFound = BitScanForward(&s, m);
+        auto bitFound = BitScanForward(&s, m);
 #endif
 
-		if(bitFound)
-		{
-			*index = j + s;
-			return true;
-		}
-	}
+        if(bitFound)
+        {
+            *index = j + s;
+            return true;
+        }
+    }
 
-	return false;
+    return false;
 }
 
 
@@ -171,7 +171,7 @@ template<size_t BitCount>
 template<class Callback, typename... Args>
 void bitmask<BitCount>::for_each_set(const Callback &callback, Args&&... args) const
 {
-	for(size_t i = 0, end = m_masks.max_size(); i < end; ++i)
+    for(size_t i = 0, end = m_masks.max_size(); i < end; ++i)
     {
         auto j = i * 8 * sizeof(submask_t);
         auto m = m_masks[i];
@@ -199,7 +199,7 @@ void bitmask<BitCount>::for_each_groupset(const Callback &callback, Args&&... ar
 {
     size_t groupStart = 0;
     auto startFound = false;
-	for(size_t i = 0, end = m_masks.max_size(); i < end; ++i)
+    for(size_t i = 0, end = m_masks.max_size(); i < end; ++i)
     {
         auto m = m_masks[i];
 

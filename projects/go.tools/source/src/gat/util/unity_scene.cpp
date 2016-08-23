@@ -97,8 +97,8 @@ void gat::unity_scene::load(const go::file_path &filePath)
         std::replace(substr.begin(), substr.end(), ',', ' ');
         return go::string_to_vector4f<DirectX::XMFLOAT4>(substr.c_str());
     };
-	auto mapBool = [](const std::string &s) { return s == "True"; };
-	auto mapCastsShadows = [](const std::string &s) { return s != "None"; };
+    auto mapBool = [](const std::string &s) { return s == "True"; };
+    auto mapCastsShadows = [](const std::string &s) { return s != "None"; };
 
     // Extract entity information out of the section file
     if(!sections.empty())

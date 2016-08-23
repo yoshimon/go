@@ -67,8 +67,8 @@ go::stack_allocator::stack_allocator(stack_allocator &&other) noexcept
 go::stack_allocator &go::stack_allocator::operator=(stack_allocator &&other) noexcept
 {
     std::swap(m_data, other.m_data);
-	std::swap(m_isDataAligned, other.m_isDataAligned);
-	m_marker = other.m_marker;
+    std::swap(m_isDataAligned, other.m_isDataAligned);
+    m_marker = other.m_marker;
     m_stackSize = other.m_stackSize;
     return *this;
 }

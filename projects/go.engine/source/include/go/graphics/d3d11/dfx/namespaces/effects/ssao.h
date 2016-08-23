@@ -63,9 +63,9 @@ namespace dfx_effects
             //! The world-space normals texture.
             gfx_texture *normalWSTexture;
             //! The projection matrix used for the depth-buffer generation pass.
-			DirectX::XMFLOAT4X4 depthProjMatrix;
-			//! The view matrix used for the depth-buffer generation pass.
-			DirectX::XMFLOAT4X4 depthViewMatrix;
+            DirectX::XMFLOAT4X4 depthProjMatrix;
+            //! The view matrix used for the depth-buffer generation pass.
+            DirectX::XMFLOAT4X4 depthViewMatrix;
         } in;
         struct
         {

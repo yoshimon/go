@@ -52,8 +52,8 @@ struct material_file
     std::string textureFormats[GO_MATERIAL_MAX_TEXTURE_COUNT];
     //! The blend mode.
     go::gfx_blend_mode blendMode = go::gfx_blend_mode::opaque;
-	//! Per-material constants.
-	std::vector<std::pair<std::string, std::string>> constants;
+    //! Per-material constants.
+    std::vector<std::pair<std::string, std::string>> constants;
     /*!
         Loads the material definition from file.
 
@@ -79,33 +79,33 @@ struct material_file
         textures[(uint32_t)slot] = texture;
         textureFormats[(uint32_t)slot] = format;
     }
-	/*!
-		Binds an RGBA constant to the material file.
+    /*!
+        Binds an RGBA constant to the material file.
 
-		\param sectionFile The section to query.
-		\param semantic The constant semantic.
-		\param newSemantic The new constant semantic.
-		\param defaultValue The default constant value.
-	 */
-	void bind_rgba_constant(const section_file::section_t &section, const std::string &semantic, const std::string &newSemantic, const std::string &defaultValue);
-	/*!
-		Binds an float constant to the material file.
+        \param sectionFile The section to query.
+        \param semantic The constant semantic.
+        \param newSemantic The new constant semantic.
+        \param defaultValue The default constant value.
+     */
+    void bind_rgba_constant(const section_file::section_t &section, const std::string &semantic, const std::string &newSemantic, const std::string &defaultValue);
+    /*!
+        Binds an float constant to the material file.
 
-		\param sectionFile The section to query.
-		\param semantic The constant semantic.
-		\param newSemantic The new constant semantic.
-		\param defaultValue The default constant value.
-	 */
-	void bind_float_constant(const section_file::section_t &section, const std::string &semantic, const std::string &newSemantic, const std::string &defaultValue);
-	/*!
-		Binds an float constant to the material file.
+        \param sectionFile The section to query.
+        \param semantic The constant semantic.
+        \param newSemantic The new constant semantic.
+        \param defaultValue The default constant value.
+     */
+    void bind_float_constant(const section_file::section_t &section, const std::string &semantic, const std::string &newSemantic, const std::string &defaultValue);
+    /*!
+        Binds an float constant to the material file.
 
-		\param sectionFile The section to query.
-		\param semantic The constant semantic.
-		\param newSemantic The new constant semantic.
-		\param defaultValue The default constant value.
-	 */
-	void bind_float2_constant(const section_file::section_t &section, const std::string &semantic, const std::string &newSemantic, const std::string &defaultValue);
+        \param sectionFile The section to query.
+        \param semantic The constant semantic.
+        \param newSemantic The new constant semantic.
+        \param defaultValue The default constant value.
+     */
+    void bind_float2_constant(const section_file::section_t &section, const std::string &semantic, const std::string &newSemantic, const std::string &defaultValue);
 };
 
 typedef std::vector<material_file> material_file_vector;

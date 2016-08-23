@@ -90,7 +90,7 @@ public:
                 if(!isDown)
                 {
                     m_translation = DirectX::XMFLOAT3(0, 0, 0);
-					speedMultiplier = 0;
+                    speedMultiplier = 0;
                     go::the_ui_system->hide_screen(1);
                     go::the_ui_system->show_screen(0);
                     go::the_ui_system->show_cursor();
@@ -163,8 +163,8 @@ public:
         go::the_ui_system->execute_script(1, js);
     }
 public:
-	static constexpr float kDefaultSpeed = 50.5f;
-	float speedMultiplier = kDefaultSpeed;
+    static constexpr float kDefaultSpeed = 50.5f;
+    float speedMultiplier = kDefaultSpeed;
 private:
     go::gfx_scene *m_scene = nullptr;
     gfx_perspective_camera_component_manager *m_perspectiveCamMgr;
@@ -176,7 +176,7 @@ class ui_action_map : public go::input_action_map
 {
 public:
     go::input_context *sceneContext;
-	scene_action_map *sceneInputMap;
+    scene_action_map *sceneInputMap;
 public:
     void handle_input_event(const go::input_event &e, bool &wasHandled) override
     {
@@ -188,7 +188,7 @@ public:
                 go::the_ui_system->hide_cursor();
                 go::the_ui_system->show_screen(1);
                 go::the_input_dispatcher->change_active_context(sceneContext);
-				sceneInputMap->speedMultiplier = scene_action_map::kDefaultSpeed;
+                sceneInputMap->speedMultiplier = scene_action_map::kDefaultSpeed;
             }
         }
         

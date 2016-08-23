@@ -100,27 +100,27 @@ void read_textures(rapidxml::xml_node<> *n, gfx_material_definition &def, gfx_te
 
 void read_constant(rapidxml::xml_node<> *constants, const char *name, const DirectX::XMFLOAT3 &defaultValue, float output[3])
 {
-	auto &&n = constants ? constants->first_node(name) : nullptr;
-	auto &&value = n ? go::string_to_vector3f<DirectX::XMFLOAT3>(n->value()) : defaultValue;
-	output[0] = value.x;
-	output[1] = value.y;
-	output[2] = value.z;
+    auto &&n = constants ? constants->first_node(name) : nullptr;
+    auto &&value = n ? go::string_to_vector3f<DirectX::XMFLOAT3>(n->value()) : defaultValue;
+    output[0] = value.x;
+    output[1] = value.y;
+    output[2] = value.z;
 }
 
 
 void read_constant(rapidxml::xml_node<> *constants, const char *name, const DirectX::XMFLOAT2 &defaultValue, float output[2])
 {
-	auto &&n = constants ? constants->first_node(name) : nullptr;
-	auto &&value = n ? go::string_to_vector2f<DirectX::XMFLOAT2>(n->value()) : defaultValue;
-	output[0] = value.x;
-	output[1] = value.y;
+    auto &&n = constants ? constants->first_node(name) : nullptr;
+    auto &&value = n ? go::string_to_vector2f<DirectX::XMFLOAT2>(n->value()) : defaultValue;
+    output[0] = value.x;
+    output[1] = value.y;
 }
 
 
 void read_constant(rapidxml::xml_node<> *constants, const char *name, float defaultValue, float &output)
 {
-	auto &&n = constants ? constants->first_node(name) : nullptr;
-	output = n ? (float)std::atof(n->value()) : defaultValue;
+    auto &&n = constants ? constants->first_node(name) : nullptr;
+    output = n ? (float)std::atof(n->value()) : defaultValue;
 }
 
 
@@ -207,8 +207,8 @@ void go::gfx_material_database::process_record(rapidxml::xml_node<> *n, gfx_mate
     // Blend mode
     go::xml_get_enum_attribute(n, "blendmode", gfx_blend_mode_strings, def.blendMode);
 
-	// Two sided
-	go::xml_get_bool_attribute(n, "isTwoSided", *(bool *)&def.isTwoSided, false);
+    // Two sided
+    go::xml_get_bool_attribute(n, "isTwoSided", *(bool *)&def.isTwoSided, false);
 
     // Material constants
     switch(def.shaderID)
@@ -217,25 +217,25 @@ void go::gfx_material_database::process_record(rapidxml::xml_node<> *n, gfx_mate
     case gfx_material_shader_id::standard_cutout:
     {
         auto &&nConstants = n->first_node("constants");
-		read_constant(nConstants, "albedoTint", DirectX::XMFLOAT3(1, 1, 1), def.constants.standard.albedoTint);
-		read_constant(nConstants, "cutoutThreshold", 0.5f, def.constants.standard.cutoutThreshold);
-		read_constant(nConstants, "emissiveTint", DirectX::XMFLOAT3(1, 1, 1), def.constants.standard.emissiveTint);
-		read_constant(nConstants, "emissiveIntensity", 1.0f, def.constants.standard.emissiveIntensity);
-		read_constant(nConstants, "metallicScale", 1.0f, def.constants.standard.metallicScale);
-		read_constant(nConstants, "roughnessScale", 1.0f, def.constants.standard.roughnessScale);
-		read_constant(nConstants, "occlusionScale", 1.0f, def.constants.standard.occlusionScale);
-		read_constant(nConstants, "transparency", 0.0f, def.constants.standard.transparency);
-		read_constant(nConstants, "uvScaling", DirectX::XMFLOAT2(1, 1), def.constants.standard.uvTiling);
-		read_constant(nConstants, "uvBias", DirectX::XMFLOAT2(0, 0), def.constants.standard.uvOffsets);
+        read_constant(nConstants, "albedoTint", DirectX::XMFLOAT3(1, 1, 1), def.constants.standard.albedoTint);
+        read_constant(nConstants, "cutoutThreshold", 0.5f, def.constants.standard.cutoutThreshold);
+        read_constant(nConstants, "emissiveTint", DirectX::XMFLOAT3(1, 1, 1), def.constants.standard.emissiveTint);
+        read_constant(nConstants, "emissiveIntensity", 1.0f, def.constants.standard.emissiveIntensity);
+        read_constant(nConstants, "metallicScale", 1.0f, def.constants.standard.metallicScale);
+        read_constant(nConstants, "roughnessScale", 1.0f, def.constants.standard.roughnessScale);
+        read_constant(nConstants, "occlusionScale", 1.0f, def.constants.standard.occlusionScale);
+        read_constant(nConstants, "transparency", 0.0f, def.constants.standard.transparency);
+        read_constant(nConstants, "uvScaling", DirectX::XMFLOAT2(1, 1), def.constants.standard.uvTiling);
+        read_constant(nConstants, "uvBias", DirectX::XMFLOAT2(0, 0), def.constants.standard.uvOffsets);
 
-		// Remap colors to non-linear space
-		def.constants.standard.albedoTint[0] *= def.constants.standard.albedoTint[0];
-		def.constants.standard.albedoTint[1] *= def.constants.standard.albedoTint[1];
-		def.constants.standard.albedoTint[2] *= def.constants.standard.albedoTint[2];
+        // Remap colors to non-linear space
+        def.constants.standard.albedoTint[0] *= def.constants.standard.albedoTint[0];
+        def.constants.standard.albedoTint[1] *= def.constants.standard.albedoTint[1];
+        def.constants.standard.albedoTint[2] *= def.constants.standard.albedoTint[2];
 
-		def.constants.standard.emissiveTint[0] *= def.constants.standard.emissiveTint[0];
-		def.constants.standard.emissiveTint[1] *= def.constants.standard.emissiveTint[1];
-		def.constants.standard.emissiveTint[2] *= def.constants.standard.emissiveTint[2];
+        def.constants.standard.emissiveTint[0] *= def.constants.standard.emissiveTint[0];
+        def.constants.standard.emissiveTint[1] *= def.constants.standard.emissiveTint[1];
+        def.constants.standard.emissiveTint[2] *= def.constants.standard.emissiveTint[2];
 
         break;
     }

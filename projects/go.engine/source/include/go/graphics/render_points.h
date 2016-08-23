@@ -61,26 +61,26 @@ enum class gfx_render_point_kind
 //! A structure, which represents a render point.
 struct gfx_render_point
 {
-	//! State flag.
-	bool32_t isActive = false;
-	/*!
-		A unique identifier for the render point.
+    //! State flag.
+    bool32_t isActive = false;
+    /*!
+        A unique identifier for the render point.
 
-		The identifier has to be unique among a render point group (for example point lights).
-	 */
-	uint32_t id = 0;
-	/*!
-		Forces a redraw of this render point.
+        The identifier has to be unique among a render point group (for example point lights).
+     */
+    uint32_t id = 0;
+    /*!
+        Forces a redraw of this render point.
 
-		If this is set to false, the backend may cache the previous results (shadow maps for example).
-	 */
-	bool32_t forceRedraw = true;
-	/*!
-		A weight for this render-point.
+        If this is set to false, the backend may cache the previous results (shadow maps for example).
+     */
+    bool32_t forceRedraw = true;
+    /*!
+        A weight for this render-point.
 
-		The use of this value depends on the semantics of the render-point.
-	 */
-	float importance = 1.0f;
+        The use of this value depends on the semantics of the render-point.
+     */
+    float importance = 1.0f;
     //! The render point kind.
     gfx_render_point_kind kind;
 };
@@ -92,7 +92,7 @@ struct gfx_cube_render_point : public gfx_render_point
     //! The command buffers for each face.
     std::array<gfx_render_command_buffers, 6> faceCommandBuffers;
     //! The per-face transformation matrices.
-	std::array<gfx_perspective_camera_transform, 6> faceTransforms;
+    std::array<gfx_perspective_camera_transform, 6> faceTransforms;
     //! The active faces.
     std::array<bool32_t, 6> isFaceActive;
 };

@@ -67,9 +67,9 @@ DEFINE_TEXTURE_DATA(uint16_t, R16_NeutralNormal) = { 0x8080 };
 // Global material texture fallback table (update on material add / delete)
 go::gfx_texture_manager::default_texture_info_t s_defaultTextureInfos[]
 {
-	// Standard
-	DEFINE_MATERIAL_TEXTURE(R32_White, b8g8r8a8_unorm_sRGB), // Albedo
-	DEFINE_MATERIAL_TEXTURE(R32_RoughMetal, r8g8b8a8_unorm), // MetallicSmoothness
+    // Standard
+    DEFINE_MATERIAL_TEXTURE(R32_White, b8g8r8a8_unorm_sRGB), // Albedo
+    DEFINE_MATERIAL_TEXTURE(R32_RoughMetal, r8g8b8a8_unorm), // MetallicSmoothness
     DEFINE_MATERIAL_TEXTURE(R16_NeutralNormal, r8g8_unorm), // Normal
     DEFINE_MATERIAL_TEXTURE(R32_White, r8_unorm), // Occlusion
     DEFINE_MATERIAL_TEXTURE(R32_White, r8g8b8a8_unorm), // Emission

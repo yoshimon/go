@@ -44,8 +44,8 @@ void dfx::samplers::on_initialize(void *userData)
     auto &samplers = go::the_gfx_device->common_sampler_states();
     g_linearClamp = const_cast<go::gfx_sampler_state *>(&samplers.linearClamp);
     g_linearWrap = const_cast<go::gfx_sampler_state *>(&samplers.linearWrap);
-	g_aniso4x = const_cast<go::gfx_sampler_state *>(&samplers.anisotropic4xClamp);
-	g_pointBorderWhite = const_cast<go::gfx_sampler_state *>(&samplers.pointBorderWhite);
+    g_aniso4x = const_cast<go::gfx_sampler_state *>(&samplers.anisotropic4xClamp);
+    g_pointBorderWhite = const_cast<go::gfx_sampler_state *>(&samplers.pointBorderWhite);
     g_pointWrap = const_cast<go::gfx_sampler_state *>(&samplers.pointWrap);
     g_pointClamp = const_cast<go::gfx_sampler_state *>(&samplers.pointClamp);
     g_cmpShadow = const_cast<go::gfx_sampler_state *>(&samplers.shadowMapLinear);

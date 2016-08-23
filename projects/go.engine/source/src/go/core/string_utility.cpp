@@ -65,12 +65,12 @@ void go::temporary_string_splitter::restore()
 
 char *go::advance_str_ptr(char *p)
 {
-	if(!p || (*p) == '\0')
-	{
-		return p;
-	}
+    if(!p || (*p) == '\0')
+    {
+        return p;
+    }
 
-	return p + 1;
+    return p + 1;
 }
 
 

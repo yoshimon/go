@@ -89,11 +89,11 @@ void dfx::forward_plus::ambient_lighting::on_begin_run(void *userData)
     // Setup the next pass
     dfx_hlsl::forward_plus::ambient_lighting::g_aoTexture = parameters->in.aoTexture;
     dfx_hlsl::forward_plus::ambient_lighting::g_normalWSTexture = parameters->in.normalWSTexture;
-	dfx_hlsl::forward_plus::ambient_lighting::g_metallicRoughnessTexture = parameters->in.metallicRoughnessTexture;
-	dfx_hlsl::forward_plus::ambient_lighting::g_albedoTexture = parameters->in.albedoTexture;
-	dfx_hlsl::forward_plus::ambient_lighting::g_depthVSTexture = parameters->in.depthVSTexture;
-	dfx_hlsl::forward_plus::ambient_lighting::g_envBRDF = parameters->in.envBRDFTexture;
-	dfx_hlsl::forward_plus::ambient_lighting::g_sceneEnvMap = parameters->in.sceneSpecularEnvMap;
+    dfx_hlsl::forward_plus::ambient_lighting::g_metallicRoughnessTexture = parameters->in.metallicRoughnessTexture;
+    dfx_hlsl::forward_plus::ambient_lighting::g_albedoTexture = parameters->in.albedoTexture;
+    dfx_hlsl::forward_plus::ambient_lighting::g_depthVSTexture = parameters->in.depthVSTexture;
+    dfx_hlsl::forward_plus::ambient_lighting::g_envBRDF = parameters->in.envBRDFTexture;
+    dfx_hlsl::forward_plus::ambient_lighting::g_sceneEnvMap = parameters->in.sceneSpecularEnvMap;
 
     // Bind shaders
     auto renderPath = (go::dfx_forward_plus_render_path *)go::the_gfx_renderer->render_path();

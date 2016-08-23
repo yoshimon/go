@@ -50,9 +50,9 @@ enum class gfx_sampler_state_type
     min_mag_point_mip_linear = D3D11_FILTER_MIN_MAG_POINT_MIP_LINEAR,
     //! Use linear sampling for minifcation, magnification and mip sampling.
     min_mag_mip_linear = D3D11_FILTER_MIN_MAG_MIP_LINEAR,
-	//! Use anisotropic 4x filtering.
-	anisotropic4x = D3D11_FILTER_ANISOTROPIC,
-	//! Use comparison filter with min-mag-mip point filtering.
+    //! Use anisotropic 4x filtering.
+    anisotropic4x = D3D11_FILTER_ANISOTROPIC,
+    //! Use comparison filter with min-mag-mip point filtering.
     compare_min_mag_mip_point = D3D11_FILTER_COMPARISON_MIN_MAG_MIP_POINT,
     //! Use comparison filter with min-mag linear and mip point filtering.
     compare_min_mag_linear_mip_point = D3D11_FILTER_COMPARISON_MIN_MAG_LINEAR_MIP_POINT

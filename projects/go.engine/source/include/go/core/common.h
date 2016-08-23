@@ -164,24 +164,24 @@ struct rect
     T right;
     //! The bottom edge of the rectangle.
     T bottom;
-	/*!
-		Calculates the width of the rectangle.
+    /*!
+        Calculates the width of the rectangle.
 
-		\return The width of the rectangle.
-	 */
-	T width() const noexcept
-	{
-		return right - left;
-	}
-	/*!
-		Calculates the width of the rectangle.
+        \return The width of the rectangle.
+     */
+    T width() const noexcept
+    {
+        return right - left;
+    }
+    /*!
+        Calculates the width of the rectangle.
 
-		\return The width of the rectangle.
-	 */
-	T height() const noexcept
-	{
-		return bottom - top;
-	}
+        \return The width of the rectangle.
+     */
+    T height() const noexcept
+    {
+        return bottom - top;
+    }
 };
 
 
@@ -538,34 +538,34 @@ inline bool is_power_of_two(int32_t number)
 
 
 /*!
-	Rounds a given value to the next power of two.
+    Rounds a given value to the next power of two.
 
-	\param value The value to round up.
+    \param value The value to round up.
 
-	\return The rounded up value.
+    \return The rounded up value.
  */
 inline uint32_t ceil_power_of_two(uint32_t value)
 {
-	--value;
-	value |= value >> 1;
-	value |= value >> 2;
-	value |= value >> 4;
-	value |= value >> 8;
-	value |= value >> 16;
-	return value + 1;
+    --value;
+    value |= value >> 1;
+    value |= value >> 2;
+    value |= value >> 4;
+    value |= value >> 8;
+    value |= value >> 16;
+    return value + 1;
 }
 
 
 /*!
-	Rounds a given value to the next power of two.
+    Rounds a given value to the next power of two.
 
-	\param value The value to round up.
+    \param value The value to round up.
 
-	\return The rounded up value.
+    \return The rounded up value.
  */
 inline int32_t ceil_power_of_two(int32_t value)
 {
-	return value < 0 ? 0 : ceil_power_of_two((uint32_t)value);
+    return value < 0 ? 0 : ceil_power_of_two((uint32_t)value);
 }
 
 
@@ -630,16 +630,16 @@ void swap_erase(Container &c, size_t index)
 
 
 /*!
-	Swap-erases an element from a container.
+    Swap-erases an element from a container.
 
-	\param c The container.
-	\param iterator The iterator pointing to the element to delete.
+    \param c The container.
+    \param iterator The iterator pointing to the element to delete.
  */
 template<typename Container>
 void swap_erase(Container &c, typename const Container::const_iterator &iterator)
 {
-	std::swap(iterator, c.end() - 1);
-	c.pop_back();
+    std::swap(iterator, c.end() - 1);
+    c.pop_back();
 }
 
 

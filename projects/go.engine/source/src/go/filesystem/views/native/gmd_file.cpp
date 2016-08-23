@@ -76,8 +76,8 @@ bool go::gmd_file::load(const uint8_t *data, size_t dataSize, gfx_model &out)
     }
 
     // Index data
-	auto indexSize = (header->numUnskinnedVertices + header->numSkinnedVertices) <= USHRT_MAX ? sizeof(index16_t) : sizeof(index32_t);
-	auto indexData = reinterpret_cast<const char *>(meshData);
+    auto indexSize = (header->numUnskinnedVertices + header->numSkinnedVertices) <= USHRT_MAX ? sizeof(index16_t) : sizeof(index32_t);
+    auto indexData = reinterpret_cast<const char *>(meshData);
 
     // Vertex data
     auto unskinnedVertexData = reinterpret_cast<const go::gfx_model::unskinned_vertex_t *>(indexData + header->numIndices * indexSize);

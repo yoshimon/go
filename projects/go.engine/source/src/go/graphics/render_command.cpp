@@ -40,8 +40,8 @@
 
 go::gfx_static_render_command::gfx_static_render_command(const enqueue_command_t &renderCmd)
     :
-	indexBuffer(&renderCmd.model->index_buffer()),
-	vertexBuffer(&renderCmd.model->unskinned_vertex_buffer()),
+    indexBuffer(&renderCmd.model->index_buffer()),
+    vertexBuffer(&renderCmd.model->unskinned_vertex_buffer()),
     vertexBufferDepthOnly(&renderCmd.model->unskinned_uv_vertex_buffer()),
     worldTransform(renderCmd.worldTransform)
 {
@@ -54,7 +54,7 @@ go::gfx_static_render_command::gfx_static_render_command(const enqueue_command_t
 
 go::gfx_dynamic_render_command::gfx_dynamic_render_command(const enqueue_command_t &renderCmd)
     :
-	gfx_static_render_command(renderCmd),
+    gfx_static_render_command(renderCmd),
     skinnedBones(renderCmd.skinnedBones),
     skinnedBonesCount(renderCmd.skinnedBonesCount)
 {
@@ -97,11 +97,11 @@ void go::gfx_render_command_buffers::resize(size_t bufferSizeHint)
 
 bool go::gfx_render_command_buffers::is_empty() const noexcept
 {
-	return
-		staticGeometry.opaque_commands().empty() &&
-		staticGeometry.transparent_commands().empty() &&
-		dynamicGeometry.opaque_commands().empty() &&
-		dynamicGeometry.transparent_commands().empty();
+    return
+        staticGeometry.opaque_commands().empty() &&
+        staticGeometry.transparent_commands().empty() &&
+        dynamicGeometry.opaque_commands().empty() &&
+        dynamicGeometry.transparent_commands().empty();
 }
 
 
