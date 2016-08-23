@@ -1,0 +1,27 @@
+[for | for-Loop]
+for(int | = 0; i < N; ++i)
+{
+	
+}
+
+[if | if-Branch]
+if(|)
+{
+	
+}
+
+[ife | if-else-Branches]
+if(|)
+{
+	
+}
+else
+{
+	
+}
+
+[whileb | while-Loop]
+while(|)
+{
+	
+}
