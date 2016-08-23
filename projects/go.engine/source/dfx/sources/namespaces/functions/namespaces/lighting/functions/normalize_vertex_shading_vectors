@@ -1,0 +1,10 @@
+/*!
+    Normalizes interpolated vertex data members.
+
+    \param input The input vertex.
+ */
+void $(inout ::vertices::shading input)
+{
+    input.normalWS = normalize(input.normalWS);
+    input.tangentWS = float4(normalize(input.tangentWS.xyz), input.tangentWS.w);
+}

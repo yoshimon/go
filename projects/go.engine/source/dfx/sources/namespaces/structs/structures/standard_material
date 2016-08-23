@@ -1,0 +1,4 @@
+//! The material constants.
+::structs::standard_material_constant_data materialConstants;
+//! The material texture data.
+::structs::standard_material_texture_data materialTextures;

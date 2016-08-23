@@ -1,0 +1,12 @@
+/*!
+    Applies normal-mapping to an input vertex data structure.
+
+    \param input The input data to modify.
+    \param tangentBasis The tangent-space basis.
+    \param normalTS The tangent-space normal.
+ */
+void $(inout vertices::shading input, float3 normalTS, float3x3 tangentBasis)
+{
+    // Pertube normal using tangent space basis of surface
+    input.normalWS = mul(normalTS, tangentBasis);
+}

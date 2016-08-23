@@ -1,0 +1,37 @@
+/*!
+    Shades a fragment.
+
+    \param input The interpolated vertex.
+    \param faceNormal The face normal.
+
+    \return The fragment color.
+ */
+::forward_plus::shading::output $(::vertices::shading input, float3 faceNormal)
+{
+    // To eye (WS)
+    const float3 renderPointPosWS = ::constants::frame::g_mainRenderPointPositionWS.xyz;
+    float3 toEyeWS = renderPointPosWS - input.positionWS;
+    float3 viewWS = normalize(toEyeWS);
+
+    // Fetch surface data
+    ::structs::standard_material mat = ::functions::materials::standard(input.uv);
+
+    // The diffuse and specular components
+    float3 diffuse = 0.0;
+    float3 specular = 0.0;
+
+    // TODO: compute analytical lights
+    // TODO: add reflections (screen-space reflections + IBL)
+
+    float3 result = diffuse + specular;
+
+    // Write output
+    return generate_output
+    (
+        result,
+        mul(float4(input.normalWS, 0.0), ::constants::frame::g_mainRenderPointView).xyz,
+        mat.albedoCutout,
+        float2(mat.metallic, mat.roughness),
+        input.positionVS.z
+    );
+}

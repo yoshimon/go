@@ -1,0 +1,873 @@
+<project shaderdir="D:\Projekte\VS2015\go\assets\shaders\" minimizeshaders="False" outputdir="D:\Projekte\VS2015\go\projects\go.engine\source\dfx\output\" hlslcompilerflags="34817">
+  <constants>
+    <constant name="Math">//! Pi.
+#define DFX_PI 3.14159265f
+//! Pi RCP.
+#define DFX_PI_RCP 0.318309886f
+//! Small float epsilon.
+#define DFX_FLOAT_EPSILON 0.0001f</constant>
+    <constant name="Forward+">//! Number of horizontal threads per group for the light accumulation pass.
+#define DFX_FORWARD_PLUS_CULL_LIGHTS_NUM_LOCAL_THREADS_X 16
+//! Number of vertical threads per group for the light accumulation pass.
+#define DFX_FORWARD_PLUS_CULL_LIGHTS_NUM_LOCAL_THREADS_Y DFX_FORWARD_PLUS_CULL_LIGHTS_NUM_LOCAL_THREADS_X
+//! Total number of threads per group for the light accumulation pass.
+#define DFX_FORWARD_PLUS_CULL_LIGHTS_NUM_LOCAL_THREADS (DFX_FORWARD_PLUS_CULL_LIGHTS_NUM_LOCAL_THREADS_X * DFX_FORWARD_PLUS_CULL_LIGHTS_NUM_LOCAL_THREADS_Y)
+
+//! Maximum number of lights per tile.
+#define DFX_FORWARD_PLUS_MAX_NUM_LIGHTS_PER_TILE (3 * DFX_FORWARD_PLUS_CULL_LIGHTS_NUM_LOCAL_THREADS) // Roughly 3 unique lights per pixel
+//! Maximum number of elements per tile.
+#define DFX_FORWARD_PLUS_MAX_NUM_ELEMENTS_PER_TILE (1 + DFX_FORWARD_PLUS_MAX_NUM_LIGHTS_PER_TILE) // Count + Light indices</constant>
+    <constant name="Color">//! Luminance weights (most important about this is the large weight on G and small weight on B).
+#define DFX_LUMINANCE_WEIGHTS float3(0.27f, 0.67f, 0.06f)</constant>
+    <constant name="FXAA">//! Target PC.
+#define FXAA_PC 1
+//! Use HLSL SM 5
+#define FXAA_HLSL_5 1
+//! Default-quality.
+#define FXAA_QUALITY__PRESET 29</constant>
+    <constant name="Gaussian Blur">//! Number of horizontal threads for the horizontal gaussian blur shader.
+#define DFX_GAUSSIAN_BLUR_X_THREADS_X 1
+//! Number of vertical threads for the horizontal gaussian blur shader.
+#define DFX_GAUSSIAN_BLUR_X_THREADS_Y 64
+
+//! Number of horizontal threads for the vertical gaussian blur shader.
+#define DFX_GAUSSIAN_BLUR_Y_THREADS_X 64
+//! Number of vertical threads for the vertical gaussian blur shader.
+#define DFX_GAUSSIAN_BLUR_Y_THREADS_Y 1</constant>
+    <constant name="DoF">//! Number of horizontal threads for the horizontal DoF blur shader.
+#define DFX_DOF_BLUR_X_THREADS_X 4
+//! Number of vertical threads for the horizontal DoF blur shader.
+#define DFX_DOF_BLUR_X_THREADS_Y 64
+
+//! Number of horizontal threads for the vertical DoF blur shader.
+#define DFX_DOF_BLUR_Y_THREADS_X 64
+//! Number of vertical threads for the vertical DoF blur shader.
+#define DFX_DOF_BLUR_Y_THREADS_Y 4</constant>
+    <constant name="HDR-Bloom">/*!
+    Number of threads for the luminance and brightness calculation step.
+
+    The shader assumes that this is always 8.
+ */
+#define DFX_HDR_BLOOM_LUM_AND_BRIGHT_THREADS 8
+
+//! Number of threads to compute the average luminance.
+#define DFX_HDR_BLOOM_AVERAGE_LUMINANCE_THREADS 16
+
+//! The number of threads for the combine pass.
+#define DFX_HDR_BLOOM_COMBINE_ADD_THREADS_X 64
+//! The number of threads for the combine pass.
+#define DFX_HDR_BLOOM_COMBINE_ADD_THREADS_Y 2</constant>
+    <constant name="Tonemapping">//! Tone-mapping operator constants.
+#define DFX_TONEMAP_A 0.15f
+#define DFX_TONEMAP_B 0.50f
+#define DFX_TONEMAP_C 0.10f
+#define DFX_TONEMAP_D 0.20f
+#define DFX_TONEMAP_E 0.02f
+#define DFX_TONEMAP_F 0.30f
+#define DFX_TONEMAP_W 11.2f</constant>
+    <constant name="Animation">//! The maximum number of bones in a skeletal animation.
+#define DFX_MAX_SKELETAL_BONES 128</constant>
+    <constant name="Lights">//! Maximum number of shadow-casting spot-lights per frame.
+#define DFX_MAX_NUM_SHADOW_CASTING_SPOT_LIGHTS 16
+//! Maximum number of shadow-casting point-lights per frame.
+#define DFX_MAX_NUM_SHADOW_CASTING_POINT_LIGHTS 16
+
+//! The number of cascades for the directional light.
+#define DFX_NUM_DIRECTIONAL_LIGHT_CASCADES 1
+
+//! The size of the directional shadow map.
+#define DFX_DIRECTIONAL_LIGHT_SHADOW_MAP_SIZE 4096
+//! The texel size of the directional shadow map.
+#define DFX_DIRECTIONAL_LIGHT_SHADOW_MAP_TEXEL_SIZE (1.0f / DFX_DIRECTIONAL_LIGHT_SHADOW_MAP_SIZE)
+
+//! The size of a single point light shadow map face.
+#define DFX_POINT_LIGHT_SHADOW_MAP_ATLAS_INNER_FACE_SIZE 512
+//! The margin in pixels for a shadow map face.
+#define DFX_POINT_LIGHT_SHADOW_MAP_ATLAS_TOPLEFT_MARGIN 2
+//! The padded face size (5 texels, 2 top left, 3 bottom right).
+#define DFX_POINT_LIGHT_SHADOW_MAP_ATLAS_PADDED_FACE_SIZE (DFX_POINT_LIGHT_SHADOW_MAP_ATLAS_INNER_FACE_SIZE + 1 + (2 * DFX_POINT_LIGHT_SHADOW_MAP_ATLAS_TOPLEFT_MARGIN))
+//! The size of the point light shadow map atlas along the U axis.
+#define DFX_POINT_LIGHT_SHADOW_MAP_ATLAS_SIZE_U (6 * DFX_POINT_LIGHT_SHADOW_MAP_ATLAS_PADDED_FACE_SIZE)
+//! The size of the point light shadow map atlas along the U axis.
+#define DFX_POINT_LIGHT_SHADOW_MAP_ATLAS_TEXEL_SIZE_U (1.0f / DFX_POINT_LIGHT_SHADOW_MAP_ATLAS_SIZE_U)
+//! The size of the point light shadow map atlas along the U axis.
+#define DFX_POINT_LIGHT_SHADOW_MAP_ATLAS_SIZE_V (DFX_POINT_LIGHT_SHADOW_MAP_ATLAS_PADDED_FACE_SIZE * DFX_MAX_NUM_SHADOW_CASTING_POINT_LIGHTS)
+//! The size of the point light shadow map atlas along the V axis.
+#define DFX_POINT_LIGHT_SHADOW_MAP_ATLAS_TEXEL_SIZE_V (1.0f / DFX_POINT_LIGHT_SHADOW_MAP_ATLAS_SIZE_V)
+//! The size of the point light shadow map atlas along the UV axis.
+#define DFX_POINT_LIGHT_SHADOW_MAP_ATLAS_TEXEL_SIZE float2(DFX_POINT_LIGHT_SHADOW_MAP_ATLAS_TEXEL_SIZE_U, DFX_POINT_LIGHT_SHADOW_MAP_ATLAS_TEXEL_SIZE_V)
+//! The size of a padded face in atlas UV coordinates.
+#define DFX_POINT_LIGHT_SHADOW_MAP_ATLAS_PADDED_FACE_SIZE_UV (DFX_POINT_LIGHT_SHADOW_MAP_ATLAS_PADDED_FACE_SIZE * DFX_POINT_LIGHT_SHADOW_MAP_ATLAS_TEXEL_SIZE)
+//! The size of an unpadded face in atlas UV coordinates.
+#define DFX_POINT_LIGHT_SHADOW_MAP_ATLAS_INNER_FACE_SIZE_UV (DFX_POINT_LIGHT_SHADOW_MAP_ATLAS_INNER_FACE_SIZE * DFX_POINT_LIGHT_SHADOW_MAP_ATLAS_TEXEL_SIZE)
+
+//! The size of a single spot light shadow map face.
+#define DFX_SPOT_LIGHT_SHADOW_MAP_ATLAS_INNER_FACE_SIZE 512
+//! The margin in pixels for a shadow map face.
+#define DFX_SPOT_LIGHT_SHADOW_MAP_ATLAS_TOPLEFT_MARGIN 4
+//! The margin in pixels for a shadow map face.
+#define DFX_SPOT_LIGHT_SHADOW_MAP_ATLAS_BOTTOMRIGHT_MARGIN (DFX_SPOT_LIGHT_SHADOW_MAP_ATLAS_TOPLEFT_MARGIN + 1)
+//! The padded face size (3 texels, 1 top left, 2 bottom right).
+#define DFX_SPOT_LIGHT_SHADOW_MAP_ATLAS_PADDED_FACE_SIZE (DFX_SPOT_LIGHT_SHADOW_MAP_ATLAS_INNER_FACE_SIZE + DFX_SPOT_LIGHT_SHADOW_MAP_ATLAS_TOPLEFT_MARGIN + DFX_SPOT_LIGHT_SHADOW_MAP_ATLAS_BOTTOMRIGHT_MARGIN)
+//! The size of the point light shadow map atlas along the U axis.
+#define DFX_SPOT_LIGHT_SHADOW_MAP_ATLAS_SIZE_U (DFX_SPOT_LIGHT_SHADOW_MAP_ATLAS_PADDED_FACE_SIZE)
+//! The size of the point light shadow map atlas along the U axis.
+#define DFX_SPOT_LIGHT_SHADOW_MAP_ATLAS_TEXEL_SIZE_U (1.0f / DFX_SPOT_LIGHT_SHADOW_MAP_ATLAS_SIZE_U)
+//! The size of the point light shadow map atlas along the U axis.
+#define DFX_SPOT_LIGHT_SHADOW_MAP_ATLAS_SIZE_V (DFX_SPOT_LIGHT_SHADOW_MAP_ATLAS_PADDED_FACE_SIZE * DFX_MAX_NUM_SHADOW_CASTING_SPOT_LIGHTS)
+//! The size of the point light shadow map atlas along the V axis.
+#define DFX_SPOT_LIGHT_SHADOW_MAP_ATLAS_TEXEL_SIZE_V (1.0f / DFX_SPOT_LIGHT_SHADOW_MAP_ATLAS_SIZE_V)
+//! The size of the point light shadow map atlas along the UV axis.
+#define DFX_SPOT_LIGHT_SHADOW_MAP_ATLAS_TEXEL_SIZE float2(DFX_SPOT_LIGHT_SHADOW_MAP_ATLAS_TEXEL_SIZE_U, DFX_SPOT_LIGHT_SHADOW_MAP_ATLAS_TEXEL_SIZE_V)
+//! The size of a padded face in atlas UV coordinates.
+#define DFX_SPOT_LIGHT_SHADOW_MAP_ATLAS_PADDED_FACE_SIZE_UV (DFX_SPOT_LIGHT_SHADOW_MAP_ATLAS_PADDED_FACE_SIZE * DFX_SPOT_LIGHT_SHADOW_MAP_ATLAS_TEXEL_SIZE)
+//! The size of a padded face in atlas UV coordinates.
+#define DFX_SPOT_LIGHT_SHADOW_MAP_ATLAS_PADDED_FACE_SIZE_V (DFX_SPOT_LIGHT_SHADOW_MAP_ATLAS_PADDED_FACE_SIZE * DFX_SPOT_LIGHT_SHADOW_MAP_ATLAS_TEXEL_SIZE_V)
+//! The size of an unpadded face in atlas UV coordinates.
+#define DFX_SPOT_LIGHT_SHADOW_MAP_ATLAS_INNER_FACE_SIZE_UV (DFX_SPOT_LIGHT_SHADOW_MAP_ATLAS_INNER_FACE_SIZE * DFX_SPOT_LIGHT_SHADOW_MAP_ATLAS_TEXEL_SIZE)
+//! The size of an unpadded face in atlas UV coordinates.
+#define DFX_SPOT_LIGHT_SHADOW_MAP_ATLAS_INNER_FACE_SIZE_V (DFX_SPOT_LIGHT_SHADOW_MAP_ATLAS_INNER_FACE_SIZE * DFX_SPOT_LIGHT_SHADOW_MAP_ATLAS_TEXEL_SIZE_V)</constant>
+    <constant name="General">#ifdef __cplusplus
+#define noperspective
+#endif</constant>
+    <constant name="Volumetric Lighting">//! VL thread groups X.
+#define DFX_VOLUMETRIC_LIGHTING_THREADS_X 8
+//! VL thread groups Y.
+#define DFX_VOLUMETRIC_LIGHTING_THREADS_Y 8
+//! VL thread counts per group.
+#define DFX_VOLUMETRIC_LIGHTING_THREADS (DFX_VOLUMETRIC_LIGHTING_THREADS_X * DFX_VOLUMETRIC_LIGHTING_THREADS_Y)</constant>
+  </constants>
+  <sources>
+    <namespaces>
+      <namespace name="forward_plus">
+        <effects>
+          <effect name="prepass" participateinbuild="True">
+            <passes>
+              <pass title="Tile-based Light Culling" type="0">
+                <shaders>
+                  <vertex reference="" attributes=""/>
+                  <pixel reference="" attributes=""/>
+                  <compute reference="forward_plus::prepass::cull_spherical_lights" attributes=""/>
+                  <geometry reference="" attributes=""/>
+                </shaders>
+              </pass>
+              <pass title="Z-Prepass" type="1">
+                <shaders>
+                  <vertex reference="shaders::vertex_to_pixel::unskinned" attributes=""/>
+                  <pixel reference="shaders::pixel::standard_depth" attributes=""/>
+                  <compute reference="" attributes=""/>
+                  <geometry reference="" attributes=""/>
+                </shaders>
+              </pass>
+            </passes>
+            <cbuffers>
+              <cbuffer buffertype="cbtConstant" forceregister="-1" name="constants"/>
+            </cbuffers>
+            <functions>
+              <function shaderprofile="cs_5_0" name="cull_spherical_lights"/>
+              <function shaderprofile="" name="extract_light_array"/>
+            </functions>
+            <resources>
+              <resource componenttype="uint" hlsltype="rtBuffer" gpuaccessmode="amReadWrite" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="0" subresourceindex="0" name="tileLightIndicesRW"/>
+              <resource componenttype="lights::proxy_shapes::sphere" hlsltype="rtStructuredBuffer" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="0" subresourceindex="0" name="lightSphereProxyShapes"/>
+            </resources>
+          </effect>
+          <effect name="shading" participateinbuild="True">
+            <passes>
+              <pass title="Fragment Shading" type="1">
+                <shaders>
+                  <vertex reference="shaders::vertex_to_pixel::unskinned" attributes=""/>
+                  <pixel reference="forward_plus::shading::standard" attributes=""/>
+                  <compute reference="" attributes=""/>
+                  <geometry reference="" attributes=""/>
+                </shaders>
+              </pass>
+              <pass title="Sky" type="1">
+                <shaders>
+                  <vertex reference="shaders::vertex_to_pixel::sky" attributes=""/>
+                  <pixel reference="shaders::pixel::unlit_depth" attributes=""/>
+                  <compute reference="" attributes=""/>
+                  <geometry reference="" attributes=""/>
+                </shaders>
+              </pass>
+            </passes>
+            <functions>
+              <function shaderprofile="" name="standard_lighting"/>
+              <function shaderprofile="ps_5_0" name="unlit"/>
+              <function shaderprofile="" name="generate_output"/>
+              <function shaderprofile="ps_5_0" name="standard_alpha_test"/>
+              <function shaderprofile="" name="spherical_area_lights"/>
+              <function shaderprofile="ps_5_0" name="standard"/>
+              <function shaderprofile="" name="standard_common"/>
+              <function shaderprofile="" name="disk_area_lights"/>
+            </functions>
+            <resources>
+              <resource componenttype="uint" hlsltype="rtBuffer" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="-1" subresourceindex="0" name="tileSphericalLightIndices"/>
+              <resource componenttype="::lights::proxy_shapes::sphere" hlsltype="rtStructuredBuffer" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="-1" subresourceindex="0" name="sphericalLightProxyShapes"/>
+              <resource componenttype="::lights::parameters::spherical" hlsltype="rtStructuredBuffer" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="-1" subresourceindex="0" name="sphericalLightProps"/>
+              <resource componenttype="float" hlsltype="rtTexture2D" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="-1" subresourceindex="0" name="directionalSM"/>
+              <resource componenttype="float" hlsltype="rtTexture2D" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="-1" subresourceindex="0" name="pointLightSM"/>
+              <resource componenttype="float" hlsltype="rtTexture2D" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="-1" subresourceindex="0" name="spotLightSM"/>
+              <resource componenttype="uint" hlsltype="rtBuffer" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="-1" subresourceindex="0" name="tileDiskLightIndices"/>
+              <resource componenttype="::lights::parameters::disk" hlsltype="rtStructuredBuffer" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="-1" subresourceindex="0" name="diskLightProps"/>
+              <resource componenttype="::lights::proxy_shapes::sphere" hlsltype="rtStructuredBuffer" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="-1" subresourceindex="0" name="diskLightProxyShapes"/>
+            </resources>
+            <structures>
+              <structure name="output"/>
+            </structures>
+          </effect>
+          <effect name="ambient_lighting" participateinbuild="True">
+            <passes>
+              <pass title="Diffuse + Specular" type="1">
+                <shaders>
+                  <vertex reference="shaders::vertex_to_pixel::fstriangle" attributes=""/>
+                  <pixel reference="forward_plus::ambient_lighting::ambient_lighting" attributes=""/>
+                  <compute reference="" attributes=""/>
+                  <geometry reference="" attributes=""/>
+                </shaders>
+              </pass>
+            </passes>
+            <cbuffers>
+              <cbuffer buffertype="cbtConstant" forceregister="-1" name="constants"/>
+            </cbuffers>
+            <functions>
+              <function shaderprofile="ps_5_0" name="ambient_lighting"/>
+            </functions>
+            <resources>
+              <resource componenttype="float" hlsltype="rtTexture2D" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="-1" subresourceindex="0" name="aoTexture"/>
+              <resource componenttype="float4" hlsltype="rtTexture2D" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="-1" subresourceindex="0" name="normalWSTexture"/>
+              <resource componenttype="float2" hlsltype="rtTexture2D" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="-1" subresourceindex="0" name="metallicRoughnessTexture"/>
+              <resource componenttype="float3" hlsltype="rtTexture2D" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="-1" subresourceindex="0" name="albedoTexture"/>
+              <resource componenttype="float4" hlsltype="rtTextureCube" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="-1" subresourceindex="0" name="sceneEnvMap"/>
+              <resource componenttype="float2" hlsltype="rtTexture2D" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="-1" subresourceindex="0" name="envBRDF"/>
+              <resource componenttype="float" hlsltype="rtTexture2D" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="-1" subresourceindex="0" name="depthVSTexture"/>
+            </resources>
+          </effect>
+        </effects>
+        <namespaces>
+          <namespace name="constants">
+            <cbuffers>
+              <cbuffer buffertype="cbtConstant" forceregister="8" name="frame"/>
+            </cbuffers>
+          </namespace>
+        </namespaces>
+      </namespace>
+      <namespace name="functions">
+        <namespaces>
+          <namespace name="lighting">
+            <functions>
+              <function shaderprofile="" name="hemispherical_ambient"/>
+              <function shaderprofile="" name="distance_attenuation"/>
+              <function shaderprofile="" name="distance_fog"/>
+              <function shaderprofile="" name="normalize_vertex_shading_vectors"/>
+              <function shaderprofile="" name="point_light_shadow"/>
+              <function shaderprofile="" name="directional_light_shadow"/>
+              <function shaderprofile="" name="volumetric_lighting"/>
+              <function shaderprofile="" name="directional_light_raw_shadow"/>
+              <function shaderprofile="" name="spot_light_shadow"/>
+              <function shaderprofile="" name="angular_attenuation"/>
+              <function shaderprofile="" name="compute_specular_ibl"/>
+              <function shaderprofile="" name="approximate_specular_ibl"/>
+            </functions>
+            <namespaces>
+              <namespace name="standard">
+                <functions>
+                  <function shaderprofile="" name="brdf"/>
+                  <function shaderprofile="" name="spherical_area_light"/>
+                  <function shaderprofile="" name="directional_light"/>
+                  <function shaderprofile="" name="disk_area_light"/>
+                  <function shaderprofile="" name="disk_or_sphere_illuminance"/>
+                </functions>
+              </namespace>
+            </namespaces>
+          </namespace>
+          <namespace name="math">
+            <functions>
+              <function shaderprofile="" name="deg_to_rad"/>
+              <function shaderprofile="" name="sgn"/>
+              <function shaderprofile="" name="sqr"/>
+              <function shaderprofile="" name="swap"/>
+              <function shaderprofile="" name="halton_sequence"/>
+              <function shaderprofile="" name="distance_sqr"/>
+              <function shaderprofile="" name="normalized_cross"/>
+              <function shaderprofile="" name="uv_noise"/>
+            </functions>
+          </namespace>
+          <namespace name="transforms">
+            <functions>
+              <function shaderprofile="" name="depth_z_to_view_z"/>
+              <function shaderprofile="" name="clip_space_to_view_space"/>
+              <function shaderprofile="" name="tile_id_to_index"/>
+              <function shaderprofile="" name="pixel_to_tile_index"/>
+              <function shaderprofile="" name="transform_vertex"/>
+              <function shaderprofile="" name="tangent_basis"/>
+              <function shaderprofile="" name="apply_normal_mapping"/>
+              <function shaderprofile="" name="reconstruct_view_z_position"/>
+              <function shaderprofile="" name="nearest_axis"/>
+              <function shaderprofile="" name="cube_uvw_to_uv"/>
+              <function shaderprofile="" name="cube_uvw_to_face"/>
+            </functions>
+          </namespace>
+          <namespace name="color">
+            <functions>
+              <function shaderprofile="" name="clamp_brightness_linear_luminance"/>
+              <function shaderprofile="" name="brightness"/>
+              <function shaderprofile="" name="color_grading"/>
+              <function shaderprofile="" name="vignette_factor"/>
+              <function shaderprofile="" name="filmic_tonemap"/>
+            </functions>
+          </namespace>
+          <namespace name="compression">
+            <functions>
+              <function shaderprofile="" name="unpack_normal"/>
+            </functions>
+          </namespace>
+          <namespace name="camera">
+            <functions>
+              <function shaderprofile="" name="calculate_coc"/>
+            </functions>
+          </namespace>
+          <namespace name="materials">
+            <namespaces>
+              <namespace name="standard">
+                <functions>
+                  <function shaderprofile="" name="all_alpha_test"/>
+                  <function shaderprofile="" name="normal"/>
+                  <function shaderprofile="" name="emission"/>
+                  <function shaderprofile="" name="albedo_alpha"/>
+                  <function shaderprofile="" name="metallic_roughness"/>
+                  <function shaderprofile="" name="alpha_test"/>
+                  <function shaderprofile="" name="all"/>
+                  <function shaderprofile="" name="occlusion"/>
+                </functions>
+              </namespace>
+              <namespace name="unlit">
+                <functions>
+                  <function shaderprofile="" name="alpha_test"/>
+                </functions>
+              </namespace>
+            </namespaces>
+          </namespace>
+        </namespaces>
+      </namespace>
+      <namespace name="samplers">
+        <resources>
+          <resource componenttype="" hlsltype="rtSamplerState" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="0" subresourceindex="0" name="linearClamp"/>
+          <resource componenttype="" hlsltype="rtSamplerState" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="1" subresourceindex="0" name="linearWrap"/>
+          <resource componenttype="" hlsltype="rtSamplerState" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="5" subresourceindex="0" name="surface"/>
+          <resource componenttype="" hlsltype="rtSamplerState" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="2" subresourceindex="0" name="pointBorderWhite"/>
+          <resource componenttype="" hlsltype="rtSamplerState" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="3" subresourceindex="0" name="pointClamp"/>
+          <resource componenttype="" hlsltype="rtSamplerState" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="4" subresourceindex="0" name="pointWrap"/>
+          <resource componenttype="" hlsltype="rtSamplerComparisonState" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="6" subresourceindex="0" name="cmpShadow"/>
+          <resource componenttype="" hlsltype="rtSamplerComparisonState" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="7" subresourceindex="0" name="cmpShadowPoint"/>
+          <resource componenttype="" hlsltype="rtSamplerState" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="8" subresourceindex="0" name="aniso4x"/>
+        </resources>
+      </namespace>
+      <namespace name="vertices">
+        <structures>
+          <structure name="unskinned"/>
+          <structure name="skinned"/>
+          <structure name="fstriangle"/>
+          <structure name="no_shading"/>
+          <structure name="shading"/>
+          <structure name="unskinned_uv"/>
+        </structures>
+      </namespace>
+      <namespace name="external_shaders">
+        <functions>
+          <function shaderprofile="" name="fxaa"/>
+        </functions>
+      </namespace>
+      <namespace name="lights">
+        <namespaces>
+          <namespace name="proxy_shapes">
+            <structures>
+              <structure name="sphere"/>
+            </structures>
+          </namespace>
+          <namespace name="parameters">
+            <structures>
+              <structure name="spherical"/>
+              <structure name="disk"/>
+            </structures>
+          </namespace>
+        </namespaces>
+      </namespace>
+      <namespace name="constants">
+        <cbuffers>
+          <cbuffer buffertype="cbtConstant" forceregister="0" name="frame"/>
+          <cbuffer buffertype="cbtConstant" forceregister="2" name="instanced_draw"/>
+        </cbuffers>
+      </namespace>
+      <namespace name="shaders">
+        <namespaces>
+          <namespace name="vertex_to_pixel">
+            <functions>
+              <function shaderprofile="vs_5_0" name="unskinned"/>
+              <function shaderprofile="vs_5_0" name="fstriangle"/>
+              <function shaderprofile="vs_5_0" name="sky"/>
+              <function shaderprofile="vs_5_0" name="unskinned_depth"/>
+            </functions>
+          </namespace>
+          <namespace name="pixel">
+            <functions>
+              <function shaderprofile="ps_5_0" name="standard_depth"/>
+              <function shaderprofile="ps_5_0" name="unlit_depth"/>
+            </functions>
+          </namespace>
+        </namespaces>
+      </namespace>
+      <namespace name="instance_data">
+        <structures>
+          <structure name="unskinned_instance_data"/>
+        </structures>
+      </namespace>
+      <namespace name="effects">
+        <effects>
+          <effect name="shadow_maps" participateinbuild="True">
+            <passes>
+              <pass title="Spot-Light Shadow Maps" type="1">
+                <shaders>
+                  <vertex reference="shaders::vertex_to_pixel::unskinned" attributes=""/>
+                  <pixel reference="shaders::pixel::standard_depth" attributes=""/>
+                  <compute reference="" attributes=""/>
+                  <geometry reference="" attributes=""/>
+                </shaders>
+              </pass>
+              <pass title="Point-Light Shadow Maps" type="1">
+                <shaders>
+                  <vertex reference="effects::shadow_maps::unskinned" attributes=""/>
+                  <pixel reference="shaders::pixel::standard_depth" attributes=""/>
+                  <compute reference="" attributes=""/>
+                  <geometry reference="" attributes=""/>
+                </shaders>
+              </pass>
+              <pass title="Directional Shadow Map" type="1">
+                <shaders>
+                  <vertex reference="effects::shadow_maps::unskinned" attributes=""/>
+                  <pixel reference="shaders::pixel::standard_depth" attributes=""/>
+                  <compute reference="" attributes=""/>
+                  <geometry reference="" attributes=""/>
+                </shaders>
+              </pass>
+            </passes>
+            <cbuffers>
+              <cbuffer buffertype="cbtConstant" forceregister="-1" name="constants"/>
+            </cbuffers>
+            <functions>
+              <function shaderprofile="vs_5_0" name="unskinned"/>
+            </functions>
+          </effect>
+          <effect name="fxaa" participateinbuild="True">
+            <passes>
+              <pass title="FXAA" type="1">
+                <shaders>
+                  <vertex reference="shaders::vertex_to_pixel::fstriangle" attributes=""/>
+                  <pixel reference="effects::fxaa::fxaa" attributes=""/>
+                  <compute reference="" attributes=""/>
+                  <geometry reference="" attributes=""/>
+                </shaders>
+              </pass>
+            </passes>
+            <functions>
+              <function shaderprofile="ps_5_0" name="fxaa"/>
+            </functions>
+            <resources>
+              <resource componenttype="float4" hlsltype="rtTexture2D" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="-1" subresourceindex="0" name="colorTexture"/>
+            </resources>
+          </effect>
+          <effect name="gaussian_blur" participateinbuild="True">
+            <passes>
+              <pass title="Horizontal Blur" type="0">
+                <shaders>
+                  <vertex reference="" attributes=""/>
+                  <pixel reference="" attributes=""/>
+                  <compute reference="effects::gaussian_blur::blur_x" attributes=""/>
+                  <geometry reference="" attributes=""/>
+                </shaders>
+              </pass>
+              <pass title="Vertical Blur" type="0">
+                <shaders>
+                  <vertex reference="" attributes=""/>
+                  <pixel reference="" attributes=""/>
+                  <compute reference="effects::gaussian_blur::blur_y" attributes=""/>
+                  <geometry reference="" attributes=""/>
+                </shaders>
+              </pass>
+            </passes>
+            <cbuffers>
+              <cbuffer buffertype="cbtConstant" forceregister="-1" name="constants"/>
+            </cbuffers>
+            <functions>
+              <function shaderprofile="cs_5_0" name="blur_x"/>
+              <function shaderprofile="cs_5_0" name="blur_y"/>
+            </functions>
+            <resources>
+              <resource componenttype="float4" hlsltype="rtTexture2D" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="-1" subresourceindex="0" name="sourceTexture"/>
+              <resource componenttype="float4" hlsltype="rtTexture2D" gpuaccessmode="amReadWrite" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="0" subresourceindex="0" name="destTextureRW"/>
+            </resources>
+          </effect>
+          <effect name="dof" participateinbuild="True">
+            <passes>
+              <pass title="Calculate CoC" type="1">
+                <shaders>
+                  <vertex reference="shaders::vertex_to_pixel::fstriangle" attributes=""/>
+                  <pixel reference="effects::dof::calculate_oc" attributes=""/>
+                  <compute reference="" attributes=""/>
+                  <geometry reference="" attributes=""/>
+                </shaders>
+              </pass>
+              <pass title="Horizontal Blur" type="0">
+                <shaders>
+                  <vertex reference="" attributes=""/>
+                  <pixel reference="" attributes=""/>
+                  <compute reference="effects::dof::blur_x" attributes=""/>
+                  <geometry reference="" attributes=""/>
+                </shaders>
+              </pass>
+              <pass title="Vertical Blur" type="0">
+                <shaders>
+                  <vertex reference="" attributes=""/>
+                  <pixel reference="" attributes=""/>
+                  <compute reference="effects::dof::blur_y" attributes=""/>
+                  <geometry reference="" attributes=""/>
+                </shaders>
+              </pass>
+            </passes>
+            <cbuffers>
+              <cbuffer buffertype="cbtConstant" forceregister="-1" name="constants"/>
+            </cbuffers>
+            <functions>
+              <function shaderprofile="cs_5_0" name="blur_x"/>
+              <function shaderprofile="cs_5_0" name="blur_y"/>
+              <function shaderprofile="ps_5_0" name="calculate_oc"/>
+            </functions>
+            <resources>
+              <resource componenttype="float4" hlsltype="rtTexture2D" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="-1" subresourceindex="0" name="colorTexture"/>
+              <resource componenttype="float" hlsltype="rtTexture2D" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="-1" subresourceindex="0" name="cocTexture"/>
+              <resource componenttype="float4" hlsltype="rtTexture2D" gpuaccessmode="amReadWrite" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="-1" subresourceindex="0" name="destTextureRW"/>
+              <resource componenttype="float4" hlsltype="rtTexture2D" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="-1" subresourceindex="0" name="depthVSTexture"/>
+            </resources>
+          </effect>
+          <effect name="tonemapping" participateinbuild="True">
+            <passes>
+              <pass title="Tonemapping" type="1">
+                <shaders>
+                  <vertex reference="shaders::vertex_to_pixel::fstriangle" attributes=""/>
+                  <pixel reference="effects::tonemapping::tonemap" attributes=""/>
+                  <compute reference="" attributes=""/>
+                  <geometry reference="" attributes=""/>
+                </shaders>
+              </pass>
+            </passes>
+            <cbuffers>
+              <cbuffer buffertype="cbtConstant" forceregister="-1" name="constants"/>
+            </cbuffers>
+            <functions>
+              <function shaderprofile="ps_5_0" name="tonemap"/>
+            </functions>
+            <resources>
+              <resource componenttype="float4" hlsltype="rtTexture2D" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="-1" subresourceindex="0" name="hdrTexture"/>
+              <resource componenttype="float" hlsltype="rtTexture2D" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="-1" subresourceindex="0" name="luminanceTexture"/>
+              <resource componenttype="float4" hlsltype="rtTexture2D" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="-1" subresourceindex="0" name="bloomTexture"/>
+              <resource componenttype="float3" hlsltype="rtTexture3D" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="-1" subresourceindex="0" name="colorLUTSrc"/>
+              <resource componenttype="float3" hlsltype="rtTexture3D" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="-1" subresourceindex="0" name="colorLUTDest"/>
+            </resources>
+          </effect>
+          <effect name="hdr_bloom" participateinbuild="True">
+            <passes>
+              <pass title="Luminance &amp; Brightness" type="0">
+                <shaders>
+                  <vertex reference="" attributes=""/>
+                  <pixel reference="" attributes=""/>
+                  <compute reference="effects::hdr_bloom::luminance_brightness" attributes=""/>
+                  <geometry reference="" attributes=""/>
+                </shaders>
+              </pass>
+              <pass title="Average Luminance" type="0">
+                <shaders>
+                  <vertex reference="" attributes=""/>
+                  <pixel reference="" attributes=""/>
+                  <compute reference="effects::hdr_bloom::average_luminance" attributes=""/>
+                  <geometry reference="" attributes=""/>
+                </shaders>
+              </pass>
+              <pass title="Blur" type="1">
+                <shaders>
+                  <vertex reference="" attributes=""/>
+                  <pixel reference="" attributes=""/>
+                  <compute reference="" attributes=""/>
+                  <geometry reference="" attributes=""/>
+                </shaders>
+              </pass>
+              <pass title="Combine" type="0">
+                <shaders>
+                  <vertex reference="shaders::vertex::fstriangle" attributes=""/>
+                  <pixel reference="" attributes=""/>
+                  <compute reference="effects::hdr_bloom::combine" attributes=""/>
+                  <geometry reference="" attributes=""/>
+                </shaders>
+              </pass>
+            </passes>
+            <cbuffers>
+              <cbuffer buffertype="cbtConstant" forceregister="-1" name="combine_constants"/>
+              <cbuffer buffertype="cbtConstant" forceregister="-1" name="constants"/>
+            </cbuffers>
+            <functions>
+              <function shaderprofile="cs_5_0" name="luminance_brightness"/>
+              <function shaderprofile="cs_5_0" name="combine"/>
+              <function shaderprofile="cs_5_0" name="average_luminance"/>
+            </functions>
+            <resources>
+              <resource componenttype="float3" hlsltype="rtTexture2D" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="-1" subresourceindex="0" name="colorTexture"/>
+              <resource componenttype="float3" hlsltype="rtTexture2D" gpuaccessmode="amReadWrite" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="-1" subresourceindex="0" name="brightness1TextureRW"/>
+              <resource componenttype="float3" hlsltype="rtTexture2D" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="-1" subresourceindex="0" name="brightness1Texture"/>
+              <resource componenttype="float" hlsltype="rtTexture2D" gpuaccessmode="amReadWrite" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="-1" subresourceindex="0" name="luminanceTextureRW"/>
+              <resource componenttype="float3" hlsltype="rtTexture2D" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="-1" subresourceindex="1" name="brightness2Texture"/>
+              <resource componenttype="float3" hlsltype="rtTexture2D" gpuaccessmode="amReadWrite" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="-1" subresourceindex="1" name="brightness2TextureRW"/>
+              <resource componenttype="float3" hlsltype="rtTexture2D" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="-1" subresourceindex="2" name="brightness3Texture"/>
+              <resource componenttype="float3" hlsltype="rtTexture2D" gpuaccessmode="amReadWrite" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="-1" subresourceindex="2" name="brightness3TextureRW"/>
+              <resource componenttype="float3" hlsltype="rtTexture2D" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="-1" subresourceindex="3" name="brightness4Texture"/>
+              <resource componenttype="float3" hlsltype="rtTexture2D" gpuaccessmode="amReadWrite" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="-1" subresourceindex="3" name="brightness4TextureRW"/>
+              <resource componenttype="float3" hlsltype="rtTexture2D" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="-1" subresourceindex="0" name="tempBloomTexture"/>
+              <resource componenttype="float3" hlsltype="rtTexture2D" gpuaccessmode="amReadWrite" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="0" subresourceindex="0" name="bloomTextureRW"/>
+              <resource componenttype="float" hlsltype="rtTexture2D" gpuaccessmode="amReadWrite" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="-1" subresourceindex="0" name="lastLuminanceTextureRW"/>
+            </resources>
+          </effect>
+          <effect name="film_grain" participateinbuild="True">
+            <passes>
+              <pass title="Film Grain" type="1">
+                <shaders>
+                  <vertex reference="shaders::vertex_to_pixel::fstriangle" attributes=""/>
+                  <pixel reference="effects::film_grain::film_grain" attributes=""/>
+                  <compute reference="" attributes=""/>
+                  <geometry reference="" attributes=""/>
+                </shaders>
+              </pass>
+            </passes>
+            <cbuffers>
+              <cbuffer buffertype="cbtConstant" forceregister="-1" name="constants"/>
+            </cbuffers>
+            <functions>
+              <function shaderprofile="ps_5_0" name="film_grain"/>
+            </functions>
+          </effect>
+          <effect name="vignette" participateinbuild="True">
+            <passes>
+              <pass title="Vignette" type="1">
+                <shaders>
+                  <vertex reference="shaders::vertex_to_pixel::fstriangle" attributes=""/>
+                  <pixel reference="effects::vignette::vignette" attributes=""/>
+                  <compute reference="" attributes=""/>
+                  <geometry reference="" attributes=""/>
+                </shaders>
+              </pass>
+            </passes>
+            <cbuffers>
+              <cbuffer buffertype="cbtConstant" forceregister="-1" name="constants"/>
+            </cbuffers>
+            <functions>
+              <function shaderprofile="ps_5_0" name="vignette"/>
+            </functions>
+          </effect>
+          <effect name="overlay" participateinbuild="True">
+            <passes>
+              <pass title="Overlay" type="1">
+                <shaders>
+                  <vertex reference="shaders::vertex_to_pixel::fstriangle" attributes=""/>
+                  <pixel reference="effects::overlay::overlay" attributes=""/>
+                  <compute reference="" attributes=""/>
+                  <geometry reference="" attributes=""/>
+                </shaders>
+              </pass>
+            </passes>
+            <functions>
+              <function shaderprofile="ps_5_0" name="overlay"/>
+            </functions>
+            <resources>
+              <resource componenttype="float4" hlsltype="rtTexture2D" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="-1" subresourceindex="0" name="overlayTexture"/>
+            </resources>
+          </effect>
+          <effect name="volumetric_lighting" participateinbuild="True">
+            <passes>
+              <pass title="Low-Pass" type="0">
+                <shaders>
+                  <vertex reference="" attributes=""/>
+                  <pixel reference="" attributes=""/>
+                  <compute reference="effects::volumetric_lighting::volumetric_lighting" attributes=""/>
+                  <geometry reference="" attributes=""/>
+                </shaders>
+              </pass>
+              <pass title="Bilateral Blur" type="1">
+                <shaders>
+                  <vertex reference="" attributes=""/>
+                  <pixel reference="" attributes=""/>
+                  <compute reference="" attributes=""/>
+                  <geometry reference="" attributes=""/>
+                </shaders>
+              </pass>
+              <pass title="Apply Transmittance" type="1">
+                <shaders>
+                  <vertex reference="shaders::vertex_to_pixel::fstriangle" attributes=""/>
+                  <pixel reference="effects::volumetric_lighting::apply_transmittance" attributes=""/>
+                  <compute reference="" attributes=""/>
+                  <geometry reference="" attributes=""/>
+                </shaders>
+              </pass>
+              <pass title="Upsample + Combine" type="1">
+                <shaders>
+                  <vertex reference="" attributes=""/>
+                  <pixel reference="" attributes=""/>
+                  <compute reference="" attributes=""/>
+                  <geometry reference="" attributes=""/>
+                </shaders>
+              </pass>
+            </passes>
+            <cbuffers>
+              <cbuffer buffertype="cbtConstant" forceregister="-1" name="constants"/>
+            </cbuffers>
+            <functions>
+              <function shaderprofile="cs_5_0" name="volumetric_lighting"/>
+              <function shaderprofile="ps_5_0" name="apply_transmittance"/>
+            </functions>
+            <resources>
+              <resource componenttype="float" hlsltype="rtTexture2D" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="-1" subresourceindex="0" name="viewDepthTexture"/>
+              <resource componenttype="float4" hlsltype="rtTexture2D" gpuaccessmode="amReadWrite" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="-1" subresourceindex="0" name="volumetricLightingRW"/>
+              <resource componenttype="float" hlsltype="rtTexture2D" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="-1" subresourceindex="0" name="directionalSM"/>
+              <resource componenttype="float4" hlsltype="rtTexture2D" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="-1" subresourceindex="0" name="volumetricLighting"/>
+            </resources>
+          </effect>
+          <effect name="ssao" participateinbuild="True">
+            <passes>
+              <pass title="HBAO+" type="1">
+                <shaders>
+                  <vertex reference="" attributes=""/>
+                  <pixel reference="" attributes=""/>
+                  <compute reference="" attributes=""/>
+                  <geometry reference="" attributes=""/>
+                </shaders>
+              </pass>
+            </passes>
+          </effect>
+          <effect name="bilateral_blur" participateinbuild="True">
+            <passes>
+              <pass title="Horizontal" type="0">
+                <shaders>
+                  <vertex reference="" attributes=""/>
+                  <pixel reference="" attributes=""/>
+                  <compute reference="effects::bilateral_blur::blur_x" attributes=""/>
+                  <geometry reference="" attributes=""/>
+                </shaders>
+              </pass>
+              <pass title="Vertical" type="0">
+                <shaders>
+                  <vertex reference="" attributes=""/>
+                  <pixel reference="" attributes=""/>
+                  <compute reference="effects::bilateral_blur::blur_y" attributes=""/>
+                  <geometry reference="" attributes=""/>
+                </shaders>
+              </pass>
+            </passes>
+            <cbuffers>
+              <cbuffer buffertype="cbtConstant" forceregister="-1" name="constants"/>
+            </cbuffers>
+            <functions>
+              <function shaderprofile="cs_5_0" name="blur_x"/>
+              <function shaderprofile="cs_5_0" name="blur_y"/>
+            </functions>
+            <resources>
+              <resource componenttype="float4" hlsltype="rtTexture2D" gpuaccessmode="amReadWrite" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="0" subresourceindex="0" name="destTextureRW"/>
+              <resource componenttype="float4" hlsltype="rtTexture2D" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="-1" subresourceindex="0" name="sourceTexture"/>
+              <resource componenttype="float" hlsltype="rtTexture2D" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="0" subresourceindex="0" name="viewDepthTexture"/>
+            </resources>
+          </effect>
+          <effect name="halfres_upsample" participateinbuild="True">
+            <passes>
+              <pass title="Upsample" type="1">
+                <shaders>
+                  <vertex reference="shaders::vertex_to_pixel::fstriangle" attributes=""/>
+                  <pixel reference="effects::halfres_upsample::halfres_upsample" attributes=""/>
+                  <compute reference="" attributes=""/>
+                  <geometry reference="" attributes=""/>
+                </shaders>
+              </pass>
+            </passes>
+            <functions>
+              <function shaderprofile="ps_5_0" name="halfres_upsample"/>
+            </functions>
+            <resources>
+              <resource componenttype="float4" hlsltype="rtTexture2D" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="-1" subresourceindex="0" name="viewDepthTexture"/>
+              <resource componenttype="float4" hlsltype="rtTexture2D" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="-1" subresourceindex="0" name="sourceTexture"/>
+            </resources>
+          </effect>
+          <effect name="min_z_downsampling" participateinbuild="True">
+            <passes>
+              <pass title="Downsample" type="0">
+                <shaders>
+                  <vertex reference="" attributes=""/>
+                  <pixel reference="" attributes=""/>
+                  <compute reference="effects::min_z_downsampling::min_z_downsampling" attributes=""/>
+                  <geometry reference="" attributes=""/>
+                </shaders>
+              </pass>
+            </passes>
+            <cbuffers>
+              <cbuffer buffertype="cbtConstant" forceregister="-1" name="constants"/>
+            </cbuffers>
+            <functions>
+              <function shaderprofile="cs_5_0" name="min_z_downsampling"/>
+            </functions>
+            <resources>
+              <resource componenttype="float" hlsltype="rtTexture2D" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="0" subresourceindex="0" name="depthTexture"/>
+              <resource componenttype="float" hlsltype="rtTexture2D" gpuaccessmode="amReadWrite" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="1" subresourceindex="0" name="depthTextureRW"/>
+            </resources>
+          </effect>
+        </effects>
+      </namespace>
+      <namespace name="resources">
+        <namespaces>
+          <namespace name="instancing">
+            <resources>
+              <resource componenttype="::instance_data::unskinned_instance_data" hlsltype="rtStructuredBuffer" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="0" subresourceindex="0" name="unskinnedInstanceData"/>
+            </resources>
+          </namespace>
+          <namespace name="material_constants">
+            <resources>
+              <resource componenttype="::materials::constants::standard" hlsltype="rtStructuredBuffer" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="1" subresourceindex="0" name="standard"/>
+            </resources>
+          </namespace>
+        </namespaces>
+      </namespace>
+      <namespace name="materials">
+        <structures>
+          <structure name="standard"/>
+        </structures>
+        <namespaces>
+          <namespace name="constants">
+            <structures>
+              <structure name="standard"/>
+            </structures>
+          </namespace>
+          <namespace name="textures">
+            <namespaces>
+              <namespace name="standard">
+                <resources>
+                  <resource componenttype="float4" hlsltype="rtTexture2D" gpuaccessmode="amRead" samplecount="1" semantic="AlbedoCutout" uavinitialcount="0x0" forceregister="16" subresourceindex="0" name="albedoAlphaTexture"/>
+                  <resource componenttype="float" hlsltype="rtTexture2D" gpuaccessmode="amRead" samplecount="1" semantic="AO" uavinitialcount="0x0" forceregister="19" subresourceindex="0" name="occlusionTexture"/>
+                  <resource componenttype="float3" hlsltype="rtTexture2D" gpuaccessmode="amRead" samplecount="1" semantic="Emission" uavinitialcount="0x0" forceregister="20" subresourceindex="0" name="emissionTexture"/>
+                  <resource componenttype="float2" hlsltype="rtTexture2D" gpuaccessmode="amRead" samplecount="1" semantic="Normal" uavinitialcount="0x0" forceregister="18" subresourceindex="0" name="normalTexture"/>
+                  <resource componenttype="float4" hlsltype="rtTexture2D" gpuaccessmode="amRead" samplecount="1" semantic="MetallicSmoothness" uavinitialcount="0x0" forceregister="17" subresourceindex="0" name="metallicSmoothnessTexture"/>
+                </resources>
+              </namespace>
+              <namespace name="unlit">
+                <resources>
+                  <resource componenttype="float4" hlsltype="rtTexture2D" gpuaccessmode="amRead" samplecount="1" semantic="" uavinitialcount="0x0" forceregister="16" subresourceindex="0" name="colorTexture"/>
+                </resources>
+              </namespace>
+            </namespaces>
+          </namespace>
+        </namespaces>
+      </namespace>
+    </namespaces>
+  </sources>
+</project>

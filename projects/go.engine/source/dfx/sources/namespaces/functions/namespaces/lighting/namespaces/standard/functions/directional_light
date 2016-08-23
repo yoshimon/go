@@ -1,0 +1,50 @@
+/*
+    Calculates the lighting contribution of a directional light.
+
+    \param lightDirWS The light direction in world-space.
+    \param lightColor The pre-multiplied light color.
+    \param positionWS The world-space fragment position.
+    \param normalWS The world-space shading normal.
+    \param viewDirWS The world-space camera view direction.
+    \param albedo The surface albedo.
+    \param metallic The "metallic"-ness of the surface.
+    \param roughness The material roughness.
+    \param[out] outDiffuse Accumulated diffuse color.
+    \param[out] outSpecular Accumulated specular color.
+ */
+void $(
+    float3 lightDirWS,
+    float3 lightColor,
+    float3 positionWS,
+    float3 normalWS,
+    float3 viewDirWS,
+    float3 albedo,
+    float roughness,
+    float metallic,
+    inout float3 outDiffuse,
+    inout float3 outSpecular)
+{
+    float NoL = dot(normalWS, lightDirWS);
+    if(NoL > 0.0)
+    {
+        // Shadows
+        float shadowContrib = NoL * ::functions::lighting::directional_light_shadow(::forward_plus::shading::directionalSM, positionWS);
+
+        if(shadowContrib > 0.0)
+        {
+            float3 diffuse;
+            float3 specular;
+            ::functions::lighting::standard::brdf(
+                viewDirWS, lightDirWS, normalWS,
+                albedo, roughness, 1.0, metallic,
+                diffuse, specular);
+
+            // TODO: calculate transmittance
+            // ...how?
+
+            // Combine
+            outDiffuse += (lightColor * diffuse) * shadowContrib;
+            outSpecular += (lightColor * specular) * shadowContrib;
+        }
+    }
+}

@@ -1,0 +1,25 @@
+/*!
+    Extracts the surface information from a standard material.
+
+    Performs
+
+    \param uv The texture-space UV of the surface.
+    \param materialIndex The material index.
+
+    \return The surface data.
+ */
+::materials::standard $(float2 uv, uint materialIndex)
+{
+    ::materials::standard material = (::materials::standard)0;
+
+    // Fetch material constants
+    ::materials::constants::standard constants = ::resources::material_constants::standard[materialIndex];
+
+    // Fetch material textures
+    ::functions::materials::standard::albedo_alpha(material, uv, constants.cutoutThreshold);
+    ::functions::materials::standard::normal(material, uv);
+    ::functions::materials::standard::metallic_roughness(material, uv);
+    ::functions::materials::standard::emission(material, uv, constants.emissiveTint, constants.emissiveIntensity);
+
+    return material;
+}

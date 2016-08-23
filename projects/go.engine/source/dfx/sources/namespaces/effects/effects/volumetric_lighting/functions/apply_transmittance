@@ -1,0 +1,73 @@
+/*!
+    Applies the accumulated transmitted to the incident radiance.
+ */
+float3 $(vertices::fstriangle input) : SV_Target
+{
+    // View-space depth
+    const float upsampleDepthThreshold = 0.5;
+
+    // Full resolution depth
+    float fullResDepth = ::effects::volumetric_lighting::viewDepthTexture.Load(uint3(input.posClipSpace.xy, 0));
+
+    // Downsampled depth
+    float4 dsDepth = ::effects::volumetric_lighting::viewDepthTexture.GatherRed(::samplers::linearClamp, input.uv, 1);
+
+    // Get the native resolution
+    float2 lowResTexSize = ::constants::frame::g_halfResolutionRcp;
+
+    float minDepthDiff = upsampleDepthThreshold;
+
+    // Gather
+    // W Z
+    // X Y
+    float dd0 = abs(dsDepth.w - fullResDepth);
+    bool rejectSample = dd0 < upsampleDepthThreshold;
+
+    // W
+    float2 UV00 = input.uv - 0.5f * lowResTexSize;
+    float2 nearestUV = UV00;
+    if(dd0 < minDepthDiff)
+    {
+        minDepthDiff = dd0;
+        nearestUV = UV00;
+    }
+
+    // Z
+    {
+        float ddi = abs(dsDepth.z - fullResDepth);
+        float2 UV10 = float2(UV00.x + lowResTexSize.x, UV00.y);
+        rejectSample = rejectSample && ddi < upsampleDepthThreshold;
+        if(ddi < minDepthDiff)
+        {
+            minDepthDiff = ddi;
+            nearestUV = UV10;
+        }
+    }
+
+    // X
+    {
+        float ddi = abs(dsDepth.x - fullResDepth);
+        rejectSample = rejectSample && ddi < upsampleDepthThreshold;
+        float2 UV01 = float2(UV00.x, UV00.y + lowResTexSize.y);
+        if(ddi < minDepthDiff)
+        {
+            minDepthDiff = ddi;
+            nearestUV = UV01;
+        }
+    }
+
+    // Y
+    {
+        float ddi = abs(dsDepth.y - fullResDepth);
+        rejectSample = rejectSample && ddi < upsampleDepthThreshold;
+        float2 UV11 = UV00 + lowResTexSize;
+        if(ddi < minDepthDiff)
+        {
+            minDepthDiff = ddi;
+            nearestUV = UV11;
+        }
+    }
+
+    return rejectSample ? ::effects::volumetric_lighting::volumetricLighting.SampleLevel(::samplers::linearClamp, input.uv, 0).a :
+                          ::effects::volumetric_lighting::volumetricLighting.SampleLevel(::samplers::pointClamp, nearestUV, 0).a;
+}

@@ -1,0 +1,21 @@
+/*!
+    Returns the flattened tile index.
+
+    \param tileID The tile ID (X,Y).
+    \param The number of thread groups in X.
+
+    \return The flattened tile index.
+ */
+uint $(uint2 tileID, uint threadGroupsX)
+{
+    return tileID.y * threadGroupsX + tileID.x;
+}
+
+
+/*!
+    \overload
+ */
+uint $(uint3 tileID, uint2 threadGroups)
+{
+    return tileID.x + tileID.y * threadGroups.x + threadGroups.x * threadGroups.y * tileID.z;
+}

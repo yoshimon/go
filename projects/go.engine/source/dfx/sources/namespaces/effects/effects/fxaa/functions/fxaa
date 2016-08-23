@@ -1,0 +1,36 @@
+/*!
+    FXAA fragment shader.
+
+    \param input The fragment to shade.
+
+    \return The anti-aliased color value.
+ */
+float3 $(in vertices::fstriangle input) : SV_Target
+{
+    float fxaaQualitySubpix = 1.0f; // Default: 0.75 Raise to increase amount of blur
+    float fxaaQualityEdgeThreshold = 0.125f; // Lower the value for more smoothing
+    float fxaaQualityEdgeThresholdMin = 0.0625f; // Lower the value for more smoothing
+
+    ::external_shaders::FxaaTex fxaaTex = { ::samplers::aniso4x, ::effects::fxaa::colorTexture };
+
+    float3 c0 = ::external_shaders::FxaaPixelShader(
+        input.uv,
+        0, //fxaaConsolePosPos
+        fxaaTex,
+        fxaaTex, //fxaaConsole360TexExpBiasNegOne
+        fxaaTex, //fxaaConsole360TexExpBiasNegTwo
+        ::constants::frame::g_nativeResolutionRcp, //fxaaQualityRcpFrame
+        0.f.xxxx, //fxaaConsoleRcpFrameOpt
+        0.f.xxxx, //fxaaConsoleRcpFrameOpt2
+        0.f.xxxx, //fxaaConsole360RcpFrameOpt2
+        fxaaQualitySubpix,
+        fxaaQualityEdgeThreshold,
+        fxaaQualityEdgeThresholdMin,
+        8.0, //fxaaConsoleEdgeSharpness
+        0.125, //fxaaConsoleEdgeThreshold
+        0.05, //fxaaConsoleEdgeThresholdMin
+        0 //fxaaConsole360ConstDir
+    ).rgb;
+
+    return saturate(c0);
+}

@@ -1,0 +1,12 @@
+/*!
+    Uncharted 2 tonemapping operator.
+
+    \param x The input pixel.
+
+    \return The tone-mapped pixel.
+ */
+float3 $(float3 x)
+{
+    return ((x*(DFX_TONEMAP_A*x+DFX_TONEMAP_C*DFX_TONEMAP_B)+DFX_TONEMAP_D*DFX_TONEMAP_E)/
+            (x*(DFX_TONEMAP_A*x+DFX_TONEMAP_B)+DFX_TONEMAP_D*DFX_TONEMAP_F))-DFX_TONEMAP_E/DFX_TONEMAP_F;
+}

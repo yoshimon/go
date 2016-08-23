@@ -1,0 +1,6 @@
+//! Object-space position.
+float3 positionOS : POSITION;
+//! Texture coordinates.
+float2 uv : TEXCOORD0;
+//! The instance ID.
+uint instanceID : SV_InstanceID;

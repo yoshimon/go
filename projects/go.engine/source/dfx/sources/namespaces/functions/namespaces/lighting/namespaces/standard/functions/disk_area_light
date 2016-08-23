@@ -1,0 +1,61 @@
+/*
+    Calculates the lighting contribution of a disk area light.
+
+    \param lightProxyShape The proxy shape of the light.
+    \param lightParams The light parameters.
+    \param positionWS The world-space shading position.
+    \param normalWS The world-space shading normal.
+    \param viewDirWS The world-space camera view direction.
+    \param albedo The surface albedo.
+    \param metallic The "metallic"-ness of the surface.
+    \param roughness The material roughness.
+    \param[out] outDiffuse Accumulated diffuse color.
+    \param[out] outSpecular Accumulated specular color.
+ */
+void $(
+    const ::lights::proxy_shapes::sphere lightProxyShape,
+    const ::lights::parameters::disk lightParams,
+    const Texture2D<float> shadowMapAtlas,
+    const float3 positionWS,
+    const float3 normalWS,
+    const float3 viewDirWS,
+    const float3 albedo,
+    const float metallic,
+    float roughness,
+    inout float3 outDiffuse,
+    inout float3 outSpecular)
+{
+    // Light influence bounds
+    const float3 posToLightWS = lightProxyShape.center - positionWS;
+    const float sqrLightDistWS = dot(posToLightWS, posToLightWS);
+    const float lightDistWS = sqrt(sqrLightDistWS);
+    const float3 lightDirWS = posToLightWS / lightDistWS;
+    const float cosTheta = dot(normalWS, lightDirWS);
+    const float sqrLightSizeWS = lightParams.radiusWS * lightParams.radiusWS;
+    const float sinSigmaSqr = sqrLightSizeWS / (sqrLightSizeWS + max(sqrLightSizeWS, sqrLightDistWS));
+    float illuminance = saturate(dot(lightParams.directionWS, -lightDirWS)) * ::functions::lighting::standard::disk_or_sphere_illuminance(cosTheta, sinSigmaSqr);
+
+    // Angular attenuation
+    const float3 posToVirtualLightDirWS = normalize(positionWS - lightParams.virtualPositionWS);
+    illuminance *= ::functions::lighting::angular_attenuation(posToVirtualLightDirWS, lightParams.directionWS, lightParams.angleScale, lightParams.angleBias);
+    illuminance *= ::functions::lighting::distance_attenuation(lightDistWS, lightProxyShape.radius);
+
+    if(illuminance > 0.0 && lightDistWS < lightProxyShape.radius)
+    {
+        // Shadows
+        illuminance *= lightParams.shadowCasterIndex < 0 ? 1.0 : ::functions::lighting::spot_light_shadow(shadowMapAtlas, lightParams.shadowCasterIndex, positionWS);
+        if(illuminance > 0.0)
+        {
+            float3 diffuse;
+            float3 specular;
+            ::functions::lighting::standard::brdf(
+                viewDirWS, lightDirWS, normalWS,
+                albedo, roughness, 1.0f, metallic,
+                diffuse, specular);
+
+            // Combine
+            outDiffuse += (lightParams.color * diffuse) * illuminance;
+            outSpecular += (lightParams.color * specular) * illuminance;
+        }
+    }
+}

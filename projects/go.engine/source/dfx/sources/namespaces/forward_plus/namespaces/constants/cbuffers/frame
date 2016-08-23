@@ -1,0 +1,7 @@
+/*************************************************************
+    Forward+ frame constants.
+ *************************************************************/
+//! The number of thread groups for the Forward+ prepass Dispatch().
+uint2 g_forwardPlusCullingNumThreadGroups;
+//! Padding.
+uint2 g_forwardPlusCullingNumThreadGroups_Padding;

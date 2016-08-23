@@ -1,0 +1,21 @@
+/*!
+    Calculates an entry of the halton sequence.
+
+    \param i The sample index.
+
+    \return The random value.
+ */
+float2 $_2d(int index)
+{
+    float2 result = 0.f.xx;
+    const int2 base = int2(3, 5); // First n prime numbers recommended
+    float2 f = 1.f.xx;
+    int2 i = index.xx;
+    while(i.x > 0 || i.y > 0)
+    {
+        f /= base;
+    	result += f * (i % base);
+    	i /= base;
+    }
+    return result;
+}

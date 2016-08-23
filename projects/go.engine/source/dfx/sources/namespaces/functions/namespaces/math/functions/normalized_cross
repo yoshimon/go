@@ -1,0 +1,22 @@
+/*!
+    Performs a cross product and normalizes the resulting vector.
+
+    \param b The first vector.
+    \param c The second vector.
+    \param w The w component of the resulting vector.
+
+    \return The normalized cross-product.
+*/
+float4 $(float3 a, float3 b, float w)
+{
+    return float4(normalize(cross(a, b)).xyz, w);
+}
+
+
+/*!
+    \overload
+ */
+float4 $(float4 a, float4 b, float w)
+{
+    return float4(normalize(cross(a.xyz, b.xyz)).xyz, w);
+}

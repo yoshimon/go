@@ -1,0 +1,15 @@
+/*!
+    Returns the amount of vignette for a given fragment location.
+
+    \param uv The UV coordinates of the fragment.
+    \param vignetteRadius The normalized radius of the effect.
+    \param vignetteStrength The strength of the effect.
+
+    \return The amount of vignette.
+ */
+float $(float2 uv, float vignetteRadius, float vignetteStrength)
+{
+    float borderDist = distance(uv, 0.5.xx) * 0.7;
+    float vignetteScale = smoothstep(vignetteRadius, vignetteRadius * 0.5, borderDist);
+    return lerp(1.0, vignetteScale, vignetteStrength);
+}

@@ -1,0 +1,8 @@
+//! Ambient color from above.
+float3 g_forwardPlusAmbientLightingColorAboveWS;
+//! Padding.
+float g_forwardPlusAmbientLightingColorAboveWS_Padding;
+//! The ambient color from below.
+float3 g_forwardPlusAmbientLightingColorBelowWS;
+//! Padding.
+float g_forwardPlusAmbientLightingColorBelowWS_Padding;

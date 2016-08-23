@@ -1,0 +1,5 @@
+// NOTE: the reference frame of this depends on the context this is being used in (e.g. world-space).
+//! The center of the light.
+float3 center;
+//! The radius of the light.
+float radius;

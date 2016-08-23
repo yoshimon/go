@@ -1,0 +1,23 @@
+/*!
+    Combines the current brightness- and bloom-texture.
+
+    \param globalTID System value.
+ */
+[numthreads(DFX_HDR_BLOOM_COMBINE_ADD_THREADS_X, DFX_HDR_BLOOM_COMBINE_ADD_THREADS_Y, 1)]
+void $(in uint3 globalTID : SV_DispatchThreadID)
+{
+    // The mip level to fetch from
+    const uint srcMipLevel = ::effects::hdr_bloom::combine_constants::g_hdrBloomCombineSourceMipLevel;
+    const uint destMipLevel = srcMipLevel - 1;
+    const float2 destTexelSize = ::effects::hdr_bloom::combine_constants::g_hdrBloomCombineTexelSize.xy;
+
+    // Corresponding output UVs
+    float2 uv = (globalTID.xy + 0.5) * destTexelSize;
+
+    // Load both colors
+    float3 c0 = ::effects::hdr_bloom::brightness1Texture.Load(uint3(globalTID.xy, destMipLevel));
+    float3 c1 = ::effects::hdr_bloom::tempBloomTexture.SampleLevel(::samplers::linearClamp, uv, srcMipLevel);
+
+    // Average
+    ::effects::hdr_bloom::bloomTextureRW[globalTID.xy] = 0.5 * (c0 + c1);
+}

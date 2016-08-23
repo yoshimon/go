@@ -1,0 +1,14 @@
+/*!
+    Returns the nearest major axis for a given vector.
+
+    \param v The vector to analyze.
+
+    \return The nearest major axis.
+ */
+inline float3 $(const float3 v)
+{
+    const float3 va = abs(v);
+    return va.x > va.y ?
+        (va.x > va.z ? float3(::functions::math::sgn(v.x), 0.0, 0.0) : float3(0.0, 0.0, ::functions::math::sgn(v.z))) :
+        (va.y > va.z ? float3(0.0, ::functions::math::sgn(v.y), 0.0) : float3(0.0, 0.0, ::functions::math::sgn(v.z)));
+}

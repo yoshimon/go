@@ -1,0 +1,16 @@
+/*!
+    Extracts the surface information from a standard material.
+
+    \param material The material to update.
+    \param uv The texture-space UV of the surface.
+    \param cutoutThreshold The cutout threshold.
+    \param tint The color tint.
+
+    \return The surface data.
+ */
+void $(inout ::materials::standard material, float2 uv, float cutoutThreshold, float3 tint)
+{
+    float4 albedoAlpha = ::materials::textures::standard::albedoAlphaTexture.Sample(::samplers::surface, uv);
+    material.albedo = albedoAlpha.rgb * tint;
+    material.alpha = albedoAlpha.a - cutoutThreshold; // Subtract cutout threshold for clipping
+}

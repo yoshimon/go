@@ -1,0 +1,31 @@
+/*!
+    Approximates specular IBL for an infinite light source.
+
+    Note: the environment map has to be of size 256px² per face.
+
+    \param surfaceSpecularColor The specular color of the surface.
+    \param roughness The roughness of the surface.
+    \param nv The surface normal dotted with the view direction.
+    \param r The reflection vector.
+    \param envBRDF The pre-integrated specular BRDF.
+    \param envMap The pre-convolved environment map.
+
+    \return The approximated specular color.
+ */
+float3 $(
+    const float3 surfaceSpecularColor,
+    const float roughness,
+    const float nv,
+    const float3 r,
+    const Texture2D<float2> envBRDF,
+    const TextureCube<float4> envMap)
+{
+     const uint kNumMipLevels = 9 - 1;
+     const float mipBias = 3.0 - 1.15 * log2(roughness);
+     const uint specularMipLevel = kNumMipLevels - mipBias;
+
+     const float3 iblSpec = envMap.SampleLevel(::samplers::linearClamp, r, specularMipLevel).rgb;
+     const float2 iblScaleBias = envBRDF.SampleLevel(::samplers::pointClamp, float2(roughness, nv), 0);
+
+     return iblSpec * (surfaceSpecularColor * iblScaleBias.x + iblScaleBias.y);
+}

@@ -1,0 +1,33 @@
+/*!
+    Reconstructs the view-space position given a view-space z value and a position in screen-space.
+
+    \param positionScreen The position in screen-space.
+    \param nativeTwoTexelSize (2.f, -2.f) / viewportDimensions.
+    \param invFovAspect The FOV-projection properties (rcp of (_11, _22) of the projection matrix).
+
+    \return The view-space position.
+ */
+inline float3 $(
+    in float2 positionScreen,
+    in float zView,
+    in float2 nativeTwoTexelSize,
+    in float2 invFovAspect)
+{
+	const float2 ndcPos = (positionScreen + 0.5f) * nativeTwoTexelSize + float2(-1, 1);
+	const float2 invScalePos = ndcPos * invFovAspect;
+	return float3(invScalePos * zView, zView);
+}
+
+
+/*!
+    \overload
+ */
+inline float3 $_from_uv(
+    in float2 uv,
+    in float zView,
+    in float2 invFovAspect)
+{
+	const float2 ndcPos = uv * float2(2.0f, -2.0f) + float2(-1.0f, 1.0f);
+	const float2 invScalePos = ndcPos * invFovAspect;
+	return float3(invScalePos * zView, zView);
+}

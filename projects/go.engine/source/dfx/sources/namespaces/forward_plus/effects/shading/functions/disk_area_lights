@@ -1,0 +1,49 @@
+/*
+    Calculates the lighting contribution from disk area lights.
+
+    \param tileIndex The screen-space tile index.
+    \param positionWS The world-space shading position.
+    \param normalWS The world-space shading normal.
+    \param viewDirWS The camera view direction.
+    \param albedo The surface albedo.
+    \param roughness The material roughness.
+    \param metallic The "metallic"-ness of the surface.
+    \param[out] outDiffuse Accumulated diffuse color.
+    \param[out] outSpecular Accumulated specular color.
+ */
+void $(
+    uint tileIndex,
+    float3 positionWS,
+    float3 normalWS,
+    float3 viewDirWS,
+    float3 albedo,
+    float roughness,
+    float metallic,
+    inout float3 outDiffuse,
+    inout float3 outSpecular)
+{
+    // Grab the array bounds for this tile
+    uint startIndex, numLights;
+    ::forward_plus::prepass::extract_light_array(
+        ::forward_plus::shading::tileDiskLightIndices,
+        tileIndex,
+        startIndex, numLights);
+
+    // Run the lighting pass
+    for(uint i = startIndex, end = startIndex + numLights; i < end; ++i)
+    {
+        uint lightIndex = ::forward_plus::shading::tileDiskLightIndices[i];
+        ::lights::proxy_shapes::sphere lightProxyShape = ::forward_plus::shading::diskLightProxyShapes[lightIndex];
+        ::lights::parameters::disk lightParams = ::forward_plus::shading::diskLightProps[lightIndex];
+
+        ::functions::lighting::standard::disk_area_light
+        (
+            lightProxyShape,
+            lightParams,
+            ::forward_plus::shading::spotLightSM,
+            positionWS, normalWS, viewDirWS,
+            albedo, metallic, roughness,
+            outDiffuse, outSpecular
+        );
+    }
+}

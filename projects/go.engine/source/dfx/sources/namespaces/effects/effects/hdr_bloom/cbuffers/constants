@@ -1,0 +1,11 @@
+/*************************************************************
+    Effect: HDR-Bloom
+ *************************************************************/
+//! The bloom treshold.
+float g_hdrBloomThreshold;
+//! Exposure adaption scale.
+float g_hdrBloomExposureAdaptionDelta;
+//! An upper bound for the measured luminance value.
+float g_hdrBloomMaxLuminance;
+//! Middle-gray value for global tonemapping.
+float g_hdrBloomMiddleGray;

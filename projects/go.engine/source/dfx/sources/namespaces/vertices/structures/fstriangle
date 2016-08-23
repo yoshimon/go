@@ -1,0 +1,4 @@
+//! The position in clip space.
+noperspective float4 posClipSpace : SV_Position;
+//! The texture coordinates.
+noperspective float2 uv : TEXCOORD0;

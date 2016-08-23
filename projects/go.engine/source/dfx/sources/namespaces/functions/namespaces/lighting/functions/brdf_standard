@@ -1,0 +1,141 @@
+/*!
+    Fresnel-term (Schlick approximation).
+
+    \param f0 The reflectance at normal incidence.
+    \param f90
+    \param u
+ */
+float3 F_Schlick(in float3 f0, float f90, in float u)
+{
+    return f0 + (f90 - f0) * pow(1.f - u, 5.f);
+}
+
+
+/*!
+    Visibility term (Correlated Smith GGX).
+
+    \param NdotL
+    \param NdotV
+    \param alphaG
+ */
+float V_SmithGGXCorrelated(float NdotL, float NdotV, float alphaG)
+{
+    // Original formulation of G_SmithGGX Correlated [Heitz14]
+    // lambda_v = ( -1 + sqrt ( alphaG2 * (1 - NdotL2 ) / NdotL2 + 1)) * 0.5 f;
+    // lambda_l = ( -1 + sqrt ( alphaG2 * (1 - NdotV2 ) / NdotV2 + 1)) * 0.5 f;
+    // G_SmithGGXCorrelated = 1 / (1 + lambda_v + lambda_l );
+    // V_SmithGGXCorrelated = G_SmithGGXCorrelated / (4.0 f * NdotL * NdotV );
+
+    // This is the optimized version
+    float alphaG2 = alphaG * alphaG;
+
+    // Caution: the " NdotL *" and " NdotV *" are explicitely inversed , this is not a mistake .
+    float Lambda_GGXV = NdotL * sqrt((- NdotV * alphaG2 + NdotV) * NdotV + alphaG2);
+    float Lambda_GGXL = NdotV * sqrt((- NdotL * alphaG2 + NdotL) * NdotL + alphaG2);
+
+    return 0.5 / (Lambda_GGXV + Lambda_GGXL);
+}
+
+
+/*!
+    Calculates the distribution of microfacets for a given setup.
+
+    \param NdotH The dot-product between the surface normal and the half-angle vector with the light.
+    \param roughness The surface roughness.
+    \param normFactor The normalization factor.
+
+    \return The distribution of microfacets.
+ */
+float D_GGX(float NdotH , float roughness, float normFactor)
+{
+    // Division by pi is applied later
+    float alpha2 = roughness * roughness;
+
+    float f = (NdotH * alpha2 - NdotH) * NdotH + 1.f;
+    return (alpha2 * normFactor) / (f * f + DFX_FLOAT_EPSILON);
+}
+
+
+/*!
+    Diffuse term by Disney (Burley).
+
+
+ */
+float Fr_DisneyDiffuse(float NdotV, float NdotL, float LdotH, float linearRoughness)
+{
+    float energyBias = lerp(0, 0.5, linearRoughness);
+    float energyFactor = lerp(1.0, 1.0 / 1.51, linearRoughness);
+    float fd90 = energyBias + 2.0 * LdotH * LdotH * linearRoughness;
+    float3 f0 = float3(1.0f, 1.0f , 1.0f);
+    float lightScatter = F_Schlick(f0, fd90, NdotL).r;
+    float viewScatter = F_Schlick(f0, fd90, NdotV).r;
+
+    return lightScatter * viewScatter * energyFactor;
+}
+
+
+/*!
+    Returns the default reflectance at normal incidence
+
+    \param The surface albedo color.
+    \param metallic The surface metallic value.
+
+    \return The default reflectance at normal incidence.
+ */
+float3 F_0(in float3 albedo, in float metallic)
+{
+    const float3 reflectance = 0.5f; // Matches UE4 'Specular' value
+    const float3 defaultReflectance = 0.16f * reflectance * reflectance;
+    return lerp(defaultReflectance, albedo, metallic); // refletance = 0.5 => f0 = 0.04 = 4% default reflectance at NI
+}
+
+
+/*!
+    Returns the default reflectance at orthogonal incidence.
+
+    \return The default reflectance at orthogonal incidence.
+ */
+float F_90(in float3 f0)
+{
+    return saturate(50.0 * dot(f0, 0.33)); // Artist controlled parameter
+}
+
+
+/*!
+    Physically-based BRDF.
+
+    \param v Direction to the eye.
+    \param l Direction to the light.
+    \param n Surface normal.
+    \param albedo The surface albedo.
+    \param roughness The surface roughness.
+    \param normFactor The normalization factor for the specular D function. Set to 1 if no area light.
+    \param metallic The surface metallic value.
+    \param outDiff Output diffuse factor.
+    \param outSpec Output specular factor.
+ */
+void $(in float3 v, in float3 l, in float3 n, float3 albedo, float roughness, float normFactor, float metallic,
+    out float outDiff, out float3 outSpec)
+{
+    // Microfacet normal
+    float3 h = normalize(v + l);
+
+    // Angles
+    float nh = saturate(dot(n, h));
+    float nv = abs(dot(n, v)) + DFX_FLOAT_EPSILON; // avoid artifact
+    float lh = saturate(dot(l, h));
+    float nl = saturate(dot(n, l));
+
+    // Remap roughness
+    float linearRoughness = roughness * roughness;
+
+    // Specular BRDF
+    float3 f0 = F_0(albedo, metallic);
+    float3 F = F_Schlick(f0, F_90(f0), lh);
+    float Vis = V_SmithGGXCorrelated(nv, nl, roughness);
+    float D = D_GGX(nh, linearRoughness, normFactor);
+    outSpec = F * D * Vis / DFX_PI;
+
+    // Diffuse BRDF
+    outDiff = metallic < 1.0 ? (1.0 - metallic) * Fr_DisneyDiffuse(nv, nl, lh, linearRoughness) / DFX_PI : 0.f;
+}

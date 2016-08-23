@@ -1,0 +1,735 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{1DC8BC42-6D75-4001-B4AB-9265E434C324}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>goengine</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\props\go.common.props" />
+    <Import Project="..\props\go.binary.props" />
+    <Import Project="..\props\go.include.props" />
+    <Import Project="..\props\go.debug.props" />
+    <Import Project="..\props\go.library.common.win32.props" />
+    <Import Project="..\props\go.library.debug.win32.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\props\go.common.props" />
+    <Import Project="..\props\go.include.props" />
+    <Import Project="..\props\go.binary.props" />
+    <Import Project="..\props\go.release.props" />
+    <Import Project="..\props\go.library.common.win32.props" />
+    <Import Project="..\props\go.library.release.win32.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\props\go.common.props" />
+    <Import Project="..\props\go.binary.props" />
+    <Import Project="..\props\go.include.props" />
+    <Import Project="..\props\go.debug.props" />
+    <Import Project="..\props\go.library.common.x64.props" />
+    <Import Project="..\props\go.library.debug.x64.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\props\go.common.props" />
+    <Import Project="..\props\go.include.props" />
+    <Import Project="..\props\go.binary.props" />
+    <Import Project="..\props\go.release.props" />
+    <Import Project="..\props\go.library.common.x64.props" />
+    <Import Project="..\props\go.library.release.x64.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_USRDLL;GO_EXPORT;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_USRDLL;GO_EXPORT;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_USRDLL;GO_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_USRDLL;GO_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="source\dfx\output\dfx\dfx.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespace.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespaces\constants\namespace.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespaces\effects\effects\bilateral_blur\effect.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespaces\effects\effects\dof\effect.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespaces\effects\effects\film_grain\effect.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespaces\effects\effects\fxaa\effect.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespaces\effects\effects\gaussian_blur\effect.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespaces\effects\effects\halfres_upsample\effect.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespaces\effects\effects\hdr_bloom\effect.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespaces\effects\effects\min_z_downsampling\effect.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespaces\effects\effects\overlay\effect.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespaces\effects\effects\shadow_maps\effect.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespaces\effects\effects\ssao\effect.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespaces\effects\effects\tonemapping\effect.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespaces\effects\effects\vignette\effect.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespaces\effects\effects\volumetric_lighting\effect.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespaces\effects\namespace.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespaces\external_shaders\namespace.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespaces\forward_plus\effects\ambient_lighting\effect.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespaces\forward_plus\effects\prepass\effect.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespaces\forward_plus\effects\shading\effect.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespaces\forward_plus\namespace.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespaces\forward_plus\namespaces\constants\namespace.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespaces\functions\namespace.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespaces\functions\namespaces\camera\namespace.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespaces\functions\namespaces\color\namespace.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespaces\functions\namespaces\compression\namespace.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespaces\functions\namespaces\lighting\namespace.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespaces\functions\namespaces\lighting\namespaces\standard\namespace.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespaces\functions\namespaces\materials\namespace.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespaces\functions\namespaces\materials\namespaces\standard\namespace.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespaces\functions\namespaces\materials\namespaces\unlit\namespace.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespaces\functions\namespaces\math\namespace.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespaces\functions\namespaces\transforms\namespace.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespaces\instance_data\namespace.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespaces\lights\namespace.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespaces\lights\namespaces\parameters\namespace.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespaces\lights\namespaces\proxy_shapes\namespace.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespaces\materials\namespace.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespaces\materials\namespaces\constants\namespace.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespaces\materials\namespaces\textures\namespace.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespaces\materials\namespaces\textures\namespaces\standard\namespace.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespaces\materials\namespaces\textures\namespaces\unlit\namespace.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespaces\resources\namespace.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespaces\resources\namespaces\ibl\namespace.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespaces\resources\namespaces\instancing\namespace.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespaces\resources\namespaces\material_constants\namespace.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespaces\samplers\namespace.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespaces\shaders\namespace.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespaces\shaders\namespaces\pixel\namespace.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespaces\shaders\namespaces\vertex_to_pixel\namespace.cpp" />
+    <ClCompile Include="source\dfx\output\dfx\namespaces\vertices\namespace.cpp" />
+    <ClCompile Include="source\src\go\core\common.cpp" />
+    <ClCompile Include="source\src\go\core\exception.cpp" />
+    <ClCompile Include="source\src\go\core\inplace_lexer.cpp" />
+    <ClCompile Include="source\src\go\core\log.cpp" />
+    <ClCompile Include="source\src\go\core\path_utility.cpp" />
+    <ClCompile Include="source\src\go\core\performance_counter.cpp" />
+    <ClCompile Include="source\src\go\core\platform_info.cpp" />
+    <ClCompile Include="source\src\go\core\semaphore.cpp" />
+    <ClCompile Include="source\src\go\core\stack_allocator.cpp" />
+    <ClCompile Include="source\src\go\core\string_utility.cpp" />
+    <ClCompile Include="source\src\go\core\timer.cpp" />
+    <ClCompile Include="source\src\go\core\timer_pool.cpp" />
+    <ClCompile Include="source\src\go\environment\manager.cpp" />
+    <ClCompile Include="source\src\go\environment\variable.cpp" />
+    <ClCompile Include="source\src\go\filesystem\async.cpp" />
+    <ClCompile Include="source\src\go\filesystem\file.cpp" />
+    <ClCompile Include="source\src\go\filesystem\system.cpp" />
+    <ClCompile Include="source\src\go\filesystem\views\native\gmd_file.cpp" />
+    <ClCompile Include="source\src\go\filesystem\views\native\xml_asset_db.cpp" />
+    <ClCompile Include="source\src\go\framework\application.cpp" />
+    <ClCompile Include="source\src\go\golib.cpp" />
+    <ClCompile Include="source\src\go\graphics\asset_management\asset_context.cpp" />
+    <ClCompile Include="source\src\go\graphics\asset_management\material_database.cpp" />
+    <ClCompile Include="source\src\go\graphics\asset_management\material_manager.cpp" />
+    <ClCompile Include="source\src\go\graphics\asset_management\model_database.cpp" />
+    <ClCompile Include="source\src\go\graphics\asset_management\model_manager.cpp" />
+    <ClCompile Include="source\src\go\graphics\asset_management\shader_manager.cpp" />
+    <ClCompile Include="source\src\go\graphics\asset_management\texture_database.cpp" />
+    <ClCompile Include="source\src\go\graphics\asset_management\texture_manager.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\forward_plus_util.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespaces\effects\effects\bilateral_blur.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespaces\effects\effects\dof.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespaces\effects\effects\film_grain.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespaces\effects\effects\fxaa.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespaces\effects\effects\gaussian_blur.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespaces\effects\effects\halfres_upsample.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespaces\effects\effects\hdr_bloom.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespaces\effects\effects\min_z_downsampling.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespaces\effects\effects\overlay.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespaces\effects\effects\shadow_maps.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespaces\effects\effects\ssao.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespaces\effects\effects\tonemapping.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespaces\effects\effects\vignette.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespace.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespaces\effects\effects\volumetric_lighting.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespaces\effects\namespace.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespaces\forward_plus\constants\namespace.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespaces\forward_plus\effects\ambient_lighting.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespaces\forward_plus\effects\prepass.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespaces\forward_plus\effects\shading.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespaces\forward_plus\namespace.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespaces\functions\camera\namespace.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespaces\functions\color\namespace.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespaces\functions\compression\namespace.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespaces\functions\lighting\namespace.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespaces\functions\lighting\standard\namespace.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespaces\functions\materials\namespace.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespaces\functions\materials\standard\namespace.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespaces\functions\materials\unlit\namespace.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespaces\functions\math\namespace.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespaces\functions\namespace.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespaces\functions\transforms\namespace.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespaces\lights\parameters\namespace.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespaces\lights\proxy_shapes\namespace.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespaces\materials\constants\namespace.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespaces\materials\textures\namespace.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespaces\materials\textures\standard\namespace.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespaces\materials\textures\unlit\namespace.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespaces\resources\ibl\namespace.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespaces\resources\instancing\namespace.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespaces\resources\material_constants\namespace.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespaces\resources\namespace.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespaces\constants\namespace.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespaces\external_shaders\namespace.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespaces\shaders\pixel\namespace.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespaces\shaders\vertex_to_pixel\namespace.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespaces\vertices\namespace.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespaces\materials\namespace.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespaces\lights\namespace.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespaces\samplers\namespace.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespaces\shaders\namespace.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\namespaces\instance_data\namespace.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\dfx\render_util.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\display.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\timer.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\ui\surface.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\ui\system.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\blend_state.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\buffer.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\depth_stencil_state.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\device.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\pipeline_state.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\rasterizer_state.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\renderer.cpp" />
+    <ClCompile Include="source\src\go\graphics\entity.cpp" />
+    <ClCompile Include="source\src\go\graphics\materials.cpp" />
+    <ClCompile Include="source\src\go\graphics\model_cache.cpp" />
+    <ClCompile Include="source\src\go\graphics\scene_manager.cpp" />
+    <ClCompile Include="source\src\go\graphics\sphere_model.cpp" />
+    <ClCompile Include="source\src\go\graphics\render_command.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\render_paths\dfx_forward_plus.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\resource.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\sampler_state.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\shader.cpp" />
+    <ClCompile Include="source\src\go\graphics\d3d11\texture.cpp" />
+    <ClCompile Include="source\src\go\graphics\model.cpp" />
+    <ClCompile Include="source\src\go\graphics\render_context.cpp" />
+    <ClCompile Include="source\src\go\hid\system_input_driver.cpp" />
+    <ClCompile Include="source\src\go\hid\input_context.cpp" />
+    <ClCompile Include="source\src\go\hid\input_dispatcher.cpp" />
+    <ClCompile Include="source\src\go\platform\windows.cpp" />
+    <ClCompile Include="source\src\go\stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="source\src\go\util\rapidxml_helper.cpp" />
+    <ClCompile Include="source\src\go\variables.cpp" />
+    <ClCompile Include="source\src\go\graphics\frustum.cpp" />
+    <ClCompile Include="source\src\go\graphics\scene.cpp" />
+    <ClCompile Include="source\src\go\world\entity.cpp" />
+    <ClCompile Include="source\src\go\world\entity_manager.cpp" />
+    <ClCompile Include="source\src\go\world\light_manager.cpp" />
+    <ClCompile Include="source\src\go\world\scene.cpp" />
+    <ClCompile Include="source\src\go\world\scene_manager.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="source\dfx\output\dfx\dfx.h" />
+    <ClInclude Include="source\dfx\output\dfx\dfx_cpp_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\dfx_pop_cpp_macros.h" />
+    <ClInclude Include="source\dfx\output\dfx\dfx_push_cpp_macros.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\buffers\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\buffers\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\buffers\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\common_effects\effects\fxaa\effect.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\common_effects\effects\fxaa\effect_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\common_effects\effects\fxaa\effect_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\common_effects\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\common_effects\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\common_effects\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\common_resources\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\common_resources\namespaces\color_grading\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\common_resources\namespaces\color_grading\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\common_resources\namespaces\color_grading\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\common_resources\namespaces\ibl\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\common_resources\namespaces\ibl\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\common_resources\namespaces\ibl\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\common_resources\namespaces\instancing\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\common_resources\namespaces\instancing\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\common_resources\namespaces\instancing\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\common_resources\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\common_resources\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\common_textures\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\common_textures\namespaces\shading\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\common_textures\namespaces\shading\namespaces\standard\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\common_textures\namespaces\shading\namespaces\standard\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\common_textures\namespaces\shading\namespaces\standard\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\common_textures\namespaces\shading\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\common_textures\namespaces\shading\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\common_textures\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\common_textures\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\common_vertex_shaders\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\common_vertex_shaders\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\common_vertex_shaders\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\constants\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\constants\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\constants\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\effects\effects\bilateral_blur\effect.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\effects\effects\bilateral_blur\effect_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\effects\effects\bilateral_blur\effect_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\effects\effects\bloom\effect.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\effects\effects\bloom\effect_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\effects\effects\bloom\effect_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\effects\effects\dof\effect.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\effects\effects\dof\effect_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\effects\effects\dof\effect_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\effects\effects\film_grain\effect.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\effects\effects\film_grain\effect_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\effects\effects\film_grain\effect_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\effects\effects\fxaa\effect.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\effects\effects\fxaa\effect_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\effects\effects\fxaa\effect_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\effects\effects\gaussian_blur\effect.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\effects\effects\gaussian_blur\effect_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\effects\effects\gaussian_blur\effect_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\effects\effects\halfres_upsample\effect.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\effects\effects\halfres_upsample\effect_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\effects\effects\halfres_upsample\effect_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\effects\effects\hdr_bloom\effect.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\effects\effects\hdr_bloom\effect_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\effects\effects\hdr_bloom\effect_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\effects\effects\min_z_downsampling\effect.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\effects\effects\min_z_downsampling\effect_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\effects\effects\min_z_downsampling\effect_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\effects\effects\overlay\effect.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\effects\effects\overlay\effect_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\effects\effects\overlay\effect_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\effects\effects\shadow_maps\effect.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\effects\effects\shadow_maps\effect_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\effects\effects\shadow_maps\effect_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\effects\effects\ssao\effect.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\effects\effects\ssao\effect_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\effects\effects\ssao\effect_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\effects\effects\tonemapping\effect.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\effects\effects\tonemapping\effect_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\effects\effects\tonemapping\effect_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\effects\effects\vignette\effect.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\effects\effects\vignette\effect_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\effects\effects\vignette\effect_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\effects\effects\volumetric_lighting\effect.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\effects\effects\volumetric_lighting\effect_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\effects\effects\volumetric_lighting\effect_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\effects\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\effects\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\effects\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\external_shaders\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\external_shaders\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\external_shaders\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\forward_plus\effects\ambient_lighting\effect.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\forward_plus\effects\ambient_lighting\effect_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\forward_plus\effects\ambient_lighting\effect_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\forward_plus\effects\prepass\effect.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\forward_plus\effects\prepass\effect_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\forward_plus\effects\prepass\effect_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\forward_plus\effects\shading\effect.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\forward_plus\effects\shading\effect_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\forward_plus\effects\shading\effect_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\forward_plus\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\forward_plus\namespaces\constants\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\forward_plus\namespaces\constants\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\forward_plus\namespaces\constants\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\forward_plus\namespaces\functions\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\forward_plus\namespaces\functions\namespaces\screen\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\forward_plus\namespaces\functions\namespaces\screen\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\forward_plus\namespaces\functions\namespaces\screen\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\forward_plus\namespaces\functions\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\forward_plus\namespaces\functions\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\forward_plus\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\forward_plus\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\functions\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\functions\namespaces\camera\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\functions\namespaces\camera\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\functions\namespaces\camera\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\functions\namespaces\color\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\functions\namespaces\color\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\functions\namespaces\color\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\functions\namespaces\compression\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\functions\namespaces\compression\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\functions\namespaces\compression\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\functions\namespaces\lighting\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\functions\namespaces\lighting\namespaces\brdf\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\functions\namespaces\lighting\namespaces\brdf\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\functions\namespaces\lighting\namespaces\brdf\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\functions\namespaces\lighting\namespaces\standard\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\functions\namespaces\lighting\namespaces\standard\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\functions\namespaces\lighting\namespaces\standard\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\functions\namespaces\lighting\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\functions\namespaces\lighting\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\functions\namespaces\materials\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\functions\namespaces\materials\namespaces\standard\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\functions\namespaces\materials\namespaces\standard\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\functions\namespaces\materials\namespaces\standard\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\functions\namespaces\materials\namespaces\unlit\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\functions\namespaces\materials\namespaces\unlit\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\functions\namespaces\materials\namespaces\unlit\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\functions\namespaces\materials\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\functions\namespaces\materials\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\functions\namespaces\math\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\functions\namespaces\math\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\functions\namespaces\math\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\functions\namespaces\transforms\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\functions\namespaces\transforms\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\functions\namespaces\transforms\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\functions\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\functions\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\ibl\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\ibl\namespaces\resources\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\ibl\namespaces\resources\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\ibl\namespaces\resources\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\ibl\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\ibl\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\instance_data\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\instance_data\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\instance_data\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\lights\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\lights\namespaces\parameters\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\lights\namespaces\parameters\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\lights\namespaces\parameters\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\lights\namespaces\proxy_shapes\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\lights\namespaces\proxy_shapes\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\lights\namespaces\proxy_shapes\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\lights\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\lights\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\materials\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\materials\namespaces\constants\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\materials\namespaces\constants\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\materials\namespaces\constants\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\materials\namespaces\textures\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\materials\namespaces\textures\namespaces\standard\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\materials\namespaces\textures\namespaces\standard\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\materials\namespaces\textures\namespaces\standard\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\materials\namespaces\textures\namespaces\unlit\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\materials\namespaces\textures\namespaces\unlit\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\materials\namespaces\textures\namespaces\unlit\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\materials\namespaces\textures\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\materials\namespaces\textures\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\materials\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\materials\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\resources\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\resources\namespaces\brdf\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\resources\namespaces\brdf\namespaces\standard\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\resources\namespaces\brdf\namespaces\standard\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\resources\namespaces\brdf\namespaces\standard\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\resources\namespaces\brdf\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\resources\namespaces\brdf\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\resources\namespaces\color_grading\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\resources\namespaces\color_grading\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\resources\namespaces\color_grading\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\resources\namespaces\gaussian_blur\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\resources\namespaces\gaussian_blur\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\resources\namespaces\gaussian_blur\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\resources\namespaces\ibl\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\resources\namespaces\ibl\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\resources\namespaces\ibl\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\resources\namespaces\instancing\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\resources\namespaces\instancing\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\resources\namespaces\instancing\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\resources\namespaces\material_constants\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\resources\namespaces\material_constants\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\resources\namespaces\material_constants\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\resources\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\resources\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\samplers\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\samplers\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\samplers\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\shaderlib\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\shaderlib\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\shaderlib\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\shaders\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\shaders\namespaces\compute\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\shaders\namespaces\compute\namespaces\gaussian_blur\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\shaders\namespaces\compute\namespaces\gaussian_blur\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\shaders\namespaces\compute\namespaces\gaussian_blur\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\shaders\namespaces\compute\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\shaders\namespaces\compute\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\shaders\namespaces\pixel\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\shaders\namespaces\pixel\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\shaders\namespaces\pixel\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\shaders\namespaces\vertex\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\shaders\namespaces\vertex\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\shaders\namespaces\vertex\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\shaders\namespaces\vertex_to_pixel\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\shaders\namespaces\vertex_to_pixel\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\shaders\namespaces\vertex_to_pixel\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\shaders\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\shaders\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\structs\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\structs\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\structs\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\textures_default\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\textures_default\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\textures_default\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\vertex_shaders\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\vertex_shaders\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\vertex_shaders\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\vertices\namespace.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\vertices\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespaces\vertices\namespace_types.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespace_declarations.h" />
+    <ClInclude Include="source\dfx\output\dfx\namespace_types.h" />
+    <ClInclude Include="source\include\go\core\aligned.h" />
+    <ClInclude Include="source\include\go\core\allocator.h" />
+    <ClInclude Include="source\include\go\core\allocator_impl.h" />
+    <ClInclude Include="source\include\go\core\bitmask.h" />
+    <ClInclude Include="source\include\go\core\bitmask_impl.h" />
+    <ClInclude Include="source\include\go\core\byte_step_view.h" />
+    <ClInclude Include="source\include\go\core\byte_step_view_impl.h" />
+    <ClInclude Include="source\include\go\core\common.h" />
+    <ClInclude Include="source\include\go\core\concurrent_append_array.h" />
+    <ClInclude Include="source\include\go\core\exception.h" />
+    <ClInclude Include="source\include\go\core\inplace_lexer.h" />
+    <ClInclude Include="source\include\go\core\interpolator.h" />
+    <ClInclude Include="source\include\go\core\interpolator_impl.h" />
+    <ClInclude Include="source\include\go\core\locks.h" />
+    <ClInclude Include="source\include\go\core\log.h" />
+    <ClInclude Include="source\include\go\core\noise_filter.h" />
+    <ClInclude Include="source\include\go\core\noise_filter_impl.h" />
+    <ClInclude Include="source\include\go\core\optional.h" />
+    <ClInclude Include="source\include\go\core\optional_impl.h" />
+    <ClInclude Include="source\include\go\core\path_utility.h" />
+    <ClInclude Include="source\include\go\core\performance_counter.h" />
+    <ClInclude Include="source\include\go\core\platform_info.h" />
+    <ClInclude Include="source\include\go\core\pool_allocator.h" />
+    <ClInclude Include="source\include\go\core\pool_allocator_impl.h" />
+    <ClInclude Include="source\include\go\core\runtime_configuration.h" />
+    <ClInclude Include="source\include\go\core\semaphore.h" />
+    <ClInclude Include="source\include\go\core\short_string.h" />
+    <ClInclude Include="source\include\go\core\short_string_impl.h" />
+    <ClInclude Include="source\include\go\core\stack_allocator.h" />
+    <ClInclude Include="source\include\go\core\string_utility.h" />
+    <ClInclude Include="source\include\go\core\timer.h" />
+    <ClInclude Include="source\include\go\core\timer_pool.h" />
+    <ClInclude Include="source\include\go\core\tree.h" />
+    <ClInclude Include="source\include\go\core\tree_impl.h" />
+    <ClInclude Include="source\include\go\defines.h" />
+    <ClInclude Include="source\include\go\design\concurrent_resource_manager.h" />
+    <ClInclude Include="source\include\go\design\concurrent_resource_manager_impl.h" />
+    <ClInclude Include="source\include\go\design\observer.h" />
+    <ClInclude Include="source\include\go\design\observer_impl.h" />
+    <ClInclude Include="source\include\go\design\simple_resource_manager.h" />
+    <ClInclude Include="source\include\go\design\simple_resource_manager_impl.h" />
+    <ClInclude Include="source\include\go\design\singleton.h" />
+    <ClInclude Include="source\include\go\design\singleton_impl.h" />
+    <ClInclude Include="source\include\go\design\tree.h" />
+    <ClInclude Include="source\include\go\design\tree_impl.h" />
+    <ClInclude Include="source\include\go\docmain.h" />
+    <ClInclude Include="source\include\go\environment\manager.h" />
+    <ClInclude Include="source\include\go\environment\variable.h" />
+    <ClInclude Include="source\include\go\filesystem\async.h" />
+    <ClInclude Include="source\include\go\filesystem\file.h" />
+    <ClInclude Include="source\include\go\filesystem\file_impl.h" />
+    <ClInclude Include="source\include\go\filesystem\system.h" />
+    <ClInclude Include="source\include\go\filesystem\system_impl.h" />
+    <ClInclude Include="source\include\go\filesystem\views\native\gmd_file.h" />
+    <ClInclude Include="source\include\go\filesystem\views\native\xml_asset_db.h" />
+    <ClInclude Include="source\include\go\framework\application.h" />
+    <ClInclude Include="source\include\go\golib.h" />
+    <ClInclude Include="source\include\go\asset_management\asset_database.h" />
+    <ClInclude Include="source\include\go\asset_management\asset_database_impl.h" />
+    <ClInclude Include="source\include\go\graphics\asset_management\asset_context.h" />
+    <ClInclude Include="source\include\go\graphics\d3d11\dfx\namespaces\effects\bilateral_blur.h" />
+    <ClInclude Include="source\include\go\graphics\d3d11\dfx\namespaces\effects\halfres_upsample.h" />
+    <ClInclude Include="source\include\go\graphics\d3d11\dfx\namespaces\effects\min_z_downsampling.h" />
+    <ClInclude Include="source\include\go\graphics\d3d11\dfx\namespaces\effects\shadow_maps.h" />
+    <ClInclude Include="source\include\go\graphics\d3d11\dfx\namespaces\effects\volumetric_lighting.h" />
+    <ClInclude Include="source\include\go\graphics\d3d11\dfx\render_util.h" />
+    <ClInclude Include="source\include\go\graphics\d3d11\timer.h" />
+    <ClInclude Include="source\include\go\graphics\d3d11\input_topology.h" />
+    <ClInclude Include="source\include\go\graphics\render_path.h" />
+    <ClInclude Include="source\include\go\graphics\materials.h" />
+    <ClInclude Include="source\include\go\graphics\texture2d_atlas.h" />
+    <ClInclude Include="source\include\go\graphics\skeletal_animation.h" />
+    <ClInclude Include="source\include\go\graphics\api\blend_state.h" />
+    <ClInclude Include="source\include\go\graphics\api\buffer.h" />
+    <ClInclude Include="source\include\go\graphics\api\device.h" />
+    <ClInclude Include="source\include\go\graphics\api\display.h" />
+    <ClInclude Include="source\include\go\graphics\api\renderer.h" />
+    <ClInclude Include="source\include\go\graphics\api\shader.h" />
+    <ClInclude Include="source\include\go\graphics\api\texture.h" />
+    <ClInclude Include="source\include\go\graphics\api\ui\system.h" />
+    <ClInclude Include="source\include\go\graphics\asset_management\material_database.h" />
+    <ClInclude Include="source\include\go\graphics\asset_management\material_manager.h" />
+    <ClInclude Include="source\include\go\graphics\asset_management\model_database.h" />
+    <ClInclude Include="source\include\go\graphics\asset_management\model_manager.h" />
+    <ClInclude Include="source\include\go\graphics\asset_management\shader_manager.h" />
+    <ClInclude Include="source\include\go\graphics\asset_management\texture_database.h" />
+    <ClInclude Include="source\include\go\graphics\asset_management\texture_manager.h" />
+    <ClInclude Include="source\include\go\graphics\camera_properties.h" />
+    <ClInclude Include="source\include\go\graphics\d3d11\dfx\forward_plus_util.h" />
+    <ClInclude Include="source\include\go\graphics\d3d11\dfx\namespaces\forward_plus\effects\ambient_lighting.h" />
+    <ClInclude Include="source\include\go\graphics\d3d11\dfx\namespaces\effects\dof.h" />
+    <ClInclude Include="source\include\go\graphics\d3d11\dfx\go_types.h" />
+    <ClInclude Include="source\include\go\graphics\d3d11\dfx\namespaces\effects\film_grain.h" />
+    <ClInclude Include="source\include\go\graphics\d3d11\dfx\namespaces\effects\fxaa.h" />
+    <ClInclude Include="source\include\go\graphics\d3d11\dfx\namespaces\effects\gaussian_blur.h" />
+    <ClInclude Include="source\include\go\graphics\d3d11\dfx\namespaces\effects\hdr_bloom.h" />
+    <ClInclude Include="source\include\go\graphics\d3d11\dfx\namespaces\effects\overlay.h" />
+    <ClInclude Include="source\include\go\graphics\d3d11\dfx\namespaces\effects\ssao.h" />
+    <ClInclude Include="source\include\go\graphics\d3d11\dfx\namespaces\effects\tonemapping.h" />
+    <ClInclude Include="source\include\go\graphics\d3d11\dfx\namespaces\effects\vignette.h" />
+    <ClInclude Include="source\include\go\graphics\d3d11\dfx\namespaces\forward_plus\effects\prepass.h" />
+    <ClInclude Include="source\include\go\graphics\d3d11\dfx\namespaces\forward_plus\effects\shading.h" />
+    <ClInclude Include="source\include\go\graphics\d3d11\dfx\namespaces\materials\bindings.h" />
+    <ClInclude Include="source\include\go\graphics\d3d11\dfx\namespaces\materials\namespaces\textures\namespaces\standard\resources.h" />
+    <ClInclude Include="source\include\go\graphics\d3d11\dfx\namespaces\materials\namespaces\textures\namespaces\unlit\resources.h" />
+    <ClInclude Include="source\include\go\graphics\d3d11\display.h" />
+    <ClInclude Include="source\include\go\graphics\d3d11\ui\surface.h" />
+    <ClInclude Include="source\include\go\graphics\d3d11\ui\system.h" />
+    <ClInclude Include="source\include\go\graphics\d3d11\blend_state.h" />
+    <ClInclude Include="source\include\go\graphics\d3d11\buffer.h" />
+    <ClInclude Include="source\include\go\graphics\camera_transform.h" />
+    <ClInclude Include="source\include\go\graphics\d3d11\depth_stencil_state.h" />
+    <ClInclude Include="source\include\go\graphics\d3d11\device.h" />
+    <ClInclude Include="source\include\go\graphics\lights.h" />
+    <ClInclude Include="source\include\go\graphics\d3d11\pipeline_state.h" />
+    <ClInclude Include="source\include\go\graphics\d3d11\pipeline_state_impl.h" />
+    <ClInclude Include="source\include\go\graphics\d3d11\rasterizer_state.h" />
+    <ClInclude Include="source\include\go\graphics\d3d11\renderer.h" />
+    <ClInclude Include="source\include\go\graphics\frustum.h" />
+    <ClInclude Include="source\include\go\graphics\model_cache.h" />
+    <ClInclude Include="source\include\go\graphics\render_command.h" />
+    <ClInclude Include="source\include\go\graphics\render_command_impl.h" />
+    <ClInclude Include="source\include\go\graphics\d3d11\render_paths\dfx_forward_plus.h" />
+    <ClInclude Include="source\include\go\graphics\d3d11\resource.h" />
+    <ClInclude Include="source\include\go\graphics\d3d11\sampler_state.h" />
+    <ClInclude Include="source\include\go\graphics\d3d11\shader.h" />
+    <ClInclude Include="source\include\go\graphics\d3d11\texture.h" />
+    <ClInclude Include="source\include\go\graphics\d3d11\types.h" />
+    <ClInclude Include="source\include\go\graphics\model.h" />
+    <ClInclude Include="source\include\go\graphics\render_context.h" />
+    <ClInclude Include="source\include\go\graphics\render_points.h" />
+    <ClInclude Include="source\include\go\graphics\sky.h" />
+    <ClInclude Include="source\include\go\graphics\sphere_model.h" />
+    <ClInclude Include="source\include\go\graphics\texture2d_atlas_impl.h" />
+    <ClInclude Include="source\include\go\hid\system_input_driver.h" />
+    <ClInclude Include="source\include\go\hid\input_action_map.h" />
+    <ClInclude Include="source\include\go\hid\input_context.h" />
+    <ClInclude Include="source\include\go\hid\input_dispatcher.h" />
+    <ClInclude Include="source\include\go\hid\input_event.h" />
+    <ClInclude Include="source\include\go\platform\targetver.h" />
+    <ClInclude Include="source\include\go\platform\windows.h" />
+    <ClInclude Include="source\include\go\stdafx.h" />
+    <ClInclude Include="source\include\go\util\rapidxml_helper.h" />
+    <ClInclude Include="source\include\go\variables.h" />
+    <ClInclude Include="source\include\go\graphics\entity.h" />
+    <ClInclude Include="source\include\go\graphics\entity_component_manager.h" />
+    <ClInclude Include="source\include\go\graphics\intersection_tests.h" />
+    <ClInclude Include="source\include\go\graphics\scene.h" />
+    <ClInclude Include="source\include\go\graphics\scene_impl.h" />
+    <ClInclude Include="source\include\go\graphics\scene_manager.h" />
+    <ClInclude Include="source\include\go\world\entity.h" />
+    <ClInclude Include="source\include\go\world\entity_component_manager.h" />
+    <ClInclude Include="source\include\go\world\entity_manager.h" />
+    <ClInclude Include="source\include\go\world\lights.h" />
+    <ClInclude Include="source\include\go\world\light_manager.h" />
+    <ClInclude Include="source\include\go\world\scene.h" />
+    <ClInclude Include="source\include\go\world\scene_environment.h" />
+    <ClInclude Include="source\include\go\world\scene_impl.h" />
+    <ClInclude Include="source\include\go\world\scene_manager.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

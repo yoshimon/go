@@ -1,0 +1,13 @@
+/*!
+    Overlay shader.
+
+    Requires blending to be enabled.
+
+    \param input The input from the VS stage.
+
+    \return The overlay color.
+ */
+float4 $(vertices::fstriangle input) : SV_Target0
+{
+    return ::effects::overlay::overlayTexture.Sample(samplers::pointClamp, input.uv);
+}

@@ -1,0 +1,38 @@
+/*!
+    Returns the squared-value of an input value.
+
+    \param value The value to square.
+
+    \return The squared value.
+ */
+float $(float value)
+{
+    return value * value;
+}
+
+
+/*!
+    \overload
+ */
+float2 $(float2 value)
+{
+    return value * value;
+}
+
+
+/*!
+    \overload
+ */
+float3 $(float3 value)
+{
+    return value * value;
+}
+
+
+/*!
+    \overload
+ */
+float4 $(float4 value)
+{
+    return value * value;
+}

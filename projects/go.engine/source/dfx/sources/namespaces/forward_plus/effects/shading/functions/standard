@@ -1,0 +1,18 @@
+/*
+    Performs shading.
+
+    \param input The input fragment.
+
+    \return The shaded fragment.
+ */
+[earlydepthstencil]
+::forward_plus::shading::output $(::vertices::shading input)
+{
+    const uint materialIndex = ::constants::instanced_draw::g_instancingMaterialIndex;
+
+    // Fetch material
+    const ::materials::standard material = ::functions::materials::standard::all(input.uv, materialIndex);
+
+    // Run the actual shader
+    return ::forward_plus::shading::standard_common(input, material);
+}

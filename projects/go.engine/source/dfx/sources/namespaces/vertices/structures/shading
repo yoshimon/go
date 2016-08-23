@@ -1,0 +1,12 @@
+//! Position after world-view-projection
+float4 positionWVP : SV_Position;
+//! Tangent vector
+float4 tangentWS : TANGENT;
+//! Normal vector
+float3 normalWS : NORMAL;
+//! World-space position
+float3 positionWS : POSITION;
+//! View-space position
+float3 positionVS : TEXCOORD0;
+//! Texture coordinates
+float2 uv : TEXCOORD1;

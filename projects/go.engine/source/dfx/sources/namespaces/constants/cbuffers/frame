@@ -1,0 +1,94 @@
+/*************************************************************
+    Main render point
+ *************************************************************/
+//! The view transform of the main render point.
+float4x3 g_mainRenderPointView;
+//! The inverse view transform of the main render point.
+matrix g_mainRenderPointInvView;
+//! The view-projection transform of the main render point.
+matrix g_mainRenderPointViewProj;
+//! The inverse view-projection transform of the main render point.
+matrix g_mainRenderPointInvProjection;
+//! The position of the render-point in world-space.
+float4 g_mainRenderPointPositionWS;
+//! The near-clip.
+float g_mainRenderPointNearClip;
+//! The far-clip.
+float g_mainRenderPointFarClip;
+//! RCP of half-resolution.
+float2 g_halfResolutionRcp;
+
+
+/*************************************************************
+    Directional light render point
+ *************************************************************/
+//! Directional light direction in world-space.
+float3 g_directionalLightDirWS;
+//! Padding.
+float  g_directionalLightDirWS_Padding;
+//! The pre-multiplied light color.
+float3 g_directionalLightColor;
+//! Padding.
+float  g_directionalLightColor_Padding;
+//! Converts from world-space to light world-view-projection space.
+matrix g_directionalLightViewProj;
+//! Converts from world-space to light world-view-projection-UV space.
+matrix g_directionalLightViewProjUV;
+//! Transforms from camera view space to sun light view space.
+matrix g_mainRenderPointViewToDirectionalLightView;
+//! Transforms from camera view space to sun light view-projection-UV space.
+matrix g_mainRenderPointViewToDirectionalLightViewProjUV;
+
+
+/*************************************************************
+    Point lights
+ *************************************************************/
+//! Transforms from world-space to light view-projection-UV space.
+matrix g_shadowCastingPointLightsViewProjectionUV[6 * DFX_MAX_NUM_SHADOW_CASTING_POINT_LIGHTS];
+
+
+
+/*************************************************************
+    Spot lights
+ *************************************************************/
+//! Transforms from world-space to light view-projection-UV space.
+matrix g_shadowCastingSpotLightsViewProjectionUV[DFX_MAX_NUM_SHADOW_CASTING_SPOT_LIGHTS];
+
+
+/*************************************************************
+    General rendering constants
+ *************************************************************/
+/*!
+    The native rendering resolution.
+
+    X = Width.
+    Y = Height.
+ */
+float2 g_nativeResolution;
+/*!
+    X = 1 / Width.
+    Y = 1 / Height.
+ */
+float2 g_nativeResolutionRcp;
+/*!
+    X = 2.0 / g_nativeResolution.x.
+    Y = -2.0 / g_nativeResolution.y.
+ */
+float2 g_nativeTwoTexelSize;
+/*!
+    X = 1.0 / g_mainRenderPointProj._11.
+    Y = 1.0 / g_mainRenderPointProj._22.
+ */
+float2 g_mainRenderPointInvFovAspect;
+/*!
+    The display gamma.
+
+    Usually 1.0 / 2.2.
+ */
+float g_gammaRcp;
+//! A random, unsigned-normalized number.
+float g_randomUNorm;
+//! A sine-periodic, unsigned normalized number.
+float g_periodicSine;
+//! The elapsed time since the last frame in milliseconds.
+float g_elapsedTimeMS;

@@ -1,0 +1,50 @@
+/*
+    Calculates the lighting contribution from spherical area lights.
+
+    \param tileIndex The screen-space tile index.
+    \param positionWS The world-space shading position.
+    \param normalWS The world-space shading normal.
+    \param viewDirWS The camera view direction.
+    \param albedo The surface albedo.
+    \param roughness The material roughness.
+    \param metallic The "metallic"-ness of the surface.
+    \param[out] outDiffuse Accumulated diffuse color.
+    \param[out] outSpecular Accumulated specular color.
+ */
+void $(
+    uint tileIndex,
+    float3 positionWS,
+    float3 normalWS,
+    float3 viewDirWS,
+    float3 reflDirWS,
+    float3 albedo,
+    float roughness,
+    float metallic,
+    inout float3 outDiffuse,
+    inout float3 outSpecular)
+{
+    // Grab the array bounds for this tile
+    uint startIndex, numLights;
+    ::forward_plus::prepass::extract_light_array(
+        ::forward_plus::shading::tileSphericalLightIndices,
+        tileIndex,
+        startIndex, numLights);
+
+    // Run the lighting pass
+    for(uint i = startIndex, end = startIndex + numLights; i < end; ++i)
+    {
+        uint lightIndex = ::forward_plus::shading::tileSphericalLightIndices[i];
+        ::lights::proxy_shapes::sphere lightProxyShape = ::forward_plus::shading::sphericalLightProxyShapes[lightIndex];
+        ::lights::parameters::spherical lightParams = ::forward_plus::shading::sphericalLightProps[lightIndex];
+
+        ::functions::lighting::standard::spherical_area_light
+        (
+            lightProxyShape,
+            lightParams,
+            ::forward_plus::shading::pointLightSM,
+            positionWS, normalWS, viewDirWS, reflDirWS,
+            albedo, metallic, roughness,
+            outDiffuse, outSpecular
+        );
+    }
+}

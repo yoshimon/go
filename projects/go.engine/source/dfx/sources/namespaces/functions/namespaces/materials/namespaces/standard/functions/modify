@@ -1,0 +1,34 @@
+/*!
+    Modifies a material texture data by applying material constants.
+
+    \param material The material to modify.
+    \param materialIndex The material index.
+
+    \return The surface data.
+ */
+vooid $(
+    inout ::materials::standard::texture_data material,
+    ::materials::standard::constant_data materialConstants)
+{
+    // Apply to material
+    material.albedoAlpha.rgb *= materialConstants.albedoTint; // Tint the albedo
+    material.metallic = saturate(material.metallic + materialConstants.metallic); // Add metallic constant
+    material.emission *= emissiveTint; // Tint the emission
+    material.emission *= emissiveIntensity; // Scale the emission
+}
+
+
+/*!
+    Modifies a material texture data by applying material constants.
+
+    \param material The material to modify.
+    \param materialIndex The material index.
+
+    \return The surface data.
+ */
+vooid $(inout ::materials::standard::texture_data material, uint materialIndex)
+{
+    // Fetch material constants
+    ::materials::standard::constant_data materialConstants = ::resources::material_constants::standard[materialIndex];
+    $(material, materialConstants, materialIndex);
+}

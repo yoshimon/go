@@ -1,0 +1,12 @@
+/*!
+    Transforms 3 input vertices so that they cover the entire screen.
+
+    \param vertexId The vertex ID.
+    \param output The output vertex.
+ */
+void $(uint vertexId : SV_VertexID, out vertices::fstriangle output)
+{
+    // Parametrically work out vertex location for full screen triangle (by Andrew Lauritzen)
+    output.uv = float2((vertexId << 1) & 2, vertexId & 2);
+    output.posClipSpace = float4(output.uv * float2(2.0, -2.0) + float2(-1.0, 1.0), 0.0, 1.0);
+}

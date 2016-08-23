@@ -1,0 +1,4 @@
+//! The source mip level to read.
+int g_bilateralBlurSourceMipLevel;
+//! The depth mip level to read.
+int g_bilateralBlurDepthMipLevel;

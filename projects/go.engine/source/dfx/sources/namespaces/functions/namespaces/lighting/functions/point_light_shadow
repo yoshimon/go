@@ -1,0 +1,45 @@
+/*!
+    Returns the amount of shadow contribution for a point-light.
+
+    \param shadowMapAtlas The shadow map atlas.
+    \param lightToPosWS The vector between the light center and the fragment in world-space.
+
+    \return The amount of shadow contribution from the point-light.
+ */
+inline float $(
+    const Texture2D<float> shadowMapAtlas,
+    const float shadowCasterIndex,
+    const float3 positionWS,
+    const float3 lightToPosWS)
+{
+    // Figure out the face index
+    float faceIndex = ::functions::transforms::cube_uvw_to_face(lightToPosWS);
+
+    // Transform the point to LS
+    const uint faceTransformIndex = uint(shadowCasterIndex * 6.0 + faceIndex);
+    const float4 shadowUVClip = mul(float4(positionWS, 1.0), ::constants::frame::g_shadowCastingPointLightsViewProjectionUV[faceTransformIndex]);
+    const float3 shadowUVD = shadowUVClip.xyz / shadowUVClip.w;
+    const float shadowDepth = shadowUVD.z;
+
+    // Effective UV with 2 texel border
+    const float2 baseUV = float2(faceIndex, shadowCasterIndex) * DFX_POINT_LIGHT_SHADOW_MAP_ATLAS_PADDED_FACE_SIZE_UV + (DFX_POINT_LIGHT_SHADOW_MAP_ATLAS_TEXEL_SIZE * DFX_POINT_LIGHT_SHADOW_MAP_ATLAS_TOPLEFT_MARGIN);
+    const float2 paddedUV = shadowUVD.xy * DFX_POINT_LIGHT_SHADOW_MAP_ATLAS_INNER_FACE_SIZE_UV + baseUV;
+
+    // 4x4 PCF
+    float coverage = 0.0f;
+
+    [unroll]
+    for(float y = -1.5f; y <= 1.5; y += 1.0f)
+    {
+        [unroll]
+        for(float x = -1.5f; x <= 1.5; x += 1.0f)
+        {
+            const float2 offset = DFX_POINT_LIGHT_SHADOW_MAP_ATLAS_TEXEL_SIZE * float2(x, y);
+            coverage += shadowMapAtlas.SampleCmpLevelZero(::samplers::cmpShadow, paddedUV + offset, shadowDepth);
+        }
+    }
+
+    coverage *= (1.0f / 16.0f);
+
+    return coverage;
+}

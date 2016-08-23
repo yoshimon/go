@@ -1,0 +1,30 @@
+//! The light color.
+float3 color;
+//! The geometric radius of the area light.
+float radiusWS;
+//! The shadow caster index.
+float shadowCasterIndex;
+//! The direction in which the light is pointing.
+float3 directionWS;
+/*!
+    The virtual light position.
+
+    This is the position of the equivalent spot light.
+ */
+float3 virtualPositionWS;
+//! Padding.
+float padding0;
+//! Padding.
+float2 padding1;
+/*!
+    The angular attenuation scale.
+
+    Equal to: 1.0 / max(0.001, (cosInner - cosOuter).
+ */
+float angleScale;
+/*!
+    The angular attenuation bias.
+
+    Equal to: -cosOuter * angleScale.
+ */
+float angleBias;

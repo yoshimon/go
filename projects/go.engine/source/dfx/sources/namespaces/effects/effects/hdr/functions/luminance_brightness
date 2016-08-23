@@ -1,0 +1,89 @@
+//! Brightness cache.
+groupshared float4 gs_brightness[DFX_HDR_LUM_AND_BRIGHT_THREADS][DFX_HDR_LUM_AND_BRIGHT_THREADS];
+//! Brightness cache.
+groupshared float4 gs_tempBrightness[DFX_HDR_LUM_AND_BRIGHT_THREADS][DFX_HDR_LUM_AND_BRIGHT_THREADS];
+
+/*!
+    Computes the luminance and brightness of an image.
+
+    \param globalTID System value.
+    \param groupTID System value.
+    \param groupID System value.
+ */
+[numthreads(DFX_HDR_LUM_AND_BRIGHT_THREADS, DFX_HDR_LUM_AND_BRIGHT_THREADS, 1)]
+void $(in uint3 globalTID : SV_DispatchThreadID, in uint3 groupTID : SV_GroupThreadID, in uint3 groupID : SV_GroupID)
+{
+    // Calculate corresponding output position
+    int2 outPos = 2 * globalTID.xy;
+
+    // Calculate base sample point
+    float2 sampleUV = 2.0 * (outPos + 0.5) * ::constants::frame::g_nativeResolutionRcp;
+
+    // Calculate brightness and luminance
+    float4 bright = 0.0;
+
+    // Sample around sampleUV and weight
+    float bloomThreshold = cbs::frame::g_hdrBloomThreshold;
+    [unroll]
+    for(int y = 0; y <= 1; ++y)
+    {
+        [unroll]
+        for(int x = 0; x <= 1; ++x)
+        {
+            int2 offset = int2(x, y);
+            float3 texel = rtvs::hdr.SampleLevel(samplers::linearClamp, samplePoint, 0, offset * 2);
+            float4 brightLum = ::functions::color::brightness_luminance(texel, bloomThreshold);
+            textures::brightnessFullRW[outPos + offset] = brightLum;
+            bright += brightLum;
+        }
+    }
+
+    bright *= 0.25f;
+
+    // Cache brightness for this thread in GS-memory
+    gs_brightness[groupTID.x][groupTID.y] = bright;
+
+    // Write out brightness
+    textures::brightnessHalfRW[globalTID.xy] = bright;
+
+    GroupMemoryBarrierWithGroupSync();
+
+    if(groupTID.x < DFX_HDR_LUM_AND_BRIGHT_THREADS / 2 && groupTID.y < DFX_HDR_LUM_AND_BRIGHT_THREADS / 2)
+    {
+        // Quarter resolution
+    	float4 nextLevel = gs_brightness[groupTID.x * 2][groupTID.y * 2];
+    	nextLevel += gs_brightness[groupTID.x * 2 + 1][groupTID.y * 2];
+    	nextLevel += gs_brightness[groupTID.x * 2][groupTID.y * 2 + 1];
+    	nextLevel += gs_brightness[groupTID.x * 2 + 1][groupTID.y * 2 + 1];
+    	nextLevel *= 0.25f;
+    	gs_tempBrightness[groupTID.x][groupTID.y] = nextLevel;
+    	textures::brightnessQuarterRW[groupID.xy * DFX_HDR_LUM_AND_BRIGHT_THREADS / 2 + groupTID.xy] = nextLevel;
+    }
+
+    GroupMemoryBarrierWithGroupSync();
+
+    if(groupTID.x < DFX_HDR_LUM_AND_BRIGHT_THREADS / 4 && groupTID.y < DFX_HDR_LUM_AND_BRIGHT_THREADS / 4)
+    {
+        // Eighth resolution
+    	float4 nextLevel = gs_tempBrightness[groupTID.x * 2][groupTID.y * 2];
+    	nextLevel += gs_tempBrightness[groupTID.x * 2 + 1][groupTID.y * 2];
+    	nextLevel += gs_tempBrightness[groupTID.x * 2][groupTID.y * 2 + 1];
+    	nextLevel += gs_tempBrightness[groupTID.x * 2 + 1][groupTID.y * 2 + 1];
+    	nextLevel *= 0.25f;
+        gs_brightness[groupTID.x][groupTID.y] = nextLevel;
+    	textures::brightnessEighthRW[groupID.xy * DFX_HDR_LUM_AND_BRIGHT_THREADS / 4 + groupTID.xy] = nextLevel;
+    }
+
+    GroupMemoryBarrierWithGroupSync();
+
+    if(groupTID.x == 0 && groupTID.y == 0)
+    {
+        // Weighted sum of luminance values of the reduced target
+    	float nextLevel = gs_brightness[0][0].w;
+    	nextLevel += gs_brightness[0][1].w;
+    	nextLevel += gs_brightness[1][0].w;
+    	nextLevel += gs_brightness[1][1].w;
+    	nextLevel *= 0.25f;
+    	textures::luminanceRW[groupID.xy] = nextLevel;
+    }
+}

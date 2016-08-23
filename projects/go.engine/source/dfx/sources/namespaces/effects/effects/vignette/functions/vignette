@@ -1,0 +1,13 @@
+/*!
+    Adds vignette effect to a texture.
+
+    Requires blending to be enabled.
+
+    \param input The output from the vertex shader.
+ */
+float3 $(vertices::fstriangle input) : SV_Target
+{
+    const float vignetteRadius = ::effects::vignette::constants::g_vignetteRadius;
+    const float vignetteStrength = ::effects::vignette::constants::g_vignetteStrength;
+    return ::functions::color::vignette_factor(input.uv, vignetteRadius, vignetteStrength);
+}

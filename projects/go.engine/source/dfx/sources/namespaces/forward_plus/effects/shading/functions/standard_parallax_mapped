@@ -1,0 +1,38 @@
+/*
+    Performs shading.
+
+    \param input The input from the input assembler.
+
+    \return The shaded fragment.
+ */
+[earlydepthstencil]
+::forward_plus::shading::output $(::vertices::shading input)
+{
+    // Normalize shading vectors
+    ::functions::lighting::normalize_vertex_shading_vectors(input);
+
+    // Generate tangent basis
+    float3 faceNormalWS = input.normalWS;
+    float3x3 tangentBasis = ::functions::transforms::tangent_basis(input.normalWS, input.tangentWS);
+
+    // Get the view-vector
+    const float3 renderPointPosWS = ::constants::frame::g_mainRenderPointPositionWS.xyz;
+    float3 viewWS = normalize(renderPointPosWS - input.positionWS);
+
+    // Height bias and scale
+    const float heightScale = ::constants::standard_material::g_standardMaterialHeightScale;
+    const float heightBias = ::constants::standard_material::g_standardMaterialHeightBias;
+
+    // Apply parallax mapping
+    ::functions::transforms::apply_parallax_mapping(
+        input,
+        tangentBasis,
+        ::resources::brdf::standard::normal,
+        viewWS,
+        ::resources::brdf::standard::height,
+        heightScale,
+        heightBias);
+
+    // Run the actual shader
+    return ::forward_plus::shading::standard(input, viewWS, faceNormalWS);
+}

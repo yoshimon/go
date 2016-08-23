@@ -1,0 +1,6 @@
+//! The intensity of the effect.
+float g_volumetricLightingIntensity;
+//! The sample count.
+float g_volumetricLightingSampleCount;
+//! Padding.
+float2 g_volumetricLightingSampleCount_Padding;

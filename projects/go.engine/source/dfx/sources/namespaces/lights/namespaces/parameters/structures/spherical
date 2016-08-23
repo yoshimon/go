@@ -1,0 +1,8 @@
+//! The light color.
+float3 color;
+//! The geometric radius of the area light.
+float radiusWS;
+//! The shadow caster index.
+float shadowCasterIndex;
+//! Padding.
+float3 padding0;

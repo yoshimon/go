@@ -1,0 +1,12 @@
+/*!
+    Converts a depth-buffer z value to view-space.
+
+    \param z The value fetched from the depth buffer.
+    \param projectionMatrix The projection matrix.
+
+    \return The view-space z-coordinate.
+ */
+float $(float z, matrix projectionMatrix)
+{
+    return projectionMatrix._43 / (z - projectionMatrix._33);
+}

@@ -1,0 +1,21 @@
+/*!
+    Performs MinZ downsampling (1 mip level)
+
+    Dispatched at half-resolution of the source mip-level.
+ */
+[numthreads(8, 8, 1)]
+void $(uint3 dispatchTID: SV_DispatchThreadID)
+{
+    uint sourceMipLevel = ::effects::min_z_downsampling::constants::g_minZDownsamplingSourceMipLevel;
+
+    int3 base = int3(dispatchTID.xy, sourceMipLevel);
+
+    float depth00 = ::effects::min_z_downsampling::depthTexture.Load(base);
+    float depth01 = ::effects::min_z_downsampling::depthTexture.Load(base, int2(1, 0));
+    float depth10 = ::effects::min_z_downsampling::depthTexture.Load(base, int2(0, 1));
+    float depth11 = ::effects::min_z_downsampling::depthTexture.Load(base, int2(1, 1));
+
+    float minZ = min(depth00, min(depth01, min(depth10, depth11)));
+
+    ::effects::min_z_downsampling::depthTextureRW[uint2(dispatchTID.xy)] = minZ;
+}

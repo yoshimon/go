@@ -1,0 +1,17 @@
+/*
+    Performs shading.
+
+    \param input The input fragment.
+
+    \return The shaded fragment.
+ */
+::forward_plus::shading::output $(::vertices::shading input)
+{
+    const uint materialIndex = ::constants::instanced_draw::g_instancingMaterialIndex;
+     
+    // Fetch material with alpha-testing
+    const ::materials::standard material = ::functions::materials::standard::all_alpha_test(input.uv, materialIndex);
+
+    // Run the actual shader
+    return ::forward_plus::shading::standard_common(input, material);
+}

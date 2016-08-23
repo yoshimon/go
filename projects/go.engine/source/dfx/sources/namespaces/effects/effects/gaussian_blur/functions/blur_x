@@ -1,0 +1,41 @@
+/*!
+    Performs a horizontal gaussian blur.
+
+    \param globalTID The global TID.
+ */
+[numthreads(1, DFX_GAUSSIAN_BLUR_X_THREADS_Y, 1)]
+void $(in uint3 globalTID : SV_DispatchThreadID)
+{
+    static const int blurWidth = 7;
+    static const int halfBlurWidth = 3;
+    static const float blurWeights[blurWidth] =
+    {
+        0.00598, 0.060626, 0.241843, 0.383103, 0.241843, 0.060626, 0.00598
+    };
+
+    int3 base = int3(globalTID.x * DFX_GAUSSIAN_BLUR_X_THREADS_X, globalTID.y, ::effects::gaussian_blur::constants::g_gaussianBlurMipLevel);
+
+    // Local cache
+    float4 input[blurWidth + DFX_GAUSSIAN_BLUR_X_THREADS_X];
+
+    // Load image data into local memory (centered at base)
+    [unroll]
+    for(int i = 0; i < blurWidth + DFX_GAUSSIAN_BLUR_X_THREADS_X; ++i)
+    {
+    	input[i] = ::effects::gaussian_blur::sourceTexture.Load(base, int2(i - halfBlurWidth, 0));
+    }
+
+    // Perform blur
+    [unroll]
+    for(int x = 0; x < DFX_GAUSSIAN_BLUR_X_THREADS_X; ++x)
+    {
+    	float4 output = 0.0f;
+    	[unroll]
+        for(int i = 0; i < blurWidth; ++i)
+    	{
+    		output += input[x + i] * blurWeights[i];
+    	}
+
+    	::effects::gaussian_blur::destTextureRW[base.xy + int2(x, 0)] = output;
+    }
+}

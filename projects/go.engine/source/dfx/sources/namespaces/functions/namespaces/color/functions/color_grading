@@ -1,0 +1,28 @@
+/*!
+    Performs color-grading on a color.
+
+    \remarks This assumes a 16^3 size of the LUTs!
+
+    \param col The color to grade.
+    \param colorLUTSource The source LUT.
+    \param colorLUTDest The destination LUT.
+    \param colorLUTBlendFactor The blend factor between the two grading tables.
+
+    \return The graded color.
+ */
+float3 $(float3 color, Texture3D<float3> colorLUTSource, Texture3D<float3> colorLUTDest, float colorLUTBlendFactor)
+{
+    // NOTE: this assumes that the color LUTs are 16^3 in size!
+    const float kGradingScale = 0.9375f; // (16.0f - 1.0f) / 16.0f;
+    const float kGradingOffset = 0.03125f; // 1.0f / (2.0f * 16.0f);
+
+    // Compute the position in the color table
+    float3 gradingUVW = kGradingScale * color + kGradingOffset;
+
+    // Fetch source and destination
+    float3 sourceColor = colorLUTSource.SampleLevel(samplers::linearClamp, gradingUVW, 0);
+    float3 destColor = colorLUTDest.SampleLevel(samplers::linearClamp, gradingUVW, 0);
+
+    // Do a linear blend
+    return lerp(sourceColor, destColor, colorLUTBlendFactor);
+}

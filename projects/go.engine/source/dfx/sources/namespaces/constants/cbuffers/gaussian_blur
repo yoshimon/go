@@ -1,0 +1,4 @@
+//! The MIP-level to blur.
+uint g_gaussianBlurMipLevel;
+//! Padding.
+float3 g_gaussianBlurMipLevel_Padding;

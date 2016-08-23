@@ -1,0 +1,23 @@
+/*!
+    Returns the squared-distance between two points.
+
+    \param q Point q.
+    \param p Point p.
+
+    \return The squared-distance between the two points.
+ */
+float $(float2 q, float2 p)
+{
+    float2 t = q - p;
+    return dot(t, t);
+}
+
+
+/*!
+    \overload
+ */
+float $(float3 q, float3 p)
+{
+    float3 t = q - p;
+    return dot(t, t);
+}

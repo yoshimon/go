@@ -1,0 +1,16 @@
+/*!
+    Extracts the surface information from a standard material.
+
+    \param material The material to update.
+    \param uv The texture-space UV of the surface.
+    \param emissiveTint The emissive tint.
+    \param emissiveIntensity The emissive intensity.
+
+    \return The surface data.
+ */
+void $(inout ::materials::standard material, float2 uv, float3 emissiveTint, float emissiveIntensity)
+{
+     material.emission = ::materials::textures::standard::emissionTexture.Sample(::samplers::surface, uv);
+     material.emission *= emissiveTint;
+     material.emission *= emissiveIntensity * 100.f;
+}

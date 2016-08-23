@@ -1,0 +1,7 @@
+/*************************************************************
+    Effect: Film Grain
+ *************************************************************/
+//! Film grain scale factor.
+float g_filmGrainScale;
+//! Padding.
+float3 g_filmGrainScale_Padding;

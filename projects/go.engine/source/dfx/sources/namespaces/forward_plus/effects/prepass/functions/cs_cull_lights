@@ -1,0 +1,146 @@
+//! Number of sphere-lights in this tile.
+groupshared uint gs_numSphereLights;
+//! The point light index list.
+groupshared uint gs_sphereLightIndices[DFX_FORWARD_PLUS_MAX_NUM_LIGHTS_PER_TILE];
+
+//! Number of disk-lights in this tile.
+groupshared uint gs_numDiskLights;
+//! The spot light index list.
+groupshared uint gs_diskLightIndices[DFX_FORWARD_PLUS_MAX_NUM_LIGHTS_PER_TILE];
+
+
+/*
+    Culls all lights to screen-space tiles.
+
+    \param globalTID System value.
+    \param localTID System value.
+    \param tileID System value.
+    \param localIndex System value.
+ */
+[numthreads(DFX_FORWARD_PLUS_CULL_LIGHTS_NUM_LOCAL_THREADS_X, DFX_FORWARD_PLUS_CULL_LIGHTS_NUM_LOCAL_THREADS_Y, 1)]
+void $(uint3 globalTID : SV_DispatchThreadID, uint3 localTID : SV_GroupThreadID, uint3 tileID : SV_GroupID,
+    uint localIndex : SV_GroupIndex)
+{
+    if(localIndex == 0)
+    {
+        // Sphere lights
+        gs_numSphereLights = 0;
+
+        // Spot lights
+        gs_numDiskLights = 0;
+    }
+
+    uint3 threadGroups = cbs::frame::g_forwardPlusNumThreadGroups;
+    {
+        float3 frustumEqn[4];
+        {
+            // Construct frustum planes
+            // The frustum planes are constructed in homogenous clip-space and transformed back into view-space
+            uint pxm = DFX_FP_LIGHT_ACCUM_NUM_LOCAL_THREADS_X * tileID.x;
+            uint pym = DFX_FP_LIGHT_ACCUM_NUM_LOCAL_THREADS_Y * tileID.y;
+            uint pxp = DFX_FP_LIGHT_ACCUM_NUM_LOCAL_THREADS_X * (tileID.x + 1);
+            uint pyp = DFX_FP_LIGHT_ACCUM_NUM_LOCAL_THREADS_Y * (tileID.y + 1);
+
+            float windowWidthEvenlyDivByTiles = DFX_FP_LIGHT_ACCUM_NUM_LOCAL_THREADS_X * threadGroups.x;
+            float windowHeightEvenlyDivByTiles = DFX_FP_LIGHT_ACCUM_NUM_LOCAL_THREADS_Y * threadGroups.y;
+
+            float left = pxm / windowWidthEvenlyDivByTiles * 2.f - 1.f;
+            float right = pxp / windowWidthEvenlyDivByTiles * 2.f - 1.f;
+            float top = 1.f - pym / windowHeightEvenlyDivByTiles * 2.f; // 1 is up in clip-space
+            float bottom = 1.f - pyp / windowHeightEvenlyDivByTiles * 2.f; // -1 is down in clip-space
+
+            // Four corners of the tile, clockwise from top-left
+            const matrix invProjMatrix = cbs::frame::g_camInvProjection;
+            float4 frustum[4];
+            frustum[0] = clip_to_view(float4(left, top, 1.f, 1.f), invProjMatrix);
+            frustum[1] = clip_to_view(float4(right, top, 1.f, 1.f), invProjMatrix);
+            frustum[2] = clip_to_view(float4(right, bottom, 1.f, 1.f), invProjMatrix);
+            frustum[3] = clip_to_view(float4(left, bottom, 1.f, 1.f), invProjMatrix);
+
+            // Positive half-space outside the frustum, view-space left-handed
+            frustumEqn[0] = normalize(cross(frustum[0].xyz, frustum[1].xyz));
+            frustumEqn[1] = normalize(cross(frustum[1].xyz, frustum[2].xyz));
+            frustumEqn[2] = normalize(cross(frustum[2].xyz, frustum[3].xyz));
+            frustumEqn[3] = normalize(cross(frustum[3].xyz, frustum[0].xyz));
+        }
+
+        GroupMemoryBarrierWithGroupSync(); // Need barrier to ensure gs_numPointLights was initialized
+
+        // Loop over all lights and perform sphere-frustum intersection tests
+
+        // Point lights
+        uint numPointLights = cbs::frame::g_numPointLights;
+        {
+            for(uint i = localIndex; i < numPointLights; i += DFX_FP_LIGHT_ACCUM_NUM_LOCAL_THREADS)
+            {
+                structs::point_light_shape shape = buffers::pointLightShapes[i];
+                float3 center = mul(float4(shape.center, 1), (float4x3)cbs::frame::g_camView);
+                float r = shape.radius;
+
+                // test if sphere is intersecting or inside frustum
+                if((dot(center, frustumEqn[0]) < r) &&
+                   (dot(center, frustumEqn[1]) < r) &&
+                   (dot(center, frustumEqn[2]) < r) &&
+                   (dot(center, frustumEqn[3]) < r))
+                {
+                    uint destIndex = 0;
+                    InterlockedAdd(gs_numPointLights, 1, destIndex);
+                    gs_pointLightIndices[destIndex] = i;
+                }
+            }
+        }
+
+        // Spot lights
+        uint numSpotLights = cbs::frame::g_numSpotLights;
+        {
+            for(uint i = localIndex; i < numSpotLights; i += DFX_FP_LIGHT_ACCUM_NUM_LOCAL_THREADS)
+            {
+                structs::spot_light_shape shape = buffers::spotLightShapes[i];
+                float3 center = mul(float4(shape.center, 1), (float4x3)cbs::frame::g_camView);
+                float r = shape.radius;
+
+                // test if sphere is intersecting or inside frustum
+                if((dot(center, frustumEqn[0]) < r) &&
+                   (dot(center, frustumEqn[1]) < r) &&
+                   (dot(center, frustumEqn[2]) < r) &&
+                   (dot(center, frustumEqn[3]) < r))
+                {
+                    uint destIndex = 0;
+                    InterlockedAdd(gs_numSpotLights, 1, destIndex);
+                    gs_spotLightIndices[destIndex] = i;
+                }
+            }
+        }
+    }
+
+    GroupMemoryBarrierWithGroupSync();
+
+    // Output point light list
+    uint metaOffset = DFX_FP_MAX_NUM_ELEMENTS_PER_TILE * tile_index(tileID.xy, threadGroups);
+    uint lightOffset = metaOffset + DFX_FP_LIGHT_LIST_META_DATA_TILE_INDEX_OFFSET;
+
+    // Point lights
+    {
+        for(uint i = localIndex; i < gs_numPointLights; i += DFX_FP_LIGHT_ACCUM_NUM_LOCAL_THREADS)
+        {
+            buffers::tilePointLightIndicesRW[lightOffset + i] = gs_pointLightIndices[i];
+        }
+    }
+
+    // Spot lights
+    {
+        for(uint i = localIndex; i < gs_numSpotLights; i += DFX_FP_LIGHT_ACCUM_NUM_LOCAL_THREADS)
+        {
+            buffers::tileSpotLightIndicesRW[lightOffset + i] = gs_spotLightIndices[i];
+        }
+    }
+
+    if(localIndex == 0)
+    {
+        // Point lights
+        buffers::tilePointLightIndicesRW[metaOffset] = gs_numPointLights;
+
+        // Spot lights
+        buffers::tileSpotLightIndicesRW[metaOffset] = gs_numSpotLights;
+    }
+}

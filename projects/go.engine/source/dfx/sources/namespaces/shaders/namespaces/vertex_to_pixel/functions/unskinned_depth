@@ -1,0 +1,15 @@
+/*
+    Unskinned vertex shader.
+
+    \param input The input from the IA stage.
+    \param[out] output The output vertex.
+ */
+void $(::vertices::unskinned_uv input, out ::vertices::no_shading output)
+{
+    uint instanceID = input.instanceID + ::constants::instanced_draw::g_instancingIDBias;
+
+    const float4x3 world = ::resources::instancing::unskinnedInstanceData[instanceID].worldMatrix;
+    const matrix viewProj = ::constants::frame::g_mainRenderPointViewProj;
+
+    ::functions::transforms::transform_vertex(input, world, viewProj, output);
+}

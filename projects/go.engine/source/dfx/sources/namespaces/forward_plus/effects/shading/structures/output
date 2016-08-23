@@ -1,0 +1,12 @@
+//! The shaded fragment color.
+float4 fragmentColor : SV_Target0;
+//! The albedo color value of the fragment.
+float4 albedo : SV_Target1;
+//! The metal-roughness of the fragment.
+float4 metallicRoughness : SV_Target2;
+//! The view-space normal of the fragment.
+float4 normalWS : SV_Target3;
+//! The view-space depth.
+float depthVS : SV_Target4;
+//! The ambient occlusion.
+float ambientOcclusion : SV_Target5;

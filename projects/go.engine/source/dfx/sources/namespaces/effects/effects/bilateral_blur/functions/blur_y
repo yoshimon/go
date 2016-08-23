@@ -1,0 +1,59 @@
+/*!
+    Performs a vertical gaussian blur.
+
+    \param globalTID The global TID.
+ */
+[numthreads(DFX_GAUSSIAN_BLUR_Y_THREADS_X, 1, 1)]
+void $(in uint3 globalTID : SV_DispatchThreadID)
+{
+    static const int blurWidth = 7;
+    static const int halfBlurWidth = 3;
+    static const float blurWeights[blurWidth] =
+    {
+        0.135679, 0.142769, 0.147199, 0.148706, 0.147199, 0.142769, 0.135679
+    };
+
+    int sourceMiplevel = ::effects::bilateral_blur::constants::g_bilateralBlurSourceMipLevel;
+    int depthMipLevel = ::effects::bilateral_blur::constants::g_bilateralBlurDepthMipLevel;
+
+    int3 base = int3(globalTID.x, globalTID.y * DFX_GAUSSIAN_BLUR_Y_THREADS_Y, sourceMiplevel);
+    int3 baseDepth = int3(globalTID.x, globalTID.y * DFX_GAUSSIAN_BLUR_Y_THREADS_Y, depthMipLevel);
+
+    // Local cache
+    const int LDSCacheSize = blurWidth - 1 + DFX_GAUSSIAN_BLUR_Y_THREADS_Y;
+    float4 input[LDSCacheSize];
+    float inputDepths[LDSCacheSize];
+
+    // Load image data into local memory (centered at base)
+    [unroll]
+    for(int i = 0; i < LDSCacheSize; ++i)
+    {
+    	input[i] = ::effects::bilateral_blur::sourceTexture.Load(base, int2(0, i - halfBlurWidth));
+        inputDepths[i] = ::effects::bilateral_blur::viewDepthTexture.Load(baseDepth, int2(0, i - halfBlurWidth));
+    }
+
+    // Perform blur
+    const float sigma = 0.1;
+    const float denom = 1.0f / (2.0f * sigma * sigma);
+
+    [unroll]
+    for(int y = 0; y < DFX_GAUSSIAN_BLUR_Y_THREADS_Y; ++y)
+    {
+        float centerDepth = inputDepths[y + halfBlurWidth];
+    	float3 output = 0.0f;
+        float totalWeight = 0.f;
+    	[unroll]
+        for(int i = 0; i < blurWidth; ++i)
+    	{
+            float3 s = input[y + i];
+            float d = inputDepths[y + i];
+            float deltaDepth = centerDepth - d;
+            float range = exp(-deltaDepth * deltaDepth * denom);
+            float rw = range * blurWeights[i];
+            output += s * rw;
+            totalWeight += rw;
+    	}
+
+    	::effects::bilateral_blur::destTextureRW[base.xy + int2(0, y)] = float4(output / totalWeight, input[y + halfBlurWidth].w);
+    }
+}

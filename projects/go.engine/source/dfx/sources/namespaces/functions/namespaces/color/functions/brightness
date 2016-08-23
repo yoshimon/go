@@ -1,0 +1,27 @@
+/*!
+    Computes the brightness of a color value in gamma space.
+
+    \param col The input color value.
+
+    \return The brightness of the input color.
+ */
+float $_gamma_space(float3 color)
+{
+    // Figure out luminance by similarity-weighting
+    // Epsilon to prevent log(0) = infinity
+    return log(max(dot(color, DFX_LUMINANCE_WEIGHTS), 0.001f));
+}
+
+
+/*!
+    Computes the brightness of a color value in linear space.
+
+    \param col The input color value.
+
+    \return The brightness of the input color.
+ */
+float $_linear_space(float3 color)
+{
+    // Epsilon to prevent log(0) = infinity
+    return log(max(color.r + color.g + color.b + 2.0 * sqrt(color.y * (color.x + color.z)), 0.001f));
+}

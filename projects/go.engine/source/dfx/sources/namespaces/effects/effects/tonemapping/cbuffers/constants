@@ -1,0 +1,11 @@
+/*************************************************************
+    Effect: Tonemapping
+ *************************************************************/
+ //! Exposure bias for the tonemapper.
+float g_tonemappingExposureBias;
+//! The bloom intensity.
+float g_tonemappingBloomScale;
+//! The color grading LUT blend factor.
+float g_colorGradingLUTBlendFactor;
+//! Padding.
+float g_tonemappingExposureBias_Padding;

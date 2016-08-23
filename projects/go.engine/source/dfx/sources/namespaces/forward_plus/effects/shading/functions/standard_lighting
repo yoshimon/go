@@ -1,0 +1,77 @@
+/*!
+    Shades a fragment.
+
+    \param input The input fragment.
+    \param viewDirWS The world-space view vector.
+    \param faceNormalWS The world-space face normal.
+    \param material The material.
+
+    \return The fragment color.
+ */
+::forward_plus::shading::output $(
+    ::vertices::shading input,
+    float3 viewDirWS,
+    float3 faceNormalWS,
+    ::materials::standard material)
+{
+    // The diffuse and specular components
+    float3 diffuse = material.emission;
+    float3 specular = 0.0;
+
+    // Reflected view vector
+    const float3 reflDirWS = reflect(-viewDirWS, input.normalWS);
+
+    // Convert the pixel to a screen-space tile index
+    uint tileIndex = ::functions::transforms::pixel_to_tile_index
+    (
+        input.positionWVP.xy,
+        1.0 / DFX_FORWARD_PLUS_CULL_LIGHTS_NUM_LOCAL_THREADS_X,
+        1.0 / DFX_FORWARD_PLUS_CULL_LIGHTS_NUM_LOCAL_THREADS_Y,
+        ::forward_plus::constants::frame::g_forwardPlusCullingNumThreadGroups.x
+    );
+
+    // Compute analytical lights
+    // Spherical
+    ::forward_plus::shading::spherical_area_lights
+    (
+        tileIndex,
+        input.positionWS, input.normalWS, viewDirWS, reflDirWS,
+        material.albedo.rgb, material.roughness, material.metallic,
+        diffuse, specular
+    );
+
+    // Disk
+    ::forward_plus::shading::disk_area_lights
+    (
+        tileIndex,
+        input.positionWS, input.normalWS, viewDirWS,
+        material.albedo.rgb, material.roughness, material.metallic,
+        diffuse, specular
+    );
+
+    // TODO: tube + rectangular lights + rectangular lights
+
+    // Directional light
+    ::functions::lighting::standard::directional_light
+    (
+        ::constants::frame::g_directionalLightDirWS,
+        ::constants::frame::g_directionalLightColor,
+        input.positionWS, input.normalWS, viewDirWS,
+        material.albedo.rgb, material.roughness, material.metallic,
+        diffuse, specular
+    );
+
+    // Combine lighting
+    float3 result = diffuse + specular;
+
+    // Write output
+    return generate_output
+    (
+        float4(result, max(0.0f, (1.0 - material.transparency) * material.alpha)),
+        input.normalWS,
+        material.albedo,
+        float2(material.metallic, material.roughness),
+        input.positionVS.z,
+        material.occlusion
+    );
+}

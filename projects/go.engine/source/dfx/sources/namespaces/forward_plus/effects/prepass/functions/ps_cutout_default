@@ -1,0 +1,15 @@
+/*
+    Clips the current fragment if the cutout test fails.
+
+    \param input The input from the input assembler.
+
+    \return The shaded fragment.
+ */
+void $(::vertices::no_shading input)
+{
+    // Grab the cutout mask
+    float alpha = ::common_textures::shading::standard::albedoCutout.Sample(samplers::surface, input.uv).a;
+
+    // Clip to material cutout threshold
+    clip(alpha - ::constants::standard_material::cutout);
+}

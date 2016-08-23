@@ -1,0 +1,79 @@
+/*!
+    Performs a standard vertex transformation.
+
+    \param input The input vertex.
+    \param worldMatrix The world matrix.
+    \param viewMatrix The view matrix.
+    \param viewProjectionMatrix The view-projection matrix.
+    \param output The output vertex to be interpolated for shading.
+ */
+void $(
+    in const vertices::unskinned input,
+    in const float4x3 worldMatrix,
+    in const float4x3 viewMatrix,
+    in const matrix viewProjectionMatrix,
+    out vertices::shading output)
+{
+    float4 posWS = float4(mul(float4(input.positionOS, 1.0), worldMatrix), 1.0);
+    output.positionWS = posWS.xyz;
+    output.positionVS = mul(posWS, viewMatrix);
+    output.positionWVP = mul(posWS, viewProjectionMatrix);
+    output.normalWS = mul(input.normalOS.xyz, (float3x3)worldMatrix);
+    output.tangentWS = float4(mul(input.tangentOS.xyz, (float3x3)worldMatrix), input.tangentOS.w);
+    output.uv = input.uv;
+}
+
+
+/*!
+    \overload
+ */
+void $(
+    in const vertices::unskinned input,
+    in const float4x3 worldMatrix,
+    in const matrix viewProjectionMatrix,
+    out vertices::no_shading output)
+{
+    float4 posWS = float4(mul(float4(input.positionOS, 1.0), worldMatrix), 1.0);
+    output.positionWVP = mul(posWS, viewProjectionMatrix);
+    output.uv = input.uv;
+}
+
+
+/*!
+    \overload
+ */
+void $(
+    in const vertices::unskinned input,
+    in const matrix worldViewProjectionMatrix,
+    out vertices::no_shading output)
+{
+    output.positionWVP = mul(float4(input.positionOS, 1.0), worldViewProjectionMatrix);
+    output.uv = input.uv;
+}
+
+
+/*!
+    \overload
+ */
+void $(
+    in const vertices::unskinned input,
+    in const float4x3 worldViewProjectionMatrix,
+    out vertices::no_shading output)
+{
+    output.positionWVP = float4(mul(float4(input.positionOS, 1.0), worldViewProjectionMatrix), 1.0);
+    output.uv = input.uv;
+}
+
+/*!
+    \overload
+ */
+void $(
+    in const vertices::unskinned_uv input,
+    in const float4x3 worldMatrix,
+    in const matrix viewProjectionMatrix,
+    out vertices::no_shading output)
+{
+    float4 posWS = float4(mul(float4(input.positionOS, 1.0), worldMatrix), 1.0);
+    output.positionWVP = mul(posWS, viewProjectionMatrix);
+    output.uv = input.uv;
+}

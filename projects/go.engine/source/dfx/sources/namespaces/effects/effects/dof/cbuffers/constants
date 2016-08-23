@@ -1,0 +1,11 @@
+/*************************************************************
+    Effect: DoF
+ *************************************************************/
+//! The conversion factor from CoC to pixels.
+float g_dofCoCToPx;
+//! The end of the near-region.
+float g_dofNearEnd;
+//! The start of the far-region.
+float g_dofFarStart;
+//! The range of the far-region.
+float g_dofFarRange;

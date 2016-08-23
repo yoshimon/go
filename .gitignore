@@ -1,0 +1,4 @@
+*.user
+*.filters
+projects/go.engine/source/dfx/output
+projects/go.engine/source/dfx/shaders

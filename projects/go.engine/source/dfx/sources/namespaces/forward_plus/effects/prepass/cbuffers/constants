@@ -1,0 +1,4 @@
+//! The number of lights to cull.
+uint g_forwardPlusPrepassNumLightsToCull;
+//! Padding.
+uint3 g_forwardPlusPrepassNumLightsToCull_Padding;

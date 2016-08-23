@@ -1,0 +1,11 @@
+/*!
+    Converts degrees to radians.
+
+    \param d The degree to convert.
+
+    \return The corresponding angle in radians.
+ */
+float $(float deg)
+{
+    return deg * (DFX_PI / 180.0);
+}

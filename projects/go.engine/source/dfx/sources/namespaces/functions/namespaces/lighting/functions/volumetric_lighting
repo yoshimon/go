@@ -1,0 +1,86 @@
+/*!
+    Calculates the amount of volumetric lighting for a given fragment.
+
+    \param shadowMap The directional light shadow map to use.
+    \param positionVS The position of the shaded fragment in view-space.
+    \param nearPlane The near plane.
+    \param interleavedIndex The ray starting offset.
+    \param intensity The volumetric lighting intensity.
+    \param sampleCount The number of samples.
+    \param cameraViewToLightView Transforms from camera view-space to light view-space.
+    \param cameraViewToLightViewProj Transforms from camera view-space to light view-projection space.
+    \param lightColor The light color, premultiplied by the brightness.
+
+    \return The volumetric light contribution.
+ */
+float4 $(
+    const Texture2D<float> shadowMap,
+    const float3 positionVS,
+    const float nearPlane,
+    const float interleavedIndex,
+    const float intensity,
+    const float sampleCount,
+    const float4x3 cameraViewToLightView,
+    const matrix cameraViewToLightViewProjUV,
+    const float3 lightColor)
+{
+    // Subtract fuzz factor to prevent shadow map aliasing issues
+    const float kDistanceBias = -1.0f;
+     
+    // Camera view-space
+    float fragDistanceVS = length(positionVS);
+    float raymarchDistanceVS = max(0.0, fragDistanceVS + kDistanceBias);
+    const float stepSizeVS = raymarchDistanceVS / (sampleCount + 1); // Leave 1 step for interleaved sampling
+
+    // Compute ray direction
+    const float3 rayDirVS = positionVS / fragDistanceVS;
+
+    // The step vector
+    const float3 rayStepVS = rayDirVS * stepSizeVS;
+
+    // The first ray sample in VS
+    float3 rayPositionVS = rayStepVS * (interleavedIndex * (1.0f / DFX_VOLUMETRIC_LIGHTING_THREADS));
+
+    // Participating media (PM) parameters
+    const float kAbsorption = 0.0;
+    const float kScattering = 0.01 * intensity;
+
+    // PM deduced parameters
+    const float kExtinction = max(0.00001, kScattering + kAbsorption);
+    const float kAlbedo = kScattering / kExtinction;
+
+    // Light source
+    const float phi = 1.0;
+
+    // Accumulated light
+    float3 result = 0.0;
+
+    // Accumulated transmittance
+    float transmittance = 1.0;
+
+    // The incident light flux is constant for a directional light
+    const float3 incidentLight = phi * lightColor;
+
+    // The extinction for 1 step
+    const float segTransmittance = exp(-kExtinction * stepSizeVS);
+
+    // Constant phase function
+    const float kPhaseFunc = 0.25 * DFX_PI_RCP;
+
+    [loop]
+    for(float i = 0.0; i < sampleCount; i += 1.0, rayPositionVS += rayStepVS)
+    {
+        // Calculate the scattering
+        float3 scattered = kScattering * kPhaseFunc * directional_light_raw_shadow(shadowMap, rayPositionVS.xyz, cameraViewToLightViewProjUV) * incidentLight;
+
+        // Analytically integrate the segment
+        float3 scatteredInt = (scattered - scattered * segTransmittance) / kExtinction;
+
+        // Accumulate scattering and transmittance
+        result += transmittance * scatteredInt;
+        transmittance *= segTransmittance;
+    }
+
+    // RGB is additive lighting, A is transmittance to multiply with the existing radiance in the color buffer
+    return float4(result, transmittance);
+}

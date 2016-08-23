@@ -1,0 +1,15 @@
+/*!
+    Computes the angular attenuation for a spot-light.
+
+    \param toLightDir The direction from the point in question to the light source.
+    \param lightDir The direction of the light source.
+    \param lightAngleScale Equal to: 1.0 / max(0.001, (cosInner - cosOuter).
+    \param lightAngleBias Equal to: -cosOuter * angleScale.
+
+    \return The attenuation factor.
+ */
+float $(float3 toLightDir, float3 lightDir, float lightAngleScale, float lightAngleBias)
+{
+    const float cd = dot(toLightDir, lightDir);
+    return ::functions::math::sqr(saturate(cd * lightAngleScale + lightAngleBias));
+}

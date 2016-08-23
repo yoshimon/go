@@ -1,0 +1,18 @@
+/*!
+    Calculates the circle-of-confusion for a pixel.
+
+    \param depthVS The view-space Z coordinate.
+    \param nearEnd The end of the near-region.
+    \param farStart The start of the far-region.
+    \param farRange The range of the far-region.
+
+    \return The CoC in pixel.
+ */
+float $(float depthVS, float nearEnd, float farStart, float farRange)
+{
+    float coc = depthVS < nearEnd ?
+        -1.0 + depthVS / nearEnd : // Near
+        (depthVS > farStart ? saturate((depthVS - farStart) / farRange) : 0.0); // Far / In focus
+
+    return coc;
+}

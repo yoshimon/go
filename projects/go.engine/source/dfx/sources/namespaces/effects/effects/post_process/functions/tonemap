@@ -1,0 +1,27 @@
+/*!
+    Performs tonemapping.
+
+    \param input The output from the vertex shader.
+ */
+float3 $(in outs::vs_fstriangle input) : SV_Target
+{
+    // Screen-space pixel location
+    uint3 pixelLocation = uint3(input.posClipSpace.xy, 0);
+
+    // Fragment to tonemap
+    float3 Lw = ::effects::post_process::hdrTexture.Load(pixelLocation).rgb;
+
+    // Apply bloom
+    Lw += ::constants::frame::g_hdrBloomScale * ::textures::bloomFinal.Sample(samplers::linearClamp, input.uv).rgb;
+
+    // Perform global luminance-based tone-mapping
+    Lw *= textures::luminance.Load(0u.xxx);
+    float3 L = ::functions::color::filmic_tonemap(cbs::frame::g_hdrExposureBias * Lw);
+
+    // Bump up the overall brightness
+    float3 whiteScale = 1.0 / ::functions::color::tonemap_filmic(DFX_HDR_TONE_MAP_W.xxx);
+    float3 col = L * whiteScale;
+
+    // Linear space to gamma space
+    return pow(col, ::constants::frame::g_gammaRcp);
+}

@@ -1,0 +1,58 @@
+//! Per-tile average luminance.
+groupshared float gs_averageLuminance[DFX_BLOOM_AVERAGE_LUMINANCE_THREADS];
+
+/*!
+    Reduces the previously computed average per-tile to a global average.
+
+    \param globalTID The pixel position.
+ */
+[numthreads(DFX_BLOOM_AVERAGE_LUMINANCE_THREADS, 1, 1)]
+void $(in uint3 globalTID : SV_DispatchThreadID)
+{
+    uint width, height;
+    ::effects::bloom::luminanceTextureRW.GetDimensions(width, height);
+
+    float luminance = 0.0f;
+
+    uint w = width / (DFX_BLOOM_LUM_AND_BRIGHT_THREADS * DFX_BLOOM_AVERAGE_LUMINANCE_THREADS);
+    uint h = height / DFX_BLOOM_AVERAGE_LUMINANCE_THREADS;
+    for(uint i = 0; i < w; ++i)
+    {
+        for(uint j = 0; j < h; ++j)
+        {
+            luminance += ::effects::bloom::luminanceTextureRW[int2(globalTID.x + DFX_BLOOM_AVERAGE_LUMINANCE_THREADS * i, j)];
+        }
+    }
+
+    gs_averageLuminance[globalTID.x] = luminance;
+
+    GroupMemoryBarrierWithGroupSync();
+
+	if(globalTID.x == 0)
+	{
+        // Accumulate total luminance
+		for(uint i = 1; i < DFX_BLOOM_AVERAGE_LUMINANCE_THREADS; ++i)
+		{
+			luminance += gs_averageLuminance[i];
+		}
+
+        // Weight luminance and output
+        float normFactor = DFX_BLOOM_AVERAGE_LUMINANCE_THREADS / (width * height);
+        luminance *= normFactor;
+
+		float worldLuminance = exp(luminance) - DFX_FLOAT_EPSILON;
+		float currentFrameLuminance = cbs::frame::g_hdrMiddleGray / worldLuminance;
+
+        // Eye adaption
+        float lastFrameLuminance = ::effects::bloom::lastLuminanceRW.Load(0u.xx);
+        float deltaDir = sign(currentFrameLuminance - lastFrameLuminance);
+        const float exposureDelta = ::constants::frame::g_hdrBloomExposureAdaptionDelta
+        float newLuminance = lastFrameLuminance + deltaDir * exposureDelta;
+        float outputLuminance = clamp(newLuminance, 0.0, ::constants::frame::g_hdrBloomMaxLuminance);
+        outputLuminance = deltaDir > 0 ? min(outputLuminance, currentFrameLuminance) : max(outputLuminance, currentFrameLuminance);
+
+        // Write out the luminance for this frame
+        ::effects::bloom::lastLuminanceTextureRW[0u.xx] = outputLuminance;
+        ::effects::bloom::luminanceTextureRW[0u.xx] = outputLuminance;
+	}
+}

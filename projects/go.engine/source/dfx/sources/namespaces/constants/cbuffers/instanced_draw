@@ -1,0 +1,6 @@
+//! The instance ID bias.
+uint g_instancingIDBias;
+//! The material index.
+uint g_instancingMaterialIndex;
+//! Padding.
+uint2 g_instancingMaterialIndex_Padding;

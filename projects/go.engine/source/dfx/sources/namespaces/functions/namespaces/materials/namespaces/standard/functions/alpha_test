@@ -1,0 +1,18 @@
+/*!
+    Extracts the surface information from a standard material.
+
+    \param uv The texture-space UV of the surface.
+    \param materialIndex The material index.
+
+    \return The surface data.
+ */
+void $(float2 uv, uint materialIndex)
+{
+    // Fetch material constants
+    ::materials::constants::standard constants = ::resources::material_constants::standard[materialIndex];
+
+    // Fetch alpha
+    float alpha = ::materials::textures::standard::albedoAlphaTexture.Sample(::samplers::surface, uv).a;
+
+    clip(alpha - constants.cutoutThreshold); // Subtract cutout threshold for clipping
+}

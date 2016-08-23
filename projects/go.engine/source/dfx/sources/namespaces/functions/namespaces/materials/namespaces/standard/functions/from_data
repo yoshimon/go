@@ -1,0 +1,12 @@
+/*!
+    Returns pre-modulated material data.
+
+    \param uv The UV coordinates of the material textures to fetch.
+    \param materialIndex The material index.
+
+    \return The surface data.
+ */
+::materials::standard::data $(float uv, uint materialIndex)
+{
+    ::functions::materials::standard::all(
+}

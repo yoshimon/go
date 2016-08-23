@@ -1,0 +1,31 @@
+/*!
+    Calculates the amount of incoming light for a disk or sphere shaped light.
+
+    \param cosTheta The angle between the surface and the light.
+    \param
+ */
+float $(float cosTheta, float sinSigmaSqr)
+{
+    const float sqrCosTheta = cosTheta * cosTheta;
+    const float sinTheta = sqrt(1.0 - sqrCosTheta);
+
+    float illuminance;
+    // Note : Following test is equivalent to the original formula.
+    // There is 3 phase in the curve : cosTheta > sqrt ( sinSigmaSqr ),
+    // cosTheta > -sqrt ( sinSigmaSqr ) and else it is 0
+    // The two outer case can be merge into a cosTheta * cosTheta > sinSigmaSqr
+    // and using saturate ( cosTheta ) instead .
+    if(sqrCosTheta > sinSigmaSqr)
+    {
+        illuminance = DFX_PI * sinSigmaSqr * saturate(cosTheta);
+    }
+    else
+    {
+        float x = sqrt(1.0 / sinSigmaSqr - 1.0) ; // For a disk this simplify to x = d / r
+        float y = -x * (cosTheta / sinTheta);
+        float sinThetaSqrtY = sinTheta * sqrt(1.0 - y * y);
+        illuminance = (cosTheta * acos(y) - x * sinThetaSqrtY) * sinSigmaSqr + atan(sinThetaSqrtY / x);
+    }
+
+    return max(illuminance, 0.0);
+}

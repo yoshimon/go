@@ -1,0 +1,39 @@
+/*!
+    Performs tonemapping.
+
+    \param input The output from the vertex shader.
+ */
+float4 $(vertices::fstriangle input) : SV_Target
+{
+    // Fragment to tonemap
+    float3 Lw = ::effects::tonemapping::hdrTexture.SampleLevel(::samplers::linearClamp, input.uv, 0).rgb;
+
+    // Apply bloom
+    float3 bloom = ::effects::tonemapping::bloomTexture.SampleLevel(::samplers::linearClamp, input.uv, 0).rgb;
+    bloom *= ::effects::tonemapping::constants::g_tonemappingBloomScale;
+    Lw += bloom;
+
+    // Perform global luminance-based tone-mapping
+    Lw *= ::effects::tonemapping::luminanceTexture.Load(0u.xxx).r;
+    Lw *= ::effects::tonemapping::constants::g_tonemappingExposureBias;
+    float3 L = ::functions::color::filmic_tonemap(Lw);
+
+    // Bump up the overall brightness based on the specified white scale
+    float3 whiteScale = 1.0 / ::functions::color::filmic_tonemap(DFX_TONEMAP_W.xxx);
+    float3 col = L * whiteScale;
+
+    // Apply color grading
+    const float colorLUTBlendFactor = ::effects::tonemapping::constants::g_colorGradingLUTBlendFactor;
+    col = ::functions::color::color_grading(
+        col,
+        ::effects::tonemapping::colorLUTSrc,
+        ::effects::tonemapping::colorLUTDest,
+        colorLUTBlendFactor);
+
+    // Luma
+    float3 nonLinearColor = pow(col, ::constants::frame::g_gammaRcp);
+    float luma = dot(nonLinearColor, DFX_LUMINANCE_WEIGHTS);
+
+    // Linear space to gamma space
+    return float4(nonLinearColor, luma);
+}

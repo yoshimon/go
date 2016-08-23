@@ -1,0 +1,14 @@
+/*!
+    Extracts the surface information from a standard material.
+
+    \param material The material to update.
+    \param uv The texture-space UV of the surface.
+
+    \return The surface data.
+ */
+void $(inout ::materials::standard material, float occlusionScale, float2 uv)
+{
+     // Grab the values
+     float occlusion = ::materials::textures::standard::occlusionTexture.Sample(::samplers::surface, uv);
+     material.occlusion = occlusion * occlusionScale;
+}

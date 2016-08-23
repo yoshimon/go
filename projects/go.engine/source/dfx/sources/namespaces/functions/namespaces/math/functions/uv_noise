@@ -1,0 +1,12 @@
+/*!
+    Computes random noise on an image plane.
+
+    \param uv The UV coordinates.
+
+    \return Random noise.
+ */
+float $(float2 uv)
+{
+    float2 ns = frac(sin(dot(uv, float2(12.9898, 78.233) * 2.0)) * 43758.5453);
+    return abs(ns.x + ns.y) * 0.5;
+}

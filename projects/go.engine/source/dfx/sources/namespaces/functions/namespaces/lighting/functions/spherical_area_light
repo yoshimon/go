@@ -1,0 +1,62 @@
+/*
+    Calculates the lighting contribution of a spherical area light.
+
+    \param lightIndex The light index.
+    \param position The world-space shading position.
+    \param normalWS The world-space shading normal.
+    \param viewDir The camera view direction.
+    \param roughness The material roughness.
+    \param albedo The surface albedo.
+    \param metallic The "metallic"-ness of the surface.
+    \param[out] outDiffuse Accumulated diffuse color.
+    \param[out] outSpecular Accumulated specular color.
+ */
+void $(
+    ::lights::proxy_shapes::sphere lightProxyShape,
+    ::lights::parameters::spherical lightParams,
+    uint lightIndex,
+    float3 positionWS,
+    float3 normalWS,
+    float3 viewDir,
+    float roughness,
+    float3 albedo,
+    float metallic,
+    inout float3 outDiffuse,
+    inout float3 outSpecular)
+{
+    float3 posToLight = lightProxyShape.center - positionWS;
+    float lightDist = length(posToLight);
+    const float lightRadius = lightProxyShape.radius;
+
+    // Area sphere light (see UE4 - Karis)
+    const float lightSize = lightParams.radius;
+    float3 r = reflect(-viewDir, normalWS);
+    float3 centerToRay = dot(posToLight, r) * r - posToLight;
+    float3 closestPoint = posToLight + centerToRay * saturate(lightSize / (length(centerToRay) + DFX_FLOAT_EPSILON));
+    float3 lightDir = normalize(closestPoint);
+    float NoL = dot(normalWS, lightDir);
+
+    if(lightDist < lightRadius && NoL > 0.f)
+    {
+        float shadowContrib = NoL * point_light_shadow(positionWS, -posToLight, props);
+        if(shadowContrib > 0.f)
+        {
+            // Area light normalization
+            float alpha = sqr(roughness);
+            float widenedCone = saturate(alpha + lightSize / (2 * lightDist));
+            float sphereNormalization = sqr(alpha / widenedCone);
+
+            float3 lightColor = buffers::pointLightColors[lightIndex];
+
+            float thisDiffuse;
+            float3 thisSpecular;
+            brdf_pbr(viewDir, lightDir, normalWS, albedo, roughness, sphereNormalization, metallic, thisDiffuse, thisSpecular);
+
+            float falloff = inv_sqr_falloff(lightDist, lightRadius) * props.normalizedFalloffScale;
+            float lightIntensityScale = falloff * props.brightness;
+
+            outLightDiffuse += lightColor * (thisDiffuse * lightIntensityScale * shadowContrib);
+            outLightSpecular += lightColor * (thisSpecular * lightIntensityScale * shadowContrib);
+        }
+    }
+}

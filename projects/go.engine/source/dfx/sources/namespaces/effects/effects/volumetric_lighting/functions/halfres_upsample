@@ -1,0 +1,76 @@
+/*!
+    Upsampling shader for volumetric lighting.
+
+    \param input The input from the VS stage.
+
+    \return The overlay color.
+ */
+float4 $(in vertices::fstriangle input) : SV_Target0
+{
+    const float upsampleDepthThreshold = 1.e4f;
+
+    // Full resolution depth
+    float fullResDepth = rtvs::viewDepth.Load(uint3(input.posClipSpace.xy, 0));
+
+    // Downsampled depth
+    float4 dsDepth = rtvs::viewDepth.GatherRed(samplers::linearClamp, input.uv, 1);
+
+    // Get the native resolution
+    float2 lowResTexSize = ::constants::frame::g_halfResolutionRcp;
+
+    float minDepthDiff = upsampleDepthThreshold;
+    float2 nearestUV = input.uv;
+
+    // Gather
+    // W Z
+    // X Y
+    float dd0 = abs(dsDepth.w - fullResDepth);
+    bool rejectSample = dd0 < upsampleDepthThreshold;
+
+    // W
+    float2 UV00 = input.uv - 0.5f * lowResTexSize;
+    if(dd0 < minDepthDiff)
+    {
+        minDepthDiff = dd0;
+        nearestUV = UV00;
+    }
+
+    // Z
+    {
+        float ddi = abs(dsDepth[2] - fullResDepth);
+        float2 UV10 = float2(UV00.x + lowResTexSize.x, UV00.y);
+        rejectSample = rejectSample && ddi < upsampleDepthThreshold;
+        if(ddi < minDepthDiff)
+        {
+            minDepthDiff = ddi;
+            nearestUV = UV10;
+        }
+    }
+
+    // X
+    {
+        float ddi = abs(dsDepth[0] - fullResDepth);
+        rejectSample = rejectSample && ddi < upsampleDepthThreshold;
+        float2 UV01 = float2(UV00.x, UV00.y + lowResTexSize.y);
+        if(ddi < minDepthDiff)
+        {
+            minDepthDiff = ddi;
+            nearestUV = UV01;
+        }
+    }
+
+    // Y
+    {
+        float ddi = abs(dsDepth[1] - fullResDepth);
+        rejectSample = rejectSample && ddi < upsampleDepthThreshold;
+        float2 UV11 = UV00 + lowResTexSize;
+        if(ddi < minDepthDiff)
+        {
+            minDepthDiff = ddi;
+            nearestUV = UV11;
+        }
+    }
+
+    return rejectSample ? textures::overlay.SampleLevel(samplers::linearClamp, input.uv, 0) :
+                          textures::overlay.SampleLevel(samplers::pointClamp, nearestUV, 0);
+}

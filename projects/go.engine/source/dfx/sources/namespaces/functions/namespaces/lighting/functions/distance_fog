@@ -1,0 +1,14 @@
+/*!
+    Returns a distance-based fog color value.
+
+    \param viewDistance The view-space distance.
+    \param color The color value to modify.
+    \param fogColor The fog color.
+    \param fogDensity The fog density.
+
+    \return The fog-blended color.
+ */
+float3 $(float viewDistance, float3 color, float3 fogColor, float fogDensity)
+{
+    return lerp(fogColor, color.rgb, rcp(exp(viewDistance * fogDensity)));
+}

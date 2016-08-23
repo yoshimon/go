@@ -1,0 +1,63 @@
+//! Per-tile average luminance.
+groupshared float gs_averageLuminance[DFX_HDR_BLOOM_AVERAGE_LUMINANCE_THREADS];
+
+/*!
+    Reduces the previously computed average per-tile to a global average.
+
+    \param globalTID The pixel position.
+ */
+[numthreads(DFX_HDR_BLOOM_AVERAGE_LUMINANCE_THREADS, 1, 1)]
+void $(in uint3 globalTID : SV_DispatchThreadID)
+{
+    uint width, height;
+    ::effects::hdr_bloom::luminanceTextureRW.GetDimensions(width, height);
+
+    float luminance = 0.0f;
+
+    uint w = width / DFX_HDR_BLOOM_AVERAGE_LUMINANCE_THREADS;
+    for(uint i = 0; i < w; ++i)
+    {
+        for(uint j = 0; j < height; ++j)
+        {
+            luminance += ::effects::hdr_bloom::luminanceTextureRW[int2(globalTID.x + DFX_HDR_BLOOM_AVERAGE_LUMINANCE_THREADS * i, j)];
+        }
+    }
+
+    gs_averageLuminance[globalTID.x] = luminance;
+
+    GroupMemoryBarrierWithGroupSync();
+
+	if(globalTID.x == 0)
+	{
+        // Accumulate total luminance
+		for(uint i = 1; i < DFX_HDR_BLOOM_AVERAGE_LUMINANCE_THREADS; ++i)
+		{
+			luminance += gs_averageLuminance[i];
+		}
+
+        luminance /= width * height;
+
+		float worldLuminance = exp(luminance);
+		float currentFrameLuminance = ::effects::hdr_bloom::constants::g_hdrBloomMiddleGray / worldLuminance;
+
+        // Eye adaption
+        // Grab last frames luminance
+        float lastFrameLuminance = ::effects::hdr_bloom::lastLuminanceTextureRW.Load(0u.xx);
+
+        // Calculate the blend direction
+        float deltaDir = sign(currentFrameLuminance - lastFrameLuminance);
+
+        // Calculate the new luminance as a lerp between the last frame and this frame
+        const float exposureDelta = ::effects::hdr_bloom::constants::g_hdrBloomExposureAdaptionDelta;
+        float newLuminance = lastFrameLuminance + deltaDir * exposureDelta;
+
+        // Clamp it to the max allowed luminance and the actual luminance
+        const float maxLuminance = ::effects::hdr_bloom::constants::g_hdrBloomMaxLuminance;
+        float outputLuminance = clamp(newLuminance, 0.0, maxLuminance);
+        outputLuminance = deltaDir > 0 ? min(outputLuminance, currentFrameLuminance) : max(outputLuminance, currentFrameLuminance);
+
+        // Write out the luminance for this frame
+        ::effects::hdr_bloom::lastLuminanceTextureRW[0u.xx] = outputLuminance;
+        ::effects::hdr_bloom::luminanceTextureRW[0u.xx] = outputLuminance;
+	}
+}

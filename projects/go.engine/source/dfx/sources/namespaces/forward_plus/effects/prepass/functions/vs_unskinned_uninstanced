@@ -1,0 +1,16 @@
+/*
+    Performs a standard transformation on the incoming vertex.
+
+    \param input The input from the IA stage.
+
+    \return The transformed vertex.
+ */
+void $(::vertices::unskinned input, out ::vertices::shading output)
+{
+    uint instanceID = input.instanceID + ::constants::instanced_draw::g_instancingIDBias;
+    transform_vertex(input,
+                     ::buffers::staticInstanceData[instanceID].worldMatrix,
+                     ::constants::frame::g_mainRenderPointView,
+                     ::constants::frame::g_mainRenderPointViewProj,
+                     output);
+}

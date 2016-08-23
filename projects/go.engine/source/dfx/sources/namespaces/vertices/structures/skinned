@@ -1,0 +1,14 @@
+//! Object-space position.
+float3 positionOS : POSITION;
+//! Bone indices
+uint boneIndices : BLENDINDICES;
+//! Bone weights
+float4 boneWeights : BLENDWEIGHT;
+//! Tangent vector.
+float4 tangentOS : TANGENT;
+//! Normal vector.
+float3 normalOS : NORMAL;
+//! Texture coordinates.
+float2 uv : TEXCOORD0;
+//! Lightmap UV coordinates.
+float2 lightmapUV : TEXCOORD1;

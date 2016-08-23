@@ -1,0 +1,31 @@
+/*
+    Performs shading.
+
+    \param input The input from the input assembler.
+
+    \return The shaded fragment.
+ */
+::forward_plus::shading::output $(::vertices::shading input)
+{
+    const uint materialIndex = ::constants::instanced_draw::g_instancingMaterialIndex;
+     
+    // Combine them to a material
+    ::materials::standard material = ::functions::materials::standard::all_alpha_test(input.uv, materialIndex);
+
+    // Normalize shading vectors
+    ::functions::lighting::normalize_vertex_shading_vectors(input);
+
+    // Generate tangent basis
+    float3 faceNormalWS = input.normalWS;
+    float3x3 tangentBasis = ::functions::transforms::tangent_basis(input.normalWS, input.tangentWS);
+
+    // Apply normal mapping
+    ::functions::transforms::apply_normal_mapping(input, material.normalTS, tangentBasis);
+
+    // Get the view-vector
+    const float3 renderPointPosWS = ::constants::frame::g_mainRenderPointPositionWS.xyz;
+    float3 viewDirWS = normalize(renderPointPosWS - input.positionWS);
+
+    // Run the actual shader
+    return ::forward_plus::shading::standard(input, viewDirWS, faceNormalWS, material);
+}

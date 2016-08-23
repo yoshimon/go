@@ -1,0 +1,61 @@
+/*!
+    Performs a horizontal bilateral blur.
+
+    \param globalTID The global TID.
+ */
+[numthreads(1, DFX_GAUSSIAN_BLURH_THREADS_Y, 1)]
+void $(in uint3 globalTID : SV_DispatchThreadID)
+{
+    static const int blurWidth = 9;
+    static const int halfBlurWidth = 4;
+    static const float blurWeights[blurWidth] =
+    {
+        0.03602084467215462,
+        0.072537073483924,
+        0.11959341596728278,
+        0.16143422587153644,
+        0.1784124116152771,
+        0.16143422587153644,
+        0.11959341596728278,
+        0.072537073483924,
+        0.03602084467215462
+    };
+
+    int3 base = int3(globalTID.x * DFX_GAUSSIAN_BLURH_THREADS_X, globalTID.y, 0);
+    int3 baseDepth = int3(globalTID.x * DFX_GAUSSIAN_BLURH_THREADS_X, globalTID.y, 1);
+
+    // Local cache
+    float4 input[blurWidth + DFX_GAUSSIAN_BLURH_THREADS_X];
+
+    // Load image data into local memory (centered at base)
+    [unroll]
+    for(int i = 0; i < blurWidth + DFX_GAUSSIAN_BLURH_THREADS_X; ++i)
+    {
+    	input[i].rgb = textures::blurSource.Load(base, int2(i - halfBlurWidth, 0)).rgb;
+        input[i].w = rtvs::viewDepth.Load(baseDepth, int2(i - halfBlurWidth, 0));
+    }
+
+    // Perform blur
+    const float sigma = 0.1f;
+    const float denom = 1.f / (2.f * sigma * sigma);
+
+    [unroll]
+    for(int x = 0; x < DFX_GAUSSIAN_BLURH_THREADS_X; ++x)
+    {
+        float centerDepth = input[x + halfBlurWidth].w;
+    	float4 output = 0.0f;
+        float totalWeight = 0.f;
+    	[unroll]
+        for(int i = 0; i < blurWidth; ++i)
+    	{
+            float4 s = input[x + i];
+            float deltaDepth = abs(centerDepth - s.w);
+            float range = exp(-deltaDepth * deltaDepth * denom);
+            float rw = range * blurWeights[i];
+            output += s * rw;
+            totalWeight += rw;
+    	}
+
+    	textures::blurDest[base.xy + int2(x, 0)] = output / totalWeight;
+    }
+}

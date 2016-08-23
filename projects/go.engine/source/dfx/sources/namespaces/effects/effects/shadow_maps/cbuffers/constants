@@ -1,0 +1,2 @@
+//! The light world-view-projection transform.
+matrix g_currentLightViewProj;

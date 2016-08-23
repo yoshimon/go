@@ -1,0 +1,23 @@
+/*!
+    Applies material constants to a material.
+
+    \param material The material to modify.
+    \param alphaThreshold The alpha-test threshold.
+
+    \return The surface data.
+ */
+vooid $(inout ::materials::standard::texture_data material , float alphaThreshold)
+{
+     ::materials::standard::texture_data output;
+
+     ::functions::materials::standard::albedo_alpha(output, uv);
+
+     // Alpha-test
+     clip(output.albedoAlpha.a - alphaThreshold);
+
+     ::functions::materials::standard::normal(output, uv);
+     ::functions::materials::standard::metallic_roughness(output, uv);
+     ::functions::materials::standard::emission(output, uv);
+
+     return output;
+}

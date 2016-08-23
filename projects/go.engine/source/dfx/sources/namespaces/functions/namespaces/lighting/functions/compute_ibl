@@ -1,0 +1,42 @@
+/*!
+    Calculates the amount of reflection for a given fragment in screen-space.
+
+    \param originVS The view-space position of the fragment.
+    \param pixelLocation The pixel location.
+    \param camProj The camera projection matrix.
+    \param viewportSize The viewport size.
+    \param nearPlane The near-plane.
+    \param albedo The surface albedo.
+    \param metallic The surface metallic value.
+    \param roughness The surface roughness value.
+
+    \return The reflection color.
+ */
+float3 $(
+    const float3 originVS,
+    const float3 normalVS,
+    const uint3 pixelLocation,
+    const matrix camProj,
+    const float2 viewportSize,
+    const float nearPlane,
+    const float farPlane,
+    const float3 albedo,
+    const float metallic,
+    const float roughness)
+{
+    float3 specularColor = 0.f.xxx;
+
+    // Prepare data
+    float3 nViewDir = normalize(originVS);
+    float3 dirVS = reflect(nViewDir, normalVS);
+    float nv = dot(normalVS, dirVS);
+
+    // Compute fresnel
+    float3 h = normalize(-nViewDir + dirVS);
+    float lh = saturate(dot(dirVS, h));
+    float3 f0 = F_0(albedo, metallic);
+
+    specularColor = approximate_specular_ibl(f0, roughness, nov, dirVS);
+
+    return F_Schlick(f0, F_90(f0), lh) * specularColor;
+}

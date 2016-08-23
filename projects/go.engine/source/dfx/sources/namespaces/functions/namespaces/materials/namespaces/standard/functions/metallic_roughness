@@ -1,0 +1,19 @@
+/*!
+    Extracts the surface information from a standard material.
+
+    \param material The material to update.
+    \param metallicScale The metallic scale.
+    \param roughnessScale The roughness scale.
+    \param uv The texture-space UV of the surface.
+
+    \return The surface data.
+ */
+void $(inout ::materials::standard material, float metallicScale, float roughnessScale, float2 uv)
+{
+     // Grab the values
+     float4 metallicSmoothness = ::materials::textures::standard::metallicSmoothnessTexture.Sample(::samplers::surface, uv);
+     material.metallic = metallicSmoothness.r * metallicScale;
+
+     // Convert smoothness to roughness
+     material.roughness = (1.0 - metallicSmoothness.a) * roughnessScale + DFX_FLOAT_EPSILON;
+}

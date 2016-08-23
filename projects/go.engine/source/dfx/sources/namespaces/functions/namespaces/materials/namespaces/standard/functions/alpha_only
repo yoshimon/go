@@ -1,0 +1,11 @@
+/*!
+    Extracts the surface transparency from a standard material.
+
+    \param uv The texture-space UV of the surface.
+
+    \return The surface transparency.
+ */
+float $(float2 uv)
+{
+     return ::materials::standard::albedoAlphaTexture.Sample(samplers::surface, uv).a;
+}

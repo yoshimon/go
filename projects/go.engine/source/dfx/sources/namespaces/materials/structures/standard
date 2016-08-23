@@ -1,0 +1,16 @@
+//! The pre-modulated surface albedo.
+float3 albedo;
+//! The alpha-test value.
+float alpha;
+//! The tangent-space surface normal.
+float3 normalTS;
+//! The metallic value.
+float metallic;
+//! The (corrected) surface roughness.
+float roughness;
+//! The occlusion.
+float occlusion;
+//! The pre-scaled surface emission color.
+float3 emission;
+//! The material transparency.
+float transparency;

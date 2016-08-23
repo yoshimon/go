@@ -1,0 +1,78 @@
+/*!
+    Shades a fragment.
+
+    \param input The interpolated vertex.
+    \param viewDirWS The world-space view vector.
+    \param faceNormalWS The world-space face normal.
+    \param material The material.
+
+    \return The fragment color.
+ */
+::forward_plus::shading::output $(::vertices::shading input, float3 viewDirWS,
+    float3 faceNormalWS, ::materials::standard material)
+{
+    // The diffuse and specular components
+    float3 diffuse = 0.0;
+    float3 specular = 0.0;
+
+    // Convert the pixel to a screen-space tile index
+    uint tileIndex = ::functions::transforms::pixel_to_tile_index
+    (
+        input.positionWVP.xy,
+        1.0 / DFX_FORWARD_PLUS_CULL_LIGHTS_NUM_LOCAL_THREADS_X,
+        1.0 / DFX_FORWARD_PLUS_CULL_LIGHTS_NUM_LOCAL_THREADS_Y,
+        ::forward_plus::constants::frame::g_forwardPlusCullingNumThreadGroups.x
+    );
+
+    // Compute analytical lights
+    // Spherical
+    ::forward_plus::shading::spherical_area_lights
+    (
+        tileIndex,
+        input.positionWS, input.normalWS, viewDirWS,
+        material.albedo.rgb, material.metallic, material.roughness,
+        diffuse, specular);
+
+    /*
+    {
+        uint startIndex, numLights;
+        ::forward_plus::prepass::extract_light_list_meta_data(::forward_plus::shading::tileSphericalLightIndices, tileIndex, startIndex, numLights);
+
+        for(uint i = startIndex; i < startIndex + numLights; ++i)
+        {
+            uint lightIndex = ::forward_plus::shading::tileSphericalLightIndices[i];
+            ::lights::proxy_shapes::sphere lightProxyShape = ::forward_plus::shading::sphericalLightProxyShapes[lightIndex];
+            ::lights::parameters::spherical lightParams = ::forward_plus::shading::sphericalLightProps[lightIndex];
+
+            ::functions::lighting::spherical_area_light
+            (
+                lightIndex,
+                lightProxyShape,
+                ::forward_plus::shading::sphericalLightProps,
+                input.positionWS, viewWS,
+                material.albedoAlpha.rgb, input.normalWS, material.roughness, material.metallic,
+                diffuse, specular
+            );
+        }
+    }
+    */
+
+    // TODO: tube + disk lights + rectangular lights
+
+    // TODO: directional light
+
+    // TODO: add reflections (screen-space reflections, reprojected from last frame + IBL)
+
+    // Combine lighting
+    float3 result = diffuse + specular;
+
+    // Write output
+    return generate_output
+    (
+        result,
+        mul(float4(input.normalWS, 0.0), ::constants::frame::g_mainRenderPointView).xyz,
+        material.albedo,
+        float2(material.metallic, material.roughness),
+        input.positionVS.z
+    );
+}

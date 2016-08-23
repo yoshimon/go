@@ -1,0 +1,29 @@
+/*!
+    Fills the shading-output members of an output descriptor.
+
+    \param fragmentColor The fragment color.
+    \param normalWS The world-space normal of the fragment.
+    \param albedo The fragment albedo.
+    \param metallic The metallicness value of the fragment.
+    \param roughness The roughness value of the fragment.
+    \param viewZ The view-space Z coordinate of the fragment.
+ */
+::forward_plus::shading::output $(
+    float4 fragmentColor,
+    float3 normalWS,
+    float3 albedo,
+    float2 metallicRoughness,
+    float depthVS,
+    float occlusion)
+{
+    ::forward_plus::shading::output output;
+
+    output.fragmentColor = fragmentColor;
+    output.albedo = float4(albedo, fragmentColor.a);
+    output.metallicRoughness = float4(metallicRoughness, 0.0f, fragmentColor.a);
+    output.normalWS = float4(normalWS, 0.0);
+    output.depthVS = depthVS;
+    output.ambientOcclusion = occlusion;
+
+    return output;
+}

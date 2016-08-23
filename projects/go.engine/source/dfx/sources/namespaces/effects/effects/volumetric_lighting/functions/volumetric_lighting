@@ -1,0 +1,63 @@
+/*!
+    Computes the amount of volumetric lighting using interleaved sampling.
+
+    \param targetPixel The target pixel.
+    \param interleavedIndex The interleaved sampling index.
+    \param groupTID The group thread ID.
+ */
+[numthreads(DFX_VOLUMETRIC_LIGHTING_THREADS_X, DFX_VOLUMETRIC_LIGHTING_THREADS_Y, 1)]
+void $(
+    in uint3 targetPixel : SV_DispatchThreadID,
+    in uint interleavedIndex : SV_GroupIndex,
+    in uint3 groupTID : SV_GroupThreadID)
+{
+    // LUT for interleaved sampling
+    static const float s_InterleavedLUT[] =
+    {
+        52,  36,  34,  54,
+        62,  45,  14,  24,
+         4,  59,  33,  40,
+        12,  57,  37,  29,
+        47,  18,  56,  44,
+         2,  58,  27,  13,
+        15,   0,  48,  41,
+        20,  28,  21,  61,
+        32,  55,  35,  42,
+         6,  51,  39,   3,
+        11,   9,  10,  38,
+        53,  50,  17,  46,
+         7,   5,  43,  31,
+        25,  23,  63,  19,
+        16,  26,   1,   8,
+        30,  60,  22,  49
+    };
+
+    uint3 sourcePixel = uint3(targetPixel.xy, 1);
+    Texture2D<float> viewDepthTex = ::effects::volumetric_lighting::viewDepthTexture;
+
+    // Calculate ray origin
+    float3 originVS = ::functions::transforms::reconstruct_view_z_position(
+        sourcePixel.xy,
+        viewDepthTex.Load(uint3(sourcePixel)),
+        ::constants::frame::g_nativeTwoTexelSize * 2.0,
+        ::constants::frame::g_mainRenderPointInvFovAspect
+    );
+
+    // Grab interleaved index for this thread
+    float idx = s_InterleavedLUT[interleavedIndex];
+
+    // (Directional) Volumetric Lighting
+    ::effects::volumetric_lighting::volumetricLightingRW[targetPixel.xy] =
+    ::functions::lighting::volumetric_lighting
+    (
+        ::effects::volumetric_lighting::directionalSM,
+        originVS,
+        ::constants::frame::g_mainRenderPointNearClip,
+        idx,
+        ::effects::volumetric_lighting::constants::g_volumetricLightingIntensity,
+        ::effects::volumetric_lighting::constants::g_volumetricLightingSampleCount,
+        ::constants::frame::g_mainRenderPointViewToDirectionalLightView,
+        ::constants::frame::g_mainRenderPointViewToDirectionalLightViewProjUV,
+        ::constants::frame::g_directionalLightColor
+    );
+}

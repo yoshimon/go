@@ -1,0 +1,16 @@
+/*!
+    Inverse square falloff.
+
+    \param lightDist The distance from the light source.
+    \param lightRadius The light source radius.
+
+    \return The falloff factor.
+ */
+float $(float lightDistance, float lightRadius)
+{
+    float t = lightDistance / lightRadius;
+    float t2 = t * t;
+    float t4 = t2 * t2;
+    float r = saturate(1.0 - t4);
+    return ::functions::math::sqr(r) / (::functions::math::sqr(lightDistance) + 1.0);
+}

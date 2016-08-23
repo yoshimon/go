@@ -1,0 +1,49 @@
+/*
+    Performs ambient-lighting.
+
+    \param input The input fragment.
+
+    \return The shaded fragment.
+ */
+float3 $(::vertices::fstriangle input) : SV_Target0
+{
+    // The output color
+    float3 ambientColor = 0.0;
+
+    // Fetch the fragment normal
+    const float3 normalWS = ::forward_plus::ambient_lighting::normalWSTexture.SampleLevel(::samplers::pointClamp, input.uv, 0);
+
+    // Non-divergent
+    if(length(normalWS) > 0.0)
+    {
+        // Fetch the surface data
+        const float2 metallicRoughness = ::forward_plus::ambient_lighting::metallicRoughnessTexture.SampleLevel(::samplers::pointClamp, input.uv, 0);
+        const float3 albedo = ::forward_plus::ambient_lighting::albedoTexture.SampleLevel(::samplers::pointClamp, input.uv, 0);
+
+        // Diffuse: Hemispherical Ambient
+        const float3 colorAboveWS = ::forward_plus::ambient_lighting::constants::g_forwardPlusAmbientLightingColorAboveWS;
+        const float3 colorBelowWS = ::forward_plus::ambient_lighting::constants::g_forwardPlusAmbientLightingColorBelowWS;
+
+        ambientColor = albedo * (1.0 - metallicRoughness.r) * ::functions::lighting::hemispherical_ambient(normalWS.y, colorAboveWS, colorBelowWS);
+
+        // TODO: apply local reflection probes before this pass
+        // That pass should count the number of probes per pixel
+        // If the number of probes was zero we use the scene environment map
+
+        // Reconstruct the view-space position
+        const float viewDepth = ::forward_plus::ambient_lighting::depthVSTexture.SampleLevel(::samplers::pointClamp, input.uv, 0);
+        const float3 originVS = ::functions::transforms::reconstruct_view_z_position_from_uv(input.uv, viewDepth, ::constants::frame::g_mainRenderPointInvFovAspect);
+
+        // Transform the position to world-space
+        const float3 originWS = mul(float4(originVS, 1.0), ::constants::frame::g_mainRenderPointInvView);
+        const float3 viewDirWS = normalize(::constants::frame::g_mainRenderPointPositionWS - originWS);
+
+        // Specular: IBL
+        ambientColor += ::functions::lighting::compute_specular_ibl(viewDirWS, normalWS, albedo, metallicRoughness.r, metallicRoughness.g, ::forward_plus::ambient_lighting::envBRDF, ::forward_plus::ambient_lighting::sceneEnvMap);
+
+        // Mask everything with AO
+        ambientColor *= ::forward_plus::ambient_lighting::aoTexture.SampleLevel(::samplers::pointClamp, input.uv, 0);
+    }
+
+    return ambientColor;
+}

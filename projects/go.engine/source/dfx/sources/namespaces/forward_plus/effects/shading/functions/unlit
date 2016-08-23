@@ -1,0 +1,22 @@
+/*!
+    Performs fragment shading using no external lighting.
+
+    \param input The fragment to shade.
+
+    \return The shaded fragment.
+ */
+[earlydepthstencil]
+::forward_plus::shading::output $(vertices::shading input)
+{
+    float4 albedo = ::materials::textures::unlit::colorTexture.Sample(samplers::surface, input.uv);
+
+    return ::forward_plus::shading::generate_output
+    (
+        albedo, // FragmentColor
+        0.0.xxx, // Normal
+        albedo, // Albedo
+        float2(0.0, 1.0), // MetallicRoughness
+        ::constants::frame::g_mainRenderPointFarClip, // ViewZ
+        1.0f
+    );
+}

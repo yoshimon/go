@@ -1,0 +1,21 @@
+/*!
+    Extracts the surface information from a standard material.
+
+    \param uv The texture-space UV of the surface.
+
+    \return The surface data.
+ */
+void $(::structs::standard_material material, float2 uv)
+{
+    ::functions::materials::standard::
+     // Unpack normal
+     float2 packedNormal = ::resources::brdf::standard::normal.Sample(::samplers::surface, uv);
+     material.normal = ::functions::compression::unpack_normal(packedNormal);
+
+     // Remap roughness
+     float4 metallicSmoothness = ::resources::brdf::standard::metallicSmoothness.Sample(::samplers::surface, uv);
+     material.metallic = metallicSmoothness.r;
+     material.roughness = saturate(sqr(1.0 - metallicSmoothness.a) + DFX_FLOAT_EPSILON);
+
+     material.emission = ::resources::brdf::standard::emission.Sample(::samplers::surface, uv);
+}

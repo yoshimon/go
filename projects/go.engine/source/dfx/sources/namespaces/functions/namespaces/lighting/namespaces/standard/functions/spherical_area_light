@@ -1,0 +1,71 @@
+/*
+    Calculates the lighting contribution of a spherical area light.
+
+    \param lightProxyShape The proxy shape of the light.
+    \param lightParams The light parameters.
+    \param positionWS The world-space shading position.
+    \param normalWS The world-space shading normal.
+    \param viewDirWS The world-space camera view direction.
+    \param reflWS The reflected view vector in world-space.
+    \param albedo The surface albedo.
+    \param metallic The "metallic"-ness of the surface.
+    \param roughness The material roughness.
+    \param[out] outDiffuse Accumulated diffuse color.
+    \param[out] outSpecular Accumulated specular color.
+ */
+void $(
+    const ::lights::proxy_shapes::sphere lightProxyShape,
+    const ::lights::parameters::spherical lightParams,
+    const Texture2D<float> shadowMapAtlas,
+    const float3 positionWS,
+    const float3 normalWS,
+    const float3 viewDirWS,
+    const float3 reflDirWS,
+    const float3 albedo,
+    const float metallic,
+    float roughness,
+    inout float3 outDiffuse,
+    inout float3 outSpecular)
+{
+    // Light influence bounds
+    const float3 posToLightWS = lightProxyShape.center - positionWS;
+    const float lightDistWS = length(posToLightWS);
+    const float lightRadiusWS = lightProxyShape.radius;
+    if(lightDistWS < lightRadiusWS)
+    {
+        // Area sphere light (see UE4 - Karis)
+        const float lightSizeWS = lightParams.radiusWS;
+        const float3 centerToRayWS = dot(posToLightWS, reflDirWS) * reflDirWS - posToLightWS;
+        const float3 closestPointWS = posToLightWS + centerToRayWS * saturate(lightSizeWS / (length(centerToRayWS) + DFX_FLOAT_EPSILON));
+        const float3 lightDirWS = normalize(closestPointWS);
+        const float NoL = dot(normalWS, lightDirWS);
+
+        if(NoL > 0.0)
+        {
+            // Shadows
+            const float shadowContrib = NoL * (lightParams.shadowCasterIndex < 0.0 ? 1.0 : ::functions::lighting::point_light_shadow(shadowMapAtlas, lightParams.shadowCasterIndex, positionWS, -posToLightWS));
+            if(shadowContrib > 0.0)
+            {
+                // Area light normalization
+                const float alpha = roughness * roughness; // Can be pre-computed
+                const float widenedCone = saturate(alpha + lightSizeWS / (2.0 * lightDistWS));
+                const float areaNormalization = ::functions::math::sqr(alpha / widenedCone);
+
+                float3 diffuse;
+                float3 specular;
+                ::functions::lighting::standard::brdf(
+                    viewDirWS, lightDirWS, normalWS,
+                    albedo, roughness, areaNormalization, metallic,
+                    diffuse, specular);
+
+                // Falloff
+                const float falloff = ::functions::lighting::distance_attenuation(lightDistWS, lightRadiusWS);
+                const float lightIntensity = falloff * shadowContrib;
+
+                // Combine
+                outDiffuse += (lightParams.color * diffuse) * lightIntensity;
+                outSpecular += (lightParams.color * specular) * lightIntensity;
+            }
+        }
+    }
+}

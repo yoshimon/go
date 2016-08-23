@@ -1,0 +1,4 @@
+//! Position after world-view-projection
+float4 positionWVP : SV_Position;
+//! The texture coordinates.
+float2 uv : TEXCOORD0;

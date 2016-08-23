@@ -1,0 +1,12 @@
+/*
+    Clips the current fragment if the cutout test fails.
+
+    \param input The input from the input assembler.
+
+    \return The shaded fragment.
+ */
+void $(::vertices::no_shading input)
+{
+    const uint materialIndex = ::constants::instanced_draw::g_instancingMaterialIndex;
+    ::materials::standard::alpha_test(input.uv, materialIndex);
+}

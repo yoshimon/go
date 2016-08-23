@@ -1,0 +1,10 @@
+//! The pre-modulated surface albedo.
+float4 albedoAlpha;
+//! The surface normal.
+float3 normal;
+//! The metallic value.
+float metallic;
+//! The (corrected) surface roughness.
+float roughness;
+//! The pre-scaled surface emission color.
+float3 emission;

@@ -1,0 +1,19 @@
+/*!
+    Calculates the CoC of a pixel.
+
+    \param input The output from the vertex shader.
+ */
+float $(vertices::fstriangle input) : SV_Target
+{
+    // Grab the view-space depth value
+    float depthVS = ::effects::dof::depthVSTexture.SampleLevel(::samplers::linearClamp, input.uv, 0);
+
+    const float nearEnd = ::constants::frame::g_dofNearEnd;
+    const float farStart = ::constants::frame::g_dofFarStart;
+    const float farRange = ::constants::frame::g_dofFarRange; // = farEnd - farStart
+
+    float resultCoC = ::functions::camera::calculate_coc(depthVS, nearEnd, farStart, farRange);
+    float resultPx = resultCoC * ::constants::frame::g_dofCoCToPx;
+
+    return resultPx;
+}

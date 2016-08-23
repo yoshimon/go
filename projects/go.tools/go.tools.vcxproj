@@ -1,0 +1,325 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{D7189500-D389-4024-8767-4D8D18956DB2}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>gotools</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\props\go.common.props" />
+    <Import Project="..\props\go.binary.props" />
+    <Import Project="..\props\go.include.props" />
+    <Import Project="..\props\go.debug.props" />
+    <Import Project="..\props\go.library.common.win32.props" />
+    <Import Project="..\props\go.library.debug.win32.props" />
+    <Import Project="..\props\go.use.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\props\go.common.props" />
+    <Import Project="..\props\go.binary.props" />
+    <Import Project="..\props\go.include.props" />
+    <Import Project="..\props\go.release.props" />
+    <Import Project="..\props\go.library.common.win32.props" />
+    <Import Project="..\props\go.library.release.win32.props" />
+    <Import Project="..\props\go.use.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\props\go.common.props" />
+    <Import Project="..\props\go.binary.props" />
+    <Import Project="..\props\go.include.props" />
+    <Import Project="..\props\go.debug.props" />
+    <Import Project="..\props\go.library.common.x64.props" />
+    <Import Project="..\props\go.library.debug.x64.props" />
+    <Import Project="..\props\go.use.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\props\go.common.props" />
+    <Import Project="..\props\go.binary.props" />
+    <Import Project="..\props\go.include.props" />
+    <Import Project="..\props\go.release.props" />
+    <Import Project="..\props\go.library.common.x64.props" />
+    <Import Project="..\props\go.library.release.x64.props" />
+    <Import Project="..\props\go.use.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ForcedIncludeFiles>gat\stdafx.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeaderFile>gat/stdafx.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(SolutionDir)lib\assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>assimpd.lib;DirectXTex.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib\assimp\build\code\$(Configuration);$(SolutionDir)lib\DirectXTex\DirectXTex\Bin\Desktop_2015\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <FxCompile>
+      <ShaderModel>5.0</ShaderModel>
+    </FxCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ForcedIncludeFiles>gat\stdafx.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeaderFile>gat/stdafx.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(SolutionDir)lib\assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>assimpd.lib;DirectXTex.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib\assimp\build\code\$(Configuration);$(SolutionDir)lib\DirectXTex\DirectXTex\Bin\Desktop_2015\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <FxCompile>
+      <ShaderModel>5.0</ShaderModel>
+    </FxCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ForcedIncludeFiles>gat\stdafx.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeaderFile>gat/stdafx.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(SolutionDir)lib\assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>assimp.lib;DirectXTex.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib\assimp\build\code\$(Configuration);$(SolutionDir)lib\DirectXTex\DirectXTex\Bin\Desktop_2015\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+    </Link>
+    <FxCompile>
+      <ShaderModel>5.0</ShaderModel>
+    </FxCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ForcedIncludeFiles>gat\stdafx.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeaderFile>gat/stdafx.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(SolutionDir)lib\assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>assimp.lib;DirectXTex.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib\assimp\build\code\$(Configuration);$(SolutionDir)lib\DirectXTex\DirectXTex\Bin\Desktop_2015\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+    </Link>
+    <FxCompile>
+      <ShaderModel>5.0</ShaderModel>
+    </FxCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="source\include\gat\hashlib\crc32.cpp" />
+    <ClCompile Include="source\include\gat\hashlib\keccak.cpp" />
+    <ClCompile Include="source\include\gat\hashlib\md5.cpp" />
+    <ClCompile Include="source\include\gat\hashlib\sha1.cpp" />
+    <ClCompile Include="source\include\gat\hashlib\sha256.cpp" />
+    <ClCompile Include="source\include\gat\hashlib\sha3.cpp" />
+    <ClCompile Include="source\include\gat\hosek_sky\ArHosekSkyModel.cpp" />
+    <ClCompile Include="source\src\gat\files\asset_meta_file.cpp" />
+    <ClCompile Include="source\src\gat\files\config_file.cpp" />
+    <ClCompile Include="source\src\gat\files\gmd_file.cpp" />
+    <ClCompile Include="source\src\gat\files\section_file.cpp" />
+    <ClCompile Include="source\src\gat\files\unity_meta_file.cpp" />
+    <ClCompile Include="source\src\gat\main.cpp" />
+    <ClCompile Include="source\src\gat\stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="source\src\gat\tools\asset_converter.cpp" />
+    <ClCompile Include="source\src\gat\tools\asset_importer.cpp" />
+    <ClCompile Include="source\src\gat\tools\hosek_sky_generator.cpp" />
+    <ClCompile Include="source\src\gat\tools\ibl_processor.cpp" />
+    <ClCompile Include="source\src\gat\tools\unity_scene_converter.cpp" />
+    <ClCompile Include="source\src\gat\util\asset_db.cpp" />
+    <ClCompile Include="source\src\gat\util\asset_type.cpp" />
+    <ClCompile Include="source\src\gat\util\converters.cpp" />
+    <ClCompile Include="source\src\gat\util\d3d11_helper.cpp" />
+    <ClCompile Include="source\src\gat\util\importers.cpp" />
+    <ClCompile Include="source\src\gat\util\material_db.cpp" />
+    <ClCompile Include="source\src\gat\util\model_db.cpp" />
+    <ClCompile Include="source\src\gat\files\model_meta_data_file.cpp" />
+    <ClCompile Include="source\src\gat\util\process_util.cpp" />
+    <ClCompile Include="source\src\gat\util\texture_db.cpp" />
+    <ClCompile Include="source\src\gat\util\texture_filter.cpp" />
+    <ClCompile Include="source\src\gat\tools\scene_importer.cpp" />
+    <ClCompile Include="source\src\gat\tools\tool_base.cpp" />
+    <ClCompile Include="source\src\gat\util\file_util.cpp" />
+    <ClCompile Include="source\src\gat\files\material_file.cpp" />
+    <ClCompile Include="source\src\gat\util\unity_material_set.cpp" />
+    <ClCompile Include="source\src\gat\util\unity_material_set_converter.cpp" />
+    <ClCompile Include="source\src\gat\util\unity_model.cpp" />
+    <ClCompile Include="source\src\gat\util\unity_model_converter.cpp" />
+    <ClCompile Include="source\src\gat\util\unity_scene.cpp" />
+    <ClCompile Include="source\src\gat\util\unity_scene_converter.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="source\include\gat\defines.h" />
+    <ClInclude Include="source\include\gat\files\asset_meta_file.h" />
+    <ClInclude Include="source\include\gat\files\config_file.h" />
+    <ClInclude Include="source\include\gat\files\gmd_file.h" />
+    <ClInclude Include="source\include\gat\files\section_file.h" />
+    <ClInclude Include="source\include\gat\files\unity_meta_file.h" />
+    <ClInclude Include="source\include\gat\hashlib\crc32.h" />
+    <ClInclude Include="source\include\gat\hashlib\hash.h" />
+    <ClInclude Include="source\include\gat\hashlib\hmac.h" />
+    <ClInclude Include="source\include\gat\hashlib\keccak.h" />
+    <ClInclude Include="source\include\gat\hashlib\md5.h" />
+    <ClInclude Include="source\include\gat\hashlib\sha1.h" />
+    <ClInclude Include="source\include\gat\hashlib\sha256.h" />
+    <ClInclude Include="source\include\gat\hashlib\sha3.h" />
+    <ClInclude Include="source\include\gat\hosek_sky\ArHosekSkyModel.h" />
+    <ClInclude Include="source\include\gat\hosek_sky\ArHosekSkyModelData_CIEXYZ.h" />
+    <ClInclude Include="source\include\gat\hosek_sky\ArHosekSkyModelData_RGB.h" />
+    <ClInclude Include="source\include\gat\hosek_sky\ArHosekSkyModelData_Spectral.h" />
+    <ClInclude Include="source\include\gat\register_tools.h" />
+    <ClInclude Include="source\include\gat\stdafx.h" />
+    <ClInclude Include="source\include\gat\targetver.h" />
+    <ClInclude Include="source\include\gat\tools\asset_converter.h" />
+    <ClInclude Include="source\include\gat\tools\asset_importer.h" />
+    <ClInclude Include="source\include\gat\tools\hosek_sky_generator.h" />
+    <ClInclude Include="source\include\gat\tools\ibl_processor.h" />
+    <ClInclude Include="source\include\gat\tools\scene_importer.h" />
+    <ClInclude Include="source\include\gat\tools\tool_base.h" />
+    <ClInclude Include="source\include\gat\tools\unity_scene_converter.h" />
+    <ClInclude Include="source\include\gat\util\asset_db.h" />
+    <ClInclude Include="source\include\gat\util\asset_db_types.h" />
+    <ClInclude Include="source\include\gat\util\asset_type.h" />
+    <ClInclude Include="source\include\gat\util\bounding_volume.h" />
+    <ClInclude Include="source\include\gat\util\cmd_help.h" />
+    <ClInclude Include="source\include\gat\util\converters.h" />
+    <ClInclude Include="source\include\gat\util\d3d11_helper.h" />
+    <ClInclude Include="source\include\gat\util\exception.h" />
+    <ClInclude Include="source\include\gat\util\file_util.h" />
+    <ClInclude Include="source\include\gat\util\importers.h" />
+    <ClInclude Include="source\include\gat\files\material_file.h" />
+    <ClInclude Include="source\include\gat\util\material_db.h" />
+    <ClInclude Include="source\include\gat\util\model_db.h" />
+    <ClInclude Include="source\include\gat\files\model_meta_data_file.h" />
+    <ClInclude Include="source\include\gat\util\process_util.h" />
+    <ClInclude Include="source\include\gat\util\rapidxml_helper.h" />
+    <ClInclude Include="source\include\gat\util\saved_data.h" />
+    <ClInclude Include="source\include\gat\util\texture_db.h" />
+    <ClInclude Include="source\include\gat\util\texture_filter.h" />
+    <ClInclude Include="source\include\gat\util\unity_material_set.h" />
+    <ClInclude Include="source\include\gat\util\unity_material_set_converter.h" />
+    <ClInclude Include="source\include\gat\util\unity_model.h" />
+    <ClInclude Include="source\include\gat\util\unity_model_converter.h" />
+    <ClInclude Include="source\include\gat\util\unity_scene.h" />
+    <ClInclude Include="source\include\gat\util\unity_scene_converter.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="source\include\gat\register_tools.inl" />
+    <None Include="source\shaders\gat_util.hlsli" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="source\shaders\gat_pbr_ibl_specular_convolve.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="source\shaders\gat_pbr_tex2d_to_cube.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="source\shaders\gat_pbr_roughness_mapper.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compute</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+    </FxCompile>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

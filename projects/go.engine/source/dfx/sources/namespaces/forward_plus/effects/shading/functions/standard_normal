@@ -1,0 +1,23 @@
+/*
+    Performs shading.
+
+    \param input The input from the input assembler.
+
+    \return The shaded fragment.
+ */
+[earlydepthstencil]
+::forward_plus::shading::output $(::vertices::shading input)
+{
+    // Normalize shading vectors
+    ::functions::lighting::normalize_vertex_shading_vectors(input);
+
+    // Generate tangent basis
+    float3 faceNormal = input.normalWS;
+    float3x3 tangentBasis = ::functions::transforms::tangent_basis(input.normalWS, input.tangentWS);
+
+    // Pertube normal (and/or UVs)
+    ::functions::transforms::apply_normal_mapping(input, tangentBasis);
+
+    // Run the actual shader
+    return ::forward_plus::shading::standard(input, faceNormal);
+}

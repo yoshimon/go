@@ -1,0 +1,114 @@
+//! Number of lights in this tile.
+groupshared uint gs_numLights;
+//! The point light index list.
+groupshared uint gs_lightIndices[DFX_FORWARD_PLUS_MAX_NUM_LIGHTS_PER_TILE];
+
+
+/*
+    Culls the specified lights to screen-space tiles.
+
+    \param globalTID System value.
+    \param localTID System value.
+    \param tileID System value.
+    \param localIndex System value.
+ */
+[numthreads(DFX_FORWARD_PLUS_CULL_LIGHTS_NUM_LOCAL_THREADS_X, DFX_FORWARD_PLUS_CULL_LIGHTS_NUM_LOCAL_THREADS_Y, 1)]
+void $(
+    uint3 globalTID : SV_DispatchThreadID,
+    uint3 localTID : SV_GroupThreadID,
+    uint3 tileID : SV_GroupID,
+    uint localIndex : SV_GroupIndex)
+{
+    if(localIndex == 0)
+    {
+        // Initialize GSM
+        gs_numLights = 0;
+    }
+
+    // The number of thread groups for this Dispatch()
+    const uint2 numThreadGroups = ::forward_plus::constants::frame::g_forwardPlusCullingNumThreadGroups;
+
+    // NOTE: we assume its always the main render point here
+    const float4x3 renderPointView = ::constants::frame::g_mainRenderPointView;
+    const matrix renderPointInvProj = ::constants::frame::g_mainRenderPointInvProjection;
+
+    // Scoping for frustum below
+    {
+        float3 frustumEqnVS[4];
+        {
+            // Construct frustum planes
+            // The frustum planes are constructed in homogenous clip-space and transformed back into view-space
+            uint pxm = DFX_FORWARD_PLUS_CULL_LIGHTS_NUM_LOCAL_THREADS_X * tileID.x;
+            uint pym = DFX_FORWARD_PLUS_CULL_LIGHTS_NUM_LOCAL_THREADS_Y * tileID.y;
+            uint pxp = DFX_FORWARD_PLUS_CULL_LIGHTS_NUM_LOCAL_THREADS_X * (tileID.x + 1);
+            uint pyp = DFX_FORWARD_PLUS_CULL_LIGHTS_NUM_LOCAL_THREADS_Y * (tileID.y + 1);
+
+            float viewportWidthEvenlyDivByTiles = DFX_FORWARD_PLUS_CULL_LIGHTS_NUM_LOCAL_THREADS_X * numThreadGroups.x;
+            float viewportHeightEvenlyDivByTiles = DFX_FORWARD_PLUS_CULL_LIGHTS_NUM_LOCAL_THREADS_Y * numThreadGroups.y;
+
+            float left = pxm / viewportWidthEvenlyDivByTiles * 2.0 - 1.0;
+            float right = pxp / viewportWidthEvenlyDivByTiles * 2.0 - 1.0;
+            float top = 1.0 - pym / viewportHeightEvenlyDivByTiles * 2.0; // 1 is up in clip-space
+            float bottom = 1.0 - pyp / viewportHeightEvenlyDivByTiles * 2.0; // -1 is down in clip-space
+
+            // Four corners of the tile, clockwise from top-left
+            float4 frustumVS[4];
+            frustumVS[0] = ::functions::transforms::clip_space_to_view_space(float4(left, top, 1.0, 1.0), renderPointInvProj);
+            frustumVS[1] = ::functions::transforms::clip_space_to_view_space(float4(right, top, 1.0, 1.0), renderPointInvProj);
+            frustumVS[2] = ::functions::transforms::clip_space_to_view_space(float4(right, bottom, 1.0, 1.0), renderPointInvProj);
+            frustumVS[3] = ::functions::transforms::clip_space_to_view_space(float4(left, bottom, 1.0, 1.0), renderPointInvProj);
+
+            // Positive half-space outside the frustum, view-space left-handed
+            frustumEqnVS[0] = normalize(cross(frustumVS[0].xyz, frustumVS[1].xyz));
+            frustumEqnVS[1] = normalize(cross(frustumVS[1].xyz, frustumVS[2].xyz));
+            frustumEqnVS[2] = normalize(cross(frustumVS[2].xyz, frustumVS[3].xyz));
+            frustumEqnVS[3] = normalize(cross(frustumVS[3].xyz, frustumVS[0].xyz));
+        }
+
+        GroupMemoryBarrierWithGroupSync(); // Need barrier to ensure gs_numLights was initialized
+
+        // Perform culling by doing sphere-frustum intersection tests
+        uint numLights = ::forward_plus::prepass::constants::g_forwardPlusPrepassNumLightsToCull;
+        for(uint i = localIndex; i < numLights; i += DFX_FORWARD_PLUS_CULL_LIGHTS_NUM_LOCAL_THREADS)
+        {
+            // World-space proxy
+            ::lights::proxy_shapes::sphere proxyShape = ::forward_plus::prepass::lightSphereProxyShapes[i];
+
+            // Transform proxy to view-space
+            // NOTE: are there notable differences in speed when doing this on the CPU once?
+            float3 centerVS = mul(float4(proxyShape.center, 1), renderPointView);
+            float r = proxyShape.radius;
+
+            // Test if sphere is inside frustum
+            if((dot(centerVS, frustumEqnVS[0]) < r) &&
+               (dot(centerVS, frustumEqnVS[1]) < r) &&
+               (dot(centerVS, frustumEqnVS[2]) < r) &&
+               (dot(centerVS, frustumEqnVS[3]) < r))
+            {
+                // Add it to the tiles list
+                uint destIndex = 0;
+                InterlockedAdd(gs_numLights, 1, destIndex);
+                gs_lightIndices[destIndex] = i;
+            }
+        }
+    }
+
+    GroupMemoryBarrierWithGroupSync();
+
+    // Output light list from GSM to main memory
+    uint tileIndex = ::functions::transforms::tile_id_to_index(tileID.xy, numThreadGroups.x);
+    uint countOffset = DFX_FORWARD_PLUS_MAX_NUM_ELEMENTS_PER_TILE * tileIndex;
+    uint lightOffset = countOffset + 1;
+
+    // Lights
+    for(uint i = localIndex; i < gs_numLights; i += DFX_FORWARD_PLUS_CULL_LIGHTS_NUM_LOCAL_THREADS)
+    {
+        ::forward_plus::prepass::tileLightIndicesRW[lightOffset + i] = gs_lightIndices[i];
+    }
+
+    if(localIndex == 0)
+    {
+        // Write out the number of lights in this tile
+        ::forward_plus::prepass::tileLightIndicesRW[countOffset] = gs_numLights;
+    }
+}

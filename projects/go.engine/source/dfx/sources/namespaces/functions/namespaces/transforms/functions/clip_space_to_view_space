@@ -1,0 +1,27 @@
+/*!
+    Converts a point from clip-space to view space.
+
+    \param p The point to convert.
+    \param invProjectionMatrix The inverse projection matrix.
+
+    \return The view-space point.
+ */
+float4 $(float4 p, matrix invProjectionMatrix)
+{
+    p = mul(p, invProjectionMatrix);
+    return p / p.w; // w = 1 / zView
+}
+
+
+/*!
+    Converts a z value from clip-space to view space.
+
+    \param zClip The z value in clip space.
+    \param invProjectionMatrix The inverse projection matrix.
+
+    \return The view-space z coordinate.
+ */
+float $(float zClip, matrix invProjectionMatrix)
+{
+    return 1.0 / (zClip * invProjectionMatrix._34 + invProjectionMatrix._44);
+}

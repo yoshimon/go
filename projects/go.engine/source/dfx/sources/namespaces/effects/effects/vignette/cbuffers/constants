@@ -1,0 +1,9 @@
+/*************************************************************
+    Effect: Vignette
+ *************************************************************/
+//! The radius of the effect.
+float g_vignetteRadius;
+//! The strength of the effect.
+float g_vignetteStrength;
+//! Padding.
+float2 g_vignetteStrength_Padding;

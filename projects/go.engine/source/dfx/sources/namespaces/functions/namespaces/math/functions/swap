@@ -1,0 +1,12 @@
+/*!
+    Swaps two values.
+
+    \param a The first input value.
+    \param b The second input value.
+ */
+void $(inout float a, inout float b)
+{
+     float t = a;
+     a = b;
+     b = t;
+}

@@ -1,0 +1,24 @@
+/*!
+    Converts cube-coordinates to a 2D layout.
+
+    \param The local direction vector where the origin is at the cubemap location.
+    \param[out] faceIndex The face index.
+
+    \return The UV coordinates.
+ */
+float $(const float3 v)
+{
+    const float3 vAbs = abs(v);
+	if(vAbs.z >= vAbs.x && vAbs.z >= vAbs.y)
+    {
+		return v.z > 0.0 ? 5.0 : 4.0;
+	}
+	else if(vAbs.y >= vAbs.x)
+    {
+		return v.y > 0.0 ? 3.0 : 2.0;
+	}
+	else
+    {
+		return v.x > 0.0 ? 1.0 : 0.0;
+	}
+}

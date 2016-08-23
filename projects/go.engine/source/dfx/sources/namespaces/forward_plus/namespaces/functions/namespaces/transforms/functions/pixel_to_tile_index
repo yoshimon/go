@@ -1,0 +1,13 @@
+/*
+    Converts a pixel location to a tile index.
+
+    \param pixel The pixel location.
+    \param tileResolution The tile resolution along each axis.
+    \param threadGroupsX The number of tile groups in the X direction.
+
+    \return The flattened tile index.
+ */
+uint $(float2 pixel, float2 tileResolution, uint threadGroupsX)
+{
+    return (uint)(pixel.x / tileResolution.x) + (uint)(pixel.y / tileResolution.y) * threadGroupsX;
+}

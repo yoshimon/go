@@ -1,0 +1,12 @@
+/*!
+    Adds film grain to a texture.
+
+    Requires blending to be enabled.
+
+    \param input The output from the vertex shader.
+ */
+float3 $(vertices::fstriangle input) : SV_Target
+{
+    float n = ::functions::math::uv_noise(input.uv);
+    return lerp(n, 1.0, ::effects::film_grain::constants::g_filmGrainScale);
+}

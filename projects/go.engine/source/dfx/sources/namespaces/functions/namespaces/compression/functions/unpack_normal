@@ -1,0 +1,15 @@
+/*!
+    Unpacks a DXT5_NM / BC3n compressed normal.
+
+    Deprecated. No longer unpacks but returns the input argument.
+
+    \param packedNormal The packed normal.
+
+    \return The unpacked normal.
+ */
+inline float3 $(in float2 packedNormal)
+{
+    float2 n = packedNormal.xy * 2.f - 1.f;
+    float c = sqrt(1.f - saturate(dot(n, n)));
+    return float3(n, c);
+}

@@ -1,0 +1,2 @@
+//! The world-matrix.
+float4x3 worldMatrix;

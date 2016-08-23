@@ -1,0 +1,36 @@
+/*!
+    Calculates the directional light shadow contribution.
+
+    \param shadowMap The shadow map to use.
+    \param positionWS The position in world-space.
+
+    \return The shadow contribution from the light.
+ */
+float $(const Texture2D<float> shadowMap, const float3 positionWS)
+{
+    // Map from world-space to light space
+    const float4 shadowClipSpace = mul(float4(positionWS, 1.0f), ::constants::frame::g_directionalLightViewProjUV);
+    const float3 shadowUVD = shadowClipSpace.xyz / shadowClipSpace.w;
+    const float2 shadowUV = shadowUVD.xy;
+
+    // Depth value in light-space
+    const float shadowDepth = shadowUVD.z; // - depthBias
+
+    // PCF
+    float coverage = 0.0f;
+
+    [unroll]
+    for(float y = -1.5f; y <= 1.5; y += 1.0f)
+    {
+        [unroll]
+        for(float x = -1.5f; x <= 1.5; x += 1.0f)
+        {
+            const float2 offset = DFX_DIRECTIONAL_LIGHT_SHADOW_MAP_TEXEL_SIZE * float2(x, y);
+            coverage += shadowMap.SampleCmpLevelZero(::samplers::cmpShadow, shadowUV.xy + offset, shadowDepth);
+        }
+    }
+
+    coverage *= (1.0f / 16.0f);
+
+    return coverage;
+}

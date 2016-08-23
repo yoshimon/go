@@ -1,0 +1,19 @@
+/*!
+    Computes the brightness and luminance of a color value
+    and clamps it to a threshold.
+
+    \param col The input color value.
+    \param brightnessThreshold The brightness-threshold.
+
+    \return The (clamped-brightness-color, luminance).
+ */
+float4 $(float3 color, float brightnessThreshold)
+{
+    float4 result;
+
+    // Filter out bright parts by clamping with threshold
+    result.rgb = max(color.rgb - brightnessThreshold, 0.f.xxx);
+    result.a = ::functions::color::brightness_linear_space(color);
+
+    return result;
+}

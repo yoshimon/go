@@ -1,0 +1,12 @@
+//! Object-space position.
+float3 positionOS : POSITION;
+//! Tangent vector.
+float4 tangentOS : TANGENT;
+//! Normal vector.
+float3 normalOS : NORMAL;
+//! Texture coordinates.
+float2 uv : TEXCOORD0;
+//! Lightmap UV coordinates.
+float2 lightmapUV : TEXCOORD1;
+//! The instance ID.
+uint instanceID : SV_InstanceID;

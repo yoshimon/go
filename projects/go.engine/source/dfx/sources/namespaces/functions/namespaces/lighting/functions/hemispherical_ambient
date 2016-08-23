@@ -1,0 +1,14 @@
+/*!
+    Performs hemispherical ambient lighting.
+
+    \param normalY The y-component of the world-space normal vector.
+    \param colorAbove The color from above.
+    \param colorBelow The color from below.
+
+    \return The ambient color.
+ */
+float3 $(float normalWS_Y, float3 colorAbove, float3 colorBelow)
+{
+    float blendFactor = 0.5 * normalWS_Y + 0.5;
+    return lerp(colorBelow, colorAbove, blendFactor);
+}

@@ -1,0 +1,6 @@
+//! The MIP-level to blur.
+uint g_bloomCombineSourceMipLevel;
+//! The texel size of the bloom-texture mip level.
+float2 g_bloomCombineTexelSize;
+//! Padding.
+float g_bloomCombineTexelSize_Padding;

@@ -1,0 +1,21 @@
+/*
+    Performs shading.
+
+    \param input The input fragment.
+
+    \return The shaded fragment.
+ */
+float3 $(::vertices::shading input) : SV_Target0
+{
+    // Hemispherical ambient, pre-transformed to view-space
+    const float3 colorAboveWS = ::forward_plus::ambient_lighting::constants::g_forwardPlusAmbientLightingColorAboveWS.rgb;
+    const float3 colorBelowWS = ::forward_plus::ambient_lighting::constants::g_forwardPlusAmbientLightingColorBelowWS.rgb;
+
+    float normalWS_Y = ::forward_plus::ambient_lighting::normalWSTexture.SampleLevel(::samplers::pointClamp, input.uv, 0).y;
+    float3 ambientColor = ::functions::lighting::hemispherical_ambient(normalWS_Y, colorAboveWS, colorBelowWS);
+
+    // Mask it with AO
+    float ao = ::forward_plus::ambient_lighting::ssaoTexture.SampleLevel(::samplers::pointClamp, input.uv, 0);
+
+    return ambientColor * ao;
+}

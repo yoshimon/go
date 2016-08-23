@@ -1,0 +1,17 @@
+/*!
+    Skydome vertex shader.
+
+    \param input The input from the IA stage.
+    \param[out] output The output vertex.
+ */
+void $(vertices::unskinned input, out vertices::shading output)
+{
+    output.positionWVP = mul(float4(input.positionOS, 0.f), ::constants::frame::g_mainRenderPointViewProj).xyww;
+    output.positionWVP.z = 0.f; // Complementary Z!
+
+    output.normalWS = 0.0;
+    output.positionVS = 0.0;
+    output.tangentWS = 0.0;
+    output.positionWS = 0.0;
+    output.uv = input.uv;
+}

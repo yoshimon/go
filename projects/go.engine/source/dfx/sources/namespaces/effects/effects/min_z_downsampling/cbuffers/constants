@@ -1,0 +1,2 @@
+//! The source mip level.
+uint g_minZDownsamplingSourceMipLevel;

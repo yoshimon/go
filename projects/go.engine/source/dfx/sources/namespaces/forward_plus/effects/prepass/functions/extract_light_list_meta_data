@@ -1,0 +1,18 @@
+/*
+    Extracts meta data from the light index list for a given pixel.
+
+    \param tileLightIndices Light indices for each tile with meta-data.
+    \param pixelPosition The pixel position (screen-space).
+    \param[out] outFirstLightIndex The index of the first light in the index buffer for the pixel at pixelPosition.
+    \param[out] outNumLights The number of lights for the pixel at pixelPosition.
+ */
+void $(
+    Buffer<uint> tileLightIndices,
+    uint tileIndex,
+    out uint outFirstLightIndex,
+    out uint outNumLights)
+{
+    uint startIndex = DFX_FORWARD_PLUS_MAX_NUM_ELEMENTS_PER_TILE * tileIndex;
+    outFirstLightIndex = startIndex + 1;
+    outNumLights = tileLightIndices[startIndex];
+}

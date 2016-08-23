@@ -1,0 +1,8 @@
+//! The albedo tint.
+float3 albedoTint;
+//! The cutout threshold for this material.
+float cutoutThreshold;
+//! The emissive tint.
+float3 emissiveTint;
+//! The emissive intensity.
+float emissiveIntensity;

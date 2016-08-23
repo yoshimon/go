@@ -1,0 +1,9 @@
+/*!
+    Sign function.
+
+    \return Returns the sign of an input value.
+ */
+float $(float value)
+{
+    return value >= 0.0 ? 1.0 : -1.0;
+}

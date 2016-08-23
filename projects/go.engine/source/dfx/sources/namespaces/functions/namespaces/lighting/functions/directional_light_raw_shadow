@@ -1,0 +1,14 @@
+/*!
+    Calculates the directional light shadow contribution.
+
+    \param shadowMap The shadow map to use.
+    \param positionWS The position in world-space.
+
+    \return The shadow contribution from the light.
+ */
+float $(const Texture2D<float> shadowMap, const float3 position, const matrix positionToLightViewProjUV)
+{
+    const float4 shadowClipSpace = mul(float4(position, 1.0f), positionToLightViewProjUV);
+    const float3 shadowUVD = shadowClipSpace.xyz / shadowClipSpace.w;
+    return shadowMap.SampleCmpLevelZero(::samplers::cmpShadowPoint, shadowUVD.xy, shadowUVD.z - 0.0001f);
+}
