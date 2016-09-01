@@ -5,8 +5,16 @@
  */
 float4 $(vertices::fstriangle input) : SV_Target
 {
+    // Barrel distortion
+    const float chromaticAbber = -0.15;
+    const float distStrength = 0.5;
+    const float2 uvBase0 = input.uv - 0.5.xx;
+    const float distR2 = dot(uvBase0, uvBase0);
+    const float cubicDist = 1.0 - distR2 * (chromaticAbber + distStrength * sqrt(distR2));
+    input.uv = cubicDist * uvBase0 + 0.5.xx;
+     
     // Fragment to tonemap
-    float3 Lw = ::effects::tonemapping::hdrTexture.SampleLevel(::samplers::linearClamp, input.uv, 0).rgb;
+    float3 Lw = ::effects::tonemapping::hdrTexture.SampleLevel(::samplers::pointClamp, input.uv, 0).rgb;
 
     // Apply bloom
     float3 bloom = ::effects::tonemapping::bloomTexture.SampleLevel(::samplers::linearClamp, input.uv, 0).rgb;

@@ -77,7 +77,7 @@ float4 ibl_specular_convolve(TextureCube<float4> sourceCube, float alpha, float3
         if(NoL > 0)
         {
             // Compute the LoD
-            float lod = compute_lod(H, pdf, kNumSamples, envMapPrecalc);
+            float lod = 0; // compute_lod(H, pdf, kNumSamples, envMapPrecalc);
 
             // Li * cos(theta)
             prefilteredColor += sourceCube.SampleLevel(s_pointClampSampler, L, lod).rgb * NoL;

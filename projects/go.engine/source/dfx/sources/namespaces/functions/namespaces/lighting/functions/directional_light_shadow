@@ -19,18 +19,16 @@ float $(const Texture2D<float> shadowMap, const float3 positionWS)
     // PCF
     float coverage = 0.0f;
 
-    [unroll]
-    for(float y = -1.5f; y <= 1.5; y += 1.0f)
+    for(float y = -0.5f; y <= 0.5; y += 1.0f)
     {
-        [unroll]
-        for(float x = -1.5f; x <= 1.5; x += 1.0f)
+        for(float x = -0.5f; x <= 0.5; x += 1.0f)
         {
             const float2 offset = DFX_DIRECTIONAL_LIGHT_SHADOW_MAP_TEXEL_SIZE * float2(x, y);
             coverage += shadowMap.SampleCmpLevelZero(::samplers::cmpShadow, shadowUV.xy + offset, shadowDepth);
         }
     }
 
-    coverage *= (1.0f / 16.0f);
+    coverage *= (1.0f / 4.0f);
 
     return coverage;
 }

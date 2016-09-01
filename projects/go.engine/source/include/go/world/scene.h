@@ -53,6 +53,7 @@ class scene_manager;
 //! A class, that holds a collection of entity and component managers to represent a scene.
 class GO_API GO_SSE_ALIGN scene : public aligned<scene>
 {
+    friend class go::light_manager;
 public:
     /*!
         Constructor.
@@ -140,8 +141,6 @@ private:
     void flush_render_context();
     //! Updates the main camera frustum.
     void update_camera_frustum();
-    //! Determines the shadow casting lights.
-    void determine_shadow_casting_lights();
 private:
     typedef std::vector<std::unique_ptr<entity_component_manager>> component_manager_vector_t;
 private:
@@ -161,8 +160,6 @@ private:
     entity_id m_activeCamera;
     //! The main camera properties.
     gfx_camera_properties m_cameraProperties;
-    //! State flag, indicating whether the scene is being processed for rendering.
-    bool32_t m_isRendering;
 };
 
 

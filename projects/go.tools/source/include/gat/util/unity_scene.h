@@ -102,6 +102,8 @@ struct unity_entity
             bool castsShadows;
             //! The light color.
             DirectX::XMFLOAT4 color;
+            //! The spot angle.
+            float spotAngle;
         } light;
         //! State flag.
         bool hasLight = false;

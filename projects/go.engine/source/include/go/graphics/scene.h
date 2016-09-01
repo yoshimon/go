@@ -159,6 +159,13 @@ public:
      */
     GO_API void translate_entity(gfx_entity_id id, DirectX::FXMVECTOR vDelta) noexcept;
     /*!
+        Changes the position of an entity.
+
+        \param id The entity identifier.
+        \param vNewPos The new position.
+     */
+    GO_API void change_entity_position(gfx_entity_id id, DirectX::FXMVECTOR vNewPos) noexcept;
+    /*!
         Rotates an entity.
 
         \param id The entity identifier.
@@ -169,6 +176,13 @@ public:
     GO_API void rotate_entity(gfx_entity_id id, float pitch, float yaw, float roll) noexcept;
     //! \overload
     GO_API void rotate_entity(gfx_entity_id id, DirectX::FXMVECTOR vQuat) noexcept;
+    /*!
+        Changes the rotation of an entity.
+
+        \param id The entity identifier.
+        \param vQuat The new rotation quaternion to apply to the base orientation (0,0,1,0).
+     */
+    GO_API void change_entity_rotation(gfx_entity_id id, DirectX::FXMVECTOR vQuat) noexcept;
     /*!
         Scales an entity.
 

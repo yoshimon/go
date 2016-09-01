@@ -138,6 +138,7 @@ void gat::unity_scene_converter::save(const config_file &cfg,
                 go::xml_require_attribute(lightNode, "radius", std::to_string(light.radius).c_str());
                 go::xml_require_attribute(lightNode, "castsShadows", std::to_string(light.castsShadows).c_str());
                 go::xml_require_attribute(lightNode, "color", go::vector4_to_string(light.color).c_str());
+                go::xml_require_attribute(lightNode, "spotAngle", std::to_string(light.spotAngle).c_str());
             }
 
             if(entity.components.hasReflectionProbe)

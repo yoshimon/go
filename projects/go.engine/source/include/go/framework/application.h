@@ -131,14 +131,8 @@ protected:
 private:
     //! Creates the main window.
     void create_main_window();
-    /*!
-        Updates the game state and displays it.
-
-        \param accumulator The remaining time between two updates.
-        \param startTime The start time.
-        \param currentTime The current time.
-     */
-    void update_and_display(float &accumulator, uint64_t startTime, uint64_t &currentTime);
+    //! Updates the game state and displays it.
+    void update_and_display();
     //! Updates the game.
     void update_game();
     //! Display the current game state.
@@ -158,6 +152,12 @@ private:
     int32_t m_windowWidth;
     //! The application window height.
     int32_t m_windowHeight;
+    //! The last frame time.
+    uint64_t m_lastTime;
+    //! The frame update timer.
+    float m_frameUpdateTimer;
+    //! The FPS counter.
+    uint32_t m_fps;
 };
 
 

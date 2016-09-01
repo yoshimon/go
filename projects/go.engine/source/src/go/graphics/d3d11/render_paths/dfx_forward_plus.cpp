@@ -631,7 +631,7 @@ void go::dfx_forward_plus_render_path::render(
         auto &&gpuTimerFrequency = m_gpuTimerFrequency.active();
 
         // Enable the timer if requested
-        auto &&enableGPUProfiling = GO_CVAR(enable_gpu_profiling).valuei() == 1;
+        auto &&enableGPUProfiling = GO_CVAR(gpu_profiling).valuei() == 1;
         gpuTimers.enable(enableGPUProfiling);
         gpuTimerFrequency.enable(enableGPUProfiling);
 
@@ -852,7 +852,7 @@ void go::dfx_forward_plus_render_path::run_ssao_effect(
     params.in.depthViewMatrix = renderContext.renderPoints.main.transform.viewMatrix;
     params.in.metersToViewSpaceUnits = 1.0f;
     params.in.radius = 2.0f;
-    params.in.strength = 3.0f;
+    params.in.strength = clamp(GO_CVAR(ssao_strength).valuef(), 1.0f, 5.0f);
 
     params.out.outputTexture = &m_gbuffer.ambientOcclusion;
 
@@ -918,7 +918,7 @@ void go::dfx_forward_plus_render_path::run_tonemapping_effect(
 {
     dfx_effects::tonemapping_parameters params;
 
-    params.in.bloomScale = 0.5f;
+    params.in.bloomScale = 0.1f;
     params.in.exposureBias = 2.5f;
     params.in.hdrTexture = &m_gbuffer.color;
     params.in.bloomTexture = &m_hdrBuffers.bloom;
@@ -1009,8 +1009,8 @@ void go::dfx_forward_plus_render_path::run_volumetric_lighting_effect(
 {
     dfx_effects::volumetric_lighting_parameters params;
 
-    params.in.intensity = 1.0f;
-    params.in.sampleCount = 48;
+    params.in.intensity = renderContext.sky.fogDensity * 1000.0f;
+    params.in.sampleCount = clamp(GO_CVAR(volumetric_lighting_quality).valuei() * 16, 16, 16 * 3);
     params.in.viewDepthTexture = &m_gbuffer.depthVS;
     params.in.directionalLightShadowMap = &m_shadowMaps.directionalLight;
     params.in.bilateralBlurEffect = &m_effects.bilateralBlur;

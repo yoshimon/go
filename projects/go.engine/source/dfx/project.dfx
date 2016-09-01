@@ -1,4 +1,4 @@
-<project shaderdir="D:\Projekte\VS2015\go\assets\shaders\" minimizeshaders="False" outputdir="D:\Projekte\VS2015\go\projects\go.engine\source\dfx\output\" hlslcompilerflags="34817">
+<project shaderdir="D:\Projekte\VS2015\go\assets\shaders\" minimizeshaders="False" outputdir="D:\Projekte\VS2015\go\projects\go.engine\source\dfx\output\" hlslcompilerflags="34816">
   <constants>
     <constant name="Math">//! Pi.
 #define DFX_PI 3.14159265f
@@ -68,9 +68,9 @@
     <constant name="Animation">//! The maximum number of bones in a skeletal animation.
 #define DFX_MAX_SKELETAL_BONES 128</constant>
     <constant name="Lights">//! Maximum number of shadow-casting spot-lights per frame.
-#define DFX_MAX_NUM_SHADOW_CASTING_SPOT_LIGHTS 16
+#define DFX_MAX_NUM_SHADOW_CASTING_SPOT_LIGHTS 15
 //! Maximum number of shadow-casting point-lights per frame.
-#define DFX_MAX_NUM_SHADOW_CASTING_POINT_LIGHTS 16
+#define DFX_MAX_NUM_SHADOW_CASTING_POINT_LIGHTS 4
 
 //! The number of cascades for the directional light.
 #define DFX_NUM_DIRECTIONAL_LIGHT_CASCADES 1
@@ -102,7 +102,7 @@
 #define DFX_POINT_LIGHT_SHADOW_MAP_ATLAS_INNER_FACE_SIZE_UV (DFX_POINT_LIGHT_SHADOW_MAP_ATLAS_INNER_FACE_SIZE * DFX_POINT_LIGHT_SHADOW_MAP_ATLAS_TEXEL_SIZE)
 
 //! The size of a single spot light shadow map face.
-#define DFX_SPOT_LIGHT_SHADOW_MAP_ATLAS_INNER_FACE_SIZE 512
+#define DFX_SPOT_LIGHT_SHADOW_MAP_ATLAS_INNER_FACE_SIZE 1024
 //! The margin in pixels for a shadow map face.
 #define DFX_SPOT_LIGHT_SHADOW_MAP_ATLAS_TOPLEFT_MARGIN 4
 //! The margin in pixels for a shadow map face.
@@ -428,7 +428,7 @@
             <passes>
               <pass title="Spot-Light Shadow Maps" type="1">
                 <shaders>
-                  <vertex reference="shaders::vertex_to_pixel::unskinned" attributes=""/>
+                  <vertex reference="effects::shadow_maps::unskinned" attributes=""/>
                   <pixel reference="shaders::pixel::standard_depth" attributes=""/>
                   <compute reference="" attributes=""/>
                   <geometry reference="" attributes=""/>

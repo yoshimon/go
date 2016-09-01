@@ -25,37 +25,40 @@ void $(
     inout float3 outDiffuse,
     inout float3 outSpecular)
 {
-    // Light influence bounds
-    const float3 posToLightWS = lightProxyShape.center - positionWS;
-    const float sqrLightDistWS = dot(posToLightWS, posToLightWS);
-    const float lightDistWS = sqrt(sqrLightDistWS);
-    const float3 lightDirWS = posToLightWS / lightDistWS;
-    const float cosTheta = dot(normalWS, lightDirWS);
-    const float sqrLightSizeWS = lightParams.radiusWS * lightParams.radiusWS;
-    const float sinSigmaSqr = sqrLightSizeWS / (sqrLightSizeWS + max(sqrLightSizeWS, sqrLightDistWS));
-    float illuminance = saturate(dot(lightParams.directionWS, -lightDirWS)) * ::functions::lighting::standard::disk_or_sphere_illuminance(cosTheta, sinSigmaSqr);
-
-    // Angular attenuation
     const float3 posToVirtualLightDirWS = normalize(positionWS - lightParams.virtualPositionWS);
-    illuminance *= ::functions::lighting::angular_attenuation(posToVirtualLightDirWS, lightParams.directionWS, lightParams.angleScale, lightParams.angleBias);
-    illuminance *= ::functions::lighting::distance_attenuation(lightDistWS, lightProxyShape.radius);
-
-    if(illuminance > 0.0 && lightDistWS < lightProxyShape.radius)
+    float illuminance = ::functions::lighting::angular_attenuation(posToVirtualLightDirWS, lightParams.directionWS, lightParams.angleScale, lightParams.angleBias);
+    if(illuminance > 0.0f)
     {
-        // Shadows
-        illuminance *= lightParams.shadowCasterIndex < 0 ? 1.0 : ::functions::lighting::spot_light_shadow(shadowMapAtlas, lightParams.shadowCasterIndex, positionWS);
-        if(illuminance > 0.0)
-        {
-            float3 diffuse;
-            float3 specular;
-            ::functions::lighting::standard::brdf(
-                viewDirWS, lightDirWS, normalWS,
-                albedo, roughness, 1.0f, metallic,
-                diffuse, specular);
+        // Light influence bounds
+        const float3 posToLightWS = lightProxyShape.center - positionWS;
+        const float sqrLightDistWS = dot(posToLightWS, posToLightWS);
+        const float lightDistWS = sqrt(sqrLightDistWS);
+        const float3 lightDirWS = posToLightWS / lightDistWS;
+        const float cosTheta = dot(normalWS, lightDirWS);
+        const float sqrLightSizeWS = lightParams.radiusWS * lightParams.radiusWS;
+        const float sinSigmaSqr = sqrLightSizeWS / (sqrLightSizeWS + max(sqrLightSizeWS, sqrLightDistWS));
+        illuminance *= saturate(dot(lightParams.directionWS, -lightDirWS)) * ::functions::lighting::standard::disk_or_sphere_illuminance(cosTheta, sinSigmaSqr);
 
-            // Combine
-            outDiffuse += (lightParams.color * diffuse) * illuminance;
-            outSpecular += (lightParams.color * specular) * illuminance;
+        // Angular attenuation
+        illuminance *= ::functions::lighting::distance_attenuation(lightDistWS, lightProxyShape.radius);
+
+        if(illuminance > 0.0 && lightDistWS < lightProxyShape.radius)
+        {
+            // Shadows
+            illuminance *= lightParams.shadowCasterIndex < 0 ? 1.0 : ::functions::lighting::spot_light_shadow(shadowMapAtlas, lightParams.shadowCasterIndex, positionWS);
+            if(illuminance > 0.0)
+            {
+                float3 diffuse;
+                float3 specular;
+                ::functions::lighting::standard::brdf(
+                    viewDirWS, lightDirWS, normalWS,
+                    albedo, roughness, 1.0f, metallic,
+                    diffuse, specular);
+
+                // Combine
+                outDiffuse += (lightParams.color * diffuse) * illuminance;
+                outSpecular += (lightParams.color * specular) * illuminance;
+            }
         }
     }
 }

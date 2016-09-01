@@ -153,6 +153,7 @@ void gat::unity_scene::load(const go::file_path &filePath)
                     section_read(&childSection, mapFloat, light.intensity, "$intensity");
                     section_read(&childSection, mapCastsShadows, light.castsShadows, "$castShadows");
                     section_read(&childSection, mapRGBA, light.color, "$color");
+                    section_read(&childSection, mapFloat, light.spotAngle, "$spotAngle");
                 }
             }
 

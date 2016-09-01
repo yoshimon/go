@@ -59,7 +59,7 @@ struct gfx_ambient_sky
     //! The fog color.
     DirectX::XMFLOAT3 fogColor = DirectX::XMFLOAT3(0.01f, 0.01f, 0.01f);
     //! The density of the fog.
-    float fogDensity = 0.0001f;
+    float fogDensity = 0.001f;
     //! The volumetric lighting intensity.
     float volumetricLightingIntensity = 1.0f;
     //! Volumetric light distance scale.

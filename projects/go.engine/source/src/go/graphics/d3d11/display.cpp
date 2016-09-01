@@ -217,9 +217,31 @@ void go::gfx_display::initialize_d3d11(const gfx_display_configuration &config)
     backBufferDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
     backBufferDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
+    // Grab the first non-Intel adapter
+    Microsoft::WRL::ComPtr<IDXGIAdapter> adapter;
+    Microsoft::WRL::ComPtr<IDXGIFactory> dxgiFactory;
+    auto &&hr = CreateDXGIFactory(__uuidof(IDXGIFactory), &dxgiFactory);
+    if(SUCCEEDED(hr))
+    {
+        for(UINT adapterIndex = 0; SUCCEEDED(hr); ++adapterIndex)
+        {
+            hr = dxgiFactory->EnumAdapters(adapterIndex, &adapter);
+            if(adapter != nullptr)
+            {
+                // Break if this is a non-Intel adapter
+                DXGI_ADAPTER_DESC adapterDesc;
+                adapter->GetDesc(&adapterDesc);
+                if(adapterDesc.VendorId != 0x8086)
+                {
+                    break;
+                }
+            }
+        }
+    }
+
     GO_THROW_HRESULT
     (
-        D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr,
+        D3D11CreateDeviceAndSwapChain(adapter.Get(), D3D_DRIVER_TYPE_UNKNOWN, nullptr,
             createDeviceFlags, featureLevels, numFeatureLevels, D3D11_SDK_VERSION,
             &backBufferDesc, &m_dxgiSwapChain, &m_d3dDevice, nullptr, &m_d3dImmediateContext),
         "could not create D3D11 device and swap chain"

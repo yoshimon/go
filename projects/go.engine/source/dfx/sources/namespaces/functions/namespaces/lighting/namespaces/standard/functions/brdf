@@ -8,7 +8,7 @@
 float3 F_Schlick(in float3 f0, float f90, in float u)
 {
     // Schlick
-    return f0 + (f90 - f0) * pow(1.f - u, 5.f);
+    return f0 + (f90 - f0) * pow(1.0 - u, 5.f);
 }
 
 
@@ -19,7 +19,7 @@ float3 F_Schlick(in float3 f0, float f90, in float u)
     \param NdotV
     \param alphaG
  */
-float V_SmithGGXCorrelated(float NdotL, float NdotV, float alphaG)
+float V_SmithGGXCorrelated(float NdotL, float NdotV, float linearRoughness)
 {
     // Original formulation of G_SmithGGX Correlated [Heitz14]
     // lambda_v = ( -1 + sqrt ( alphaG2 * (1 - NdotL2 ) / NdotL2 + 1)) * 0.5 f;
@@ -28,7 +28,7 @@ float V_SmithGGXCorrelated(float NdotL, float NdotV, float alphaG)
     // V_SmithGGXCorrelated = G_SmithGGXCorrelated / (4.0 f * NdotL * NdotV );
 
     // This is the optimized version
-    float alphaG2 = alphaG * alphaG;
+    float alphaG2 = linearRoughness * linearRoughness;
 
     // Caution: the " NdotL *" and " NdotV *" are explicitely inversed , this is not a mistake .
     float Lambda_GGXV = NdotL * sqrt((- NdotV * alphaG2 + NdotV) * NdotV + alphaG2);
@@ -42,16 +42,15 @@ float V_SmithGGXCorrelated(float NdotL, float NdotV, float alphaG)
     Calculates the distribution of microfacets for a given setup.
 
     \param NdotH The dot-product between the surface normal and the half-angle vector with the light.
-    \param roughness The surface roughness.
+    \param linearRoughness The linear surface roughness.
     \param normFactor The normalization factor.
 
     \return The distribution of microfacets.
  */
-float D_GGX(float NdotH , float roughness, float normFactor)
+float D_GGX(float NdotH , float linearRoughness, float normFactor)
 {
     // Division by pi is applied later
-    float alpha2 = roughness * roughness;
-
+    float alpha2 = linearRoughness * linearRoughness;
     float f = (NdotH * alpha2 - NdotH) * NdotH + 1.f;
     return (alpha2 * normFactor) / (f * f + DFX_FLOAT_EPSILON);
 }
@@ -102,6 +101,20 @@ float F_90(in float3 f0)
 }
 
 
+float OneMinusReflectivityFromMetallic(float metallic)
+{
+	// We'll need oneMinusReflectivity, so
+	//   1-reflectivity = 1-lerp(dielectricSpec, 1, metallic) = lerp(1-dielectricSpec, 0, metallic)
+	// store (1-dielectricSpec) in unity_ColorSpaceDielectricSpec.a, then
+	//	 1-reflectivity = lerp(alpha, 0, metallic) = alpha + metallic*(0 - alpha) =
+	//                  = alpha - metallic * alpha
+    const float reflectance = 0.5; // Matches UE4 'Specular' value
+    const float defaultReflectance = 0.16 * reflectance * reflectance;
+	const float oneMinusDielectricSpec = (1.0 - defaultReflectance);
+	return oneMinusDielectricSpec - metallic * oneMinusDielectricSpec;
+}
+
+
 /*!
     Physically-based BRDF.
 
@@ -140,5 +153,5 @@ void $(
     outSpec = F * D * Vis / DFX_PI;
 
     // Diffuse BRDF
-    outDiff = metallic < 1.0 ? albedo * (1.0 - metallic) * Fr_DisneyDiffuse(nv, nl, lh, linearRoughness) / DFX_PI : 0.f;
+    outDiff = albedo * ((1.0 - metallic) * Fr_DisneyDiffuse(nv, nl, lh, linearRoughness) / DFX_PI);
 }

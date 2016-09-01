@@ -81,7 +81,12 @@ const char *go::asset_name::c_str() const noexcept
 //===========================================================================
 
 go::xml_asset_db::xml_asset_db(std::string name, std::string rootName, std::string recordName)
-    : m_name(std::move(name)), m_rootName(std::move(rootName)), m_recordName(std::move(recordName))
+    :
+    m_name(std::move(name)),
+    m_rootName(std::move(rootName)),
+    m_recordName(std::move(recordName)),
+    m_root(nullptr),
+    m_capacity(0)
 {
 }
 

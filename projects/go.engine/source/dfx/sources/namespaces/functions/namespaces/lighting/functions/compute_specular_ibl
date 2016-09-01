@@ -12,25 +12,41 @@
 float3 $(
     const float3 viewDirWS,
     const float3 normalWS,
-    const float3 albedo,
-    const float metallic,
-    const float roughness,
+    float3 albedo,
+    float metallic,
+    float roughness,
     const Texture2D<float2> envBRDF,
     const TextureCube<float4> envMap)
 {
     const float3 rWS = reflect(-viewDirWS, normalWS);
-    const float nv = dot(normalWS, viewDirWS);
+    const float nv = saturate(dot(normalWS, viewDirWS));
 
     // TODO: use specular dominant direction instead of R
 
-    float linearRoughness = roughness * roughness;
+    // UNITY ADDITION
+    // const float oneMinusReflectivity = ::functions::lighting::standard::OneMinusReflectivityFromMetallic(metallic);
+    // albedo *= oneMinusReflectivity;
 
     // Compute fresnel
     const float3 h = normalize(viewDirWS + rWS);
     const float lh = saturate(dot(h, rWS));
     const float3 f0 = ::functions::lighting::standard::F_0(albedo, metallic);
 
-    const float3 specularColor = approximate_specular_ibl(f0, linearRoughness, nv, rWS, envBRDF, envMap);
+    const float3 specularColor = approximate_specular_ibl(f0, roughness, nv, rWS, envBRDF, envMap);
 
-    return ::functions::lighting::standard::F_Schlick(f0, ::functions::lighting::standard::F_90(f0), lh) * specularColor;
+    // UNITY ADDITION
+    /*
+    const float m = roughness * roughness;
+    const float surfaceReduction = 1.0 / (m * m + 1.0);
+    const float oneMinusRoughness = 1.0 - roughness;
+    const float grazingTerm = saturate(oneMinusRoughness + (1.0 - oneMinusReflectivity));
+    const float3 fresnel = ::functions::lighting::standard::F_Schlick(f0, grazingTerm, nv);
+    return surfaceReduction * fresnel * specularColor;
+    */
+
+    // Reduce rim lighting
+    const float surfaceReduction = saturate(0.5 - roughness) * lerp(nv, 1.0, metallic);
+    const float fresnel = ::functions::lighting::standard::F_Schlick(f0, ::functions::lighting::standard::F_90(f0), nv);
+
+    return surfaceReduction * fresnel * specularColor;
 }

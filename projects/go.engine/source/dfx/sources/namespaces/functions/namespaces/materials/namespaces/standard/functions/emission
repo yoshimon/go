@@ -12,5 +12,5 @@ void $(inout ::materials::standard material, float2 uv, float3 emissiveTint, flo
 {
      material.emission = ::materials::textures::standard::emissionTexture.Sample(::samplers::surface, uv);
      material.emission *= emissiveTint;
-     material.emission *= emissiveIntensity * 100.f;
+     material.emission *= emissiveIntensity * 2.0f;
 }

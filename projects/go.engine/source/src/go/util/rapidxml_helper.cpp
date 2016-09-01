@@ -130,7 +130,7 @@ bool go::xml_get_bool_attribute(rapidxml::xml_node<> *node, const char *name,
         return false;
     }
 
-    outValue = !strcmp(node->value(), "true");
+    outValue = !strcmp(n->value(), "true");
     return true;
 }
 

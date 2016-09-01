@@ -113,9 +113,9 @@ Global\shaders\vertex_to_pixel\Functions=true
 Global\vertices=true
 Global\vertices\Structures=true
 [Selected]
-Node=Global\materials\textures\standard\Resources\albedoAlphaTexture
+Node=Global\functions\lighting\standard\Functions\disk_area_light
 [Tabs]
-Global\namespaces\functions\namespaces\lighting\functions\point_light_shadow=true
-Global\namespaces\functions\namespaces\lighting\functions\volumetric_lighting=true
+Constants\Lights=true
+Global\namespaces\functions\namespaces\lighting\namespaces\standard\functions\disk_area_light=true
 [ActiveTab]
 Index=1

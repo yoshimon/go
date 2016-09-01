@@ -104,7 +104,7 @@ void go::variable::set_value(std::string value)
 
 int32_t go::variable::valuei() const
 {
-    return std::stoi(m_value);
+    return std::atoi(m_value.c_str());
 }
 
 
@@ -117,7 +117,7 @@ void go::variable::set_value(int32_t value)
 
 float go::variable::valuef() const
 {
-    return std::stof(m_value);
+    return (float)std::atof(m_value.c_str());
 }
 
 
@@ -130,7 +130,7 @@ void go::variable::set_value(float value)
 
 int64_t go::variable::valuel() const
 {
-    return std::stoll(m_value);
+    return std::atoll(m_value.c_str());
 }
 
 

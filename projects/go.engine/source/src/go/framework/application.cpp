@@ -47,6 +47,12 @@
 
 GO application *GO the_application = nullptr;
 BOOL s_isCursorClipped = FALSE;
+BOOL s_isBorderless = FALSE;
+LONG s_oldWndStyle = 0;
+LONG s_oldWndExStyle = 0;
+RECT s_oldWndRect;
+RECT s_oldWndClientRect;
+int s_numResizes = 0;
 
 
 // ============================================================================== //
@@ -125,7 +131,43 @@ static LRESULT CALLBACK MainWndProc(HWND hWindow, UINT message, WPARAM wParam, L
                 {
                     if(go::the_display)
                     {
-                        go::the_display->change_mode(go::the_display->mode() ^ go::gfx_display::fullscreen);
+                        // To Borderless
+                        if(!s_isBorderless)
+                        {
+                            GetWindowRect(hWindow, &s_oldWndRect);
+                            GetClientRect(hWindow, &s_oldWndClientRect);
+
+                            auto &&smx = GetSystemMetrics(SM_CXSCREEN);
+                            auto &&smy = GetSystemMetrics(SM_CYSCREEN);
+
+                            s_oldWndStyle = GetWindowLong(hWindow, GWL_STYLE);
+                            auto &&lStyle = s_oldWndStyle;
+                            lStyle &= ~(WS_CAPTION | WS_THICKFRAME | WS_MINIMIZE | WS_MAXIMIZE | WS_SYSMENU);
+                            SetWindowLong(hWindow, GWL_STYLE, lStyle);
+
+                            s_oldWndExStyle = GetWindowLong(hWindow, GWL_EXSTYLE);
+                            auto &&lExStyle = s_oldWndExStyle;
+                            lExStyle &= ~(WS_EX_DLGMODALFRAME | WS_EX_CLIENTEDGE | WS_EX_STATICEDGE);
+                            SetWindowLong(hWindow, GWL_EXSTYLE, lExStyle);
+
+                            MoveWindow(hWindow, 0, 0, smx, smy, TRUE);
+                            go::the_application->handle_resize(smx, smy);
+
+                            s_isBorderless = true;
+
+                            // go::the_display->change_mode(go::the_display->mode() ^ go::gfx_display::fullscreen);
+                        }
+                        else
+                        {
+                            SetWindowLong(hWindow, GWL_STYLE, s_oldWndStyle | WS_OVERLAPPEDWINDOW);
+                            SetWindowLong(hWindow, GWL_EXSTYLE, s_oldWndExStyle);
+
+                            MoveWindow(hWindow, s_oldWndRect.left, s_oldWndRect.top, s_oldWndRect.right - s_oldWndRect.left, s_oldWndRect.bottom - s_oldWndRect.top, TRUE);
+                            go::the_application->handle_resize(s_oldWndClientRect.right - s_oldWndClientRect.left, s_oldWndClientRect.bottom - s_oldWndClientRect.top);
+
+                            s_isBorderless = false;
+                        }
+
                         clip_cursor();
                     }
                 }
@@ -184,11 +226,6 @@ static LRESULT CALLBACK MainWndProc(HWND hWindow, UINT message, WPARAM wParam, L
             }
             break;
         }
-    case WM_SETCURSOR:
-        {
-            // The UI-system takes care of cursors
-            return FALSE;
-        }
     case WM_DESTROY:
         {
             unclip_cursor();
@@ -200,6 +237,34 @@ static LRESULT CALLBACK MainWndProc(HWND hWindow, UINT message, WPARAM wParam, L
     case WM_CREATE:
         {
             GO_CVAR(application_window).set_value((int64_t)hWindow);
+            break;
+        }
+    case WM_SIZE:
+        {
+            ++s_numResizes;
+            if(s_numResizes == 2)
+            {
+                // Get the screen size
+                auto &&w = GetSystemMetrics(SM_CXSCREEN);
+                auto &&h = GetSystemMetrics(SM_CYSCREEN);
+                auto &&centerX = w / 2;
+                auto &&centerY = h / 2;
+
+                // Center the window
+                RECT rect;
+                GetWindowRect(hWindow, &rect);
+                auto &&wndWidth = rect.right - rect.left;
+                auto &&wndHeight = rect.bottom - rect.top;
+                auto &&wndHalfWidth = wndWidth / 2;
+                auto &&wndHalfHeight = wndHeight / 2;
+                
+                auto &&wndX = centerX - wndHalfWidth;
+                auto &&wndY = centerY - wndHalfHeight;
+
+                MoveWindow(hWindow, wndX, wndY, wndWidth, wndHeight, TRUE);
+                ShowWindow(hWindow, SW_SHOWNORMAL);
+                clip_cursor();
+            }
             break;
         }
     }
@@ -277,7 +342,7 @@ void go::application::create_main_window()
         return;
     }
 
-    ShowWindow(m_windowHandle, SW_SHOWNORMAL);
+    PostMessage(m_windowHandle, WM_SIZE, 320, 240);
     UpdateWindow(m_windowHandle);
 }
 
@@ -297,8 +362,11 @@ void go::application::run()
         game_message_loop();
     }
 
-    DestroyWindow(m_windowHandle);
+    // Wait for all async requests to finish
+    go::the_io_manager->shutdown();
+
     handle_shutdown();
+    DestroyWindow(m_windowHandle);
     m_isRunning = false;
     delete this;
 }
@@ -332,11 +400,9 @@ void go::application::game_message_loop()
     }
 
     // Variables for timing
-    auto currentTime = timer::query_current_time_cycles();
-    auto accumulator = GO_UPDATE_PERIOD;
-    
-    auto startTime = currentTime;
-    go::the_game_time = 0;
+    m_lastTime = timer::query_current_time_cycles();
+    m_frameUpdateTimer = 0.0f;
+    go::the_game_time = 0.0f;
 
     m_isRunning = true;
     MSG msg = { 0 };
@@ -353,7 +419,7 @@ void go::application::game_message_loop()
             break;
         }
 
-        update_and_display(accumulator, startTime, currentTime);
+        update_and_display();
     }
     while(true);
 }
@@ -372,31 +438,30 @@ bool go::application::is_running() const
 }
 
 
-void go::application::update_and_display(float &accumulator, uint64_t startTime, uint64_t &currentTime)
+void go::application::update_and_display()
 {
-    auto newTime = timer::query_current_time_cycles();
-    auto frameTime = std::min(GO_MAX_FRAME_TIME, timer::cycles_to_seconds(newTime - currentTime));
+    auto currentTime = timer::query_current_time_cycles();
+    performance.elapsedTime = timer::cycles_to_seconds(currentTime - m_lastTime);
 
-    // Increase global game time counter
-    go::the_game_time = timer::cycles_to_seconds(newTime - startTime);
+    go::the_game_time += performance.elapsedTime;
+    m_frameUpdateTimer += performance.elapsedTime;
+    ++m_fps;
 
-    currentTime = newTime;
-    accumulator += frameTime;
-    
+    update_game();
+
     // TODO: fix your timestep!
-    //while(accumulator >= GO_UPDATE_PERIOD)
-    //{
-        update_game();
-    //    accumulator -= GO_UPDATE_PERIOD;
-    //}
-
-    performance.blendFactor = accumulator * GO_UPDATE_FREQUENCY;
+    performance.blendFactor = 0.0f;
 
     display_game();
 
-    auto endTime = timer::query_current_time_cycles();
-    performance.elapsedTime = timer::cycles_to_seconds(endTime - newTime);
-    performance.fps = (int32_t)(1 / performance.elapsedTime);
+    if(m_frameUpdateTimer > 1.0f)
+    {
+        performance.fps = m_fps;
+        m_frameUpdateTimer = 0.0f;
+        m_fps = 0;
+    }
+
+    m_lastTime = currentTime;
 }
 
 

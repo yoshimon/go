@@ -37,6 +37,7 @@
 
 #include "go/core/common.h"
 #include "go/core/aligned.h"
+#include "go/graphics/d3d11/timer.h"
 #include "go/world/entity.h"
 #include "go/world/entity_component_manager.h"
 #include "go/platform/windows.h"
@@ -76,6 +77,8 @@ typedef uint32_t entity_id;
 class GO_API GO_SSE_ALIGN entity_manager : public aligned<entity_manager>
 {
 public:
+    typedef std::vector<DirectX::XMFLOAT4X4A> float4x4_vector_t;
+public:
     /*!
         Constructor.
 
@@ -95,13 +98,23 @@ public:
 
         \return The cache size in entity count.
      */
-    size_t capacity() noexcept { return m_transforms.capacity(); }
+    size_t capacity() noexcept { return m_transforms[0].capacity(); }
+    /*!
+        Creates a new entity.
+
+        \param transform The initial transform or nullptr.
+
+        \return The new entity ID.
+     */
+    entity_id create(const entity_transform *transform);
+    //! Destroys an entity.
+    void destroy(entity_id id);
     /*!
         Returns the entity transforms.
 
         \return The entity transforms.
      */
-    const entity_transform_vector &transforms() const noexcept { return m_transforms; }
+    const entity_transform_vector &transforms() const noexcept { return m_transforms[1]; }
     /*!
         Translates an entity.
 
@@ -170,11 +183,31 @@ public:
         \param vScale The scale vector.
      */
     void change_transform(entity_id id, DirectX::FXMVECTOR vPosition, DirectX::FXMVECTOR vQuat, DirectX::FXMVECTOR vScale);
+    //! Swaps the transforms to reflect the new updated positions.
+    void update() noexcept;
+    //! Interpolates the transform matrices using the current game time.
+    void interpolate_transforms() noexcept;
+    /*!
+        Returns the interpolated transforms.
+
+        \return The interpolated transforms.
+     */
+    const entity_transform_vector &interpolated_transforms() noexcept { return m_interpolatedTransforms; }
+    /*!
+        Returns the interpolated transform matrices.
+
+        \return The interpolated transform matrices.
+     */
+    const float4x4_vector_t &interpolated_transform_matrices() noexcept { return m_interpolatedTransformMatrices; }
 private:
     //! The owner of the manager.
     scene *m_owner;
     //! The entity transforms.
-    entity_transform_vector m_transforms;
+    entity_transform_vector m_transforms[2];
+    //! The transform cache that stores the interpolated data.
+    entity_transform_vector m_interpolatedTransforms;
+    //! The transform matrices for the interpolated data.
+    float4x4_vector_t m_interpolatedTransformMatrices;
 };
 
 GO_END_NAMESPACE

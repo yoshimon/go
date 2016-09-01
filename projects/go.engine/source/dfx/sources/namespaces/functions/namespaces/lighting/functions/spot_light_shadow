@@ -18,15 +18,15 @@ inline float $(
 
     // Effective UV with 1 texel border
     const float baseV = shadowCasterIndex * DFX_SPOT_LIGHT_SHADOW_MAP_ATLAS_PADDED_FACE_SIZE_V + (DFX_SPOT_LIGHT_SHADOW_MAP_ATLAS_TEXEL_SIZE_V * DFX_SPOT_LIGHT_SHADOW_MAP_ATLAS_TOPLEFT_MARGIN);
-    const float2 paddedUV = float2(shadowUVD.x, shadowUVD.y * DFX_SPOT_LIGHT_SHADOW_MAP_ATLAS_INNER_FACE_SIZE_V + baseV);
+
+    // TODO/HACK: shadowUVD should be within 0-1...why is this not the case sometimes?
+    const float2 paddedUV = float2(shadowUVD.x, saturate(shadowUVD.y) * DFX_SPOT_LIGHT_SHADOW_MAP_ATLAS_INNER_FACE_SIZE_V + baseV);
 
     // 4x4 PCF
     float coverage = 0.0f;
 
-    [unroll]
     for(float y = -1.5f; y <= 1.5; y += 1.0f)
     {
-        [unroll]
         for(float x = -1.5f; x <= 1.5; x += 1.0f)
         {
             const float2 offset = DFX_SPOT_LIGHT_SHADOW_MAP_ATLAS_TEXEL_SIZE * float2(x, y);

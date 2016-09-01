@@ -57,6 +57,7 @@ private:
     go::input_context m_sceneInputContext;
     ui_action_map m_uiInputActionMap;
     go::input_context m_uiInputContext;
+    std::vector<std::tuple<uint32_t, float, float, float, float, float, DirectX::XMFLOAT3>> m_diskLights;
 };
 
 

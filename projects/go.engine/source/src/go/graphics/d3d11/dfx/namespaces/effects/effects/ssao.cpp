@@ -79,7 +79,7 @@ static void compute_ssao(go::dfx_effects::ssao_parameters *parameters)
     outputParams.Radius = parameters->in.radius;
     outputParams.Bias = parameters->in.angularBias;
     outputParams.PowerExponent = parameters->in.strength;
-    outputParams.Blur.Enable = true;
+    outputParams.Blur.Enable = false;
     outputParams.Blur.Radius = GFSDK_SSAO_BLUR_RADIUS_4;
     outputParams.Blur.Sharpness = 4.f;
     outputParams.CoarseAO = 1.0f;

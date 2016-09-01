@@ -190,7 +190,7 @@ void go::gfx_device::initialize_system_states()
         
         o.cullMode = gfx_rasterizer_cull_mode::back;
         o.depthBias = d32_depth_bias(0.0001f);
-        o.slopeScaledDepthBias = 3.0f;
+        o.slopeScaledDepthBias = 2.5f;
         m_systemRasterizerStates.shadow.reset(o);
         
         o.cullMode = gfx_rasterizer_cull_mode::none;

@@ -35,6 +35,7 @@
 #pragma once
 
 #include "go/core/common.h"
+#include "go/core/double_buffered.h"
 #include "go/platform/windows.h"
 
 
@@ -174,79 +175,6 @@ private:
     std::vector<float> m_resolvedTimestamps;
     //! State flag.
     bool m_isEnabled = true;
-};
-
-//! A class, which represents a double-buffered element.
-template<typename T>
-class GO_API double_buffered
-{
-public:
-    //! Constructor.
-    double_buffered() : m_A(), m_B(), m_active(&m_A), m_swapCount(0) {}
-public:
-    /*!
-        Returns the active element.
-        
-        \return The active element.
-     */
-    const T &active() const { return *m_active; }
-    /*!
-        Returns the active element.
-
-        \return The active element.
-     */
-    T &active() { return *m_active; }
-    /*!
-        Returns the active element.
-
-        \return The active element.
-    */
-    const T &inactive() const { return m_active == &m_A ? m_B : m_A; }
-    /*!
-        Returns the inactive element.
-
-        \return The inactive element.
-    */
-    T &inactive() { return m_active == &m_A ? m_B : m_A; }
-    /*!
-        Swaps the active element.
-
-        \return The old active element.
-     */
-    T &swap()
-    {
-        auto &&result = *m_active;
-        m_active = m_active == &m_A ? &m_B : &m_A;
-        ++m_swapCount;
-        return result;
-    }
-    /*!
-        Swaps the active element.
-     
-        \return The old active element.
-     */
-    const T &swap() const
-    {
-        auto &&result = *m_active;
-        m_active = m_active == &m_A ? &m_B : &m_A;
-        ++m_swapCount;
-        return result;
-    }
-    /*!
-        Returns the number of times that the buffer has been swapped.
-
-        \return The number of times that the buffer has been swapped.
-     */
-    uint64_t swap_count() const { return m_swapCount; }
-private:
-    //! The first timer set.
-    T m_A;
-    //! The second timer set.
-    T m_B;
-    //! The active element.
-    T *m_active;
-    //! The number of times that the buffer has been swapped.
-    uint64_t m_swapCount;
 };
 
 GO_END_NAMESPACE

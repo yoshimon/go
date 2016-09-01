@@ -36,6 +36,7 @@
 
 
 #include "go/core/common.h"
+#include "go/core/double_buffered.h"
 #include "go/graphics/render_path.h"
 #include "go/graphics/texture2d_atlas.h"
 #include "go/graphics/d3d11/dfx/forward_plus_util.h"
@@ -354,11 +355,11 @@ private:
     //! Helper to render with Forward+.
     dfx_util::forward_plus_renderer m_helperRenderer;
     //! The material database that was used previousl.
-    go::gfx_material_database *m_currentMaterialDB;
+    gfx_material_database *m_currentMaterialDB;
     //! The double-buffered effect timers.
-    go::double_buffered<gfx_timers> m_gpuTimers;
+    double_buffered<gfx_timers> m_gpuTimers;
     //! The timer frequency for the GPU clock.
-    go::double_buffered<gfx_timer_frequency> m_gpuTimerFrequency;
+    double_buffered<gfx_timer_frequency> m_gpuTimerFrequency;
 };
 
 GO_END_NAMESPACE

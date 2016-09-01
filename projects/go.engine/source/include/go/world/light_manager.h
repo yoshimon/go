@@ -86,6 +86,8 @@ public:
         \return The owner.
      */
     scene *owner() noexcept { return m_owner; }
+    //! Computes all visible lights and caches the results.
+    void update_visible_lights();
     /*!
         Returns the directional light descriptor.
 
@@ -159,6 +161,19 @@ public:
      */
     const disk_light_data_vector &disk_lights() const noexcept { return m_diskLights; }
 private:
+    //! Updates the directional light frustum to fit the active camera frustum.
+    void update_directional_light_frustum();
+    //! Culls the shadow casting spherical lights.
+    void cull_shadow_casting_spherical_lights();
+    //! Culls the shadow casting disk lights.
+    void cull_shadow_casting_disk_lights();
+    /*!
+        Culls lights with a spherical proxy.
+
+        \param 
+     */
+    void cull_spherical_proxy_lights();
+private:
     //! The owner of the manager.
     scene *m_owner;
     
@@ -166,6 +181,11 @@ private:
     entity_id_vector m_entityToSphericalLightIndex;
     //! The light data for spherical lights.
     spherical_light_data_vector m_sphericalLights;
+    //! The spherical lights after culling.
+    index_vector m_visibleSphericalLights;
+
+    //! The visible shadow-casting point lights.
+    index_vector m_visibleShadowCastingPointLights;
 
     //! Maps entity IDs to disk light indices.
     entity_id_vector m_entityToDiskLightIndex;

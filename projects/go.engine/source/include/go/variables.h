@@ -60,8 +60,8 @@ GO_DECLARE_CVAR(mouse_speed_scale_y)
 //! Texture filter for surfaces.
 GO_DECLARE_CVAR(texture_filter)
 
-//! The quality of the real-time ambient occlusion.
-GO_DECLARE_CVAR(ssao_quality)
+//! The strength of the real-time ambient occlusion.
+GO_DECLARE_CVAR(ssao_strength)
 
 //! The quality of the volumetric lights.
 GO_DECLARE_CVAR(volumetric_lighting_quality)
@@ -70,7 +70,7 @@ GO_DECLARE_CVAR(volumetric_lighting_quality)
 GO_DECLARE_CVAR(default_material_name)
 
 //! Enables the GPU profiler.
-GO_DECLARE_CVAR(enable_gpu_profiling)
+GO_DECLARE_CVAR(gpu_profiling)
 
 
 //! The path_assets base path.

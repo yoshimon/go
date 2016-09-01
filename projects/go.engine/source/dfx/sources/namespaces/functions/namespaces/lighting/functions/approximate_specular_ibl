@@ -20,6 +20,10 @@ float3 $(
     const Texture2D<float2> envBRDF,
     const TextureCube<float4> envMap)
 {
+    // UNITY HACK
+    // const float m = roughness * (1.7 - 0.7 * roughness);
+    // const float specularMipLevel = 7 * m;
+
      const uint kNumMipLevels = 9 - 1;
      const float mipBias = 3.0 - 1.15 * log2(roughness);
      const uint specularMipLevel = kNumMipLevels - mipBias;

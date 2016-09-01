@@ -86,9 +86,9 @@ void demo_game::handle_initialize(int, char *[])
     sky.material = "sky\\sunset";
     
     auto &&camProps = scene->camera_properties();
-    camProps.fovY = 1.4;
-    camProps.nearClip = 0.1f;
-    camProps.farClip = 100.0f;
+    camProps.fovY = 1.1;
+    camProps.nearClip = 0.05f;
+    camProps.farClip = 50.0f;
 
     // Load the scene environment map
     auto &&assetContext = m_sceneMgr->asset_context();
@@ -96,26 +96,24 @@ void demo_game::handle_initialize(int, char *[])
     auto &&sceneEnvSpecularMap = assetContext.texture_mgr().load(sceneEnvMapMat->textureIDs[1], 0, go::resource_eviction_policy::permanent);
     sky.specularEnvMap = *sceneEnvSpecularMap;
 
-    auto vSunColor = DirectX::XMVectorScale(DirectX::XMVectorSet(1.f, 0.9568f, 0.8392f, 0), 2.0f);
+    auto vSunColor = DirectX::XMVectorScale(DirectX::XMVectorSet(1.f, 0.9568f, 0.8392f, 0), 1.0f);
     DirectX::XMStoreFloat3(&sky.sunColor, vSunColor);
 
-    auto vAmbientColorAbove = DirectX::XMVectorScale(DirectX::XMVectorSet(0.11f, 0.18f, 0.137f, 0), 3.0f);
-    //auto vAmbientColorAbove = DirectX::XMVectorScale(DirectX::XMVectorSet(0.31f, 0.18f, 0.137f, 0), 0.4f);
+    auto vAmbientColorAbove = DirectX::XMVectorScale(DirectX::XMVectorSet(0.11f, 0.18f, 0.137f, 0), 0.03f);
     DirectX::XMStoreFloat3(&sky.ambientColorAbove, vAmbientColorAbove);
 
-    auto vAmbientColorBelow = DirectX::XMVectorScale(DirectX::XMVectorSet(0.409f, 0.239f, 0.109f, 0), 3.0f);
-    //auto vAmbientColorBelow = DirectX::XMVectorScale(DirectX::XMVectorSet(0.409f, 0.239f, 0.109f, 0), 0.4f);
+    auto vAmbientColorBelow = DirectX::XMVectorScale(DirectX::XMVectorSet(0.409f, 0.239f, 0.109f, 0), 0.03f);
     DirectX::XMStoreFloat3(&sky.ambientColorBelow, vAmbientColorBelow);
 
-    sky.fogDensity = 0.0001f;
+    sky.fogDensity = 0.0025f;
     sky.fogColor = DirectX::XMFLOAT3(sky.ambientColorAbove.x, sky.ambientColorAbove.y, sky.ambientColorAbove.z);
-    //DirectX::XMStoreFloat3(&sky.sunDirection, DirectX::XMVector3Normalize(DirectX::XMVectorSet(-5, -1.5, -0.5, 0)));
-    DirectX::XMStoreFloat3(&sky.sunDirection, DirectX::XMVector3Normalize(DirectX::XMVectorSet(0.0, -1.0, 2.0, 0)));
+    DirectX::XMStoreFloat3(&sky.sunDirection, DirectX::XMVector3Normalize(DirectX::XMVectorSet(0.0, -1.0, -2.0, 0)));
 
     // World camera
     go::gfx_entity *cameraEntity = nullptr;
 
     auto numLights = 0;
+    auto numDiskLights = 0;
 
     // Load plane
     rapidxml::xml_document<> doc;
@@ -161,9 +159,6 @@ void demo_game::handle_initialize(int, char *[])
                     {
                         cameraEntity = entity;
                         cameraEntity->attach_component<gfx_perspective_camera_component_manager>();
-                        //scene->scale_entity(*cameraEntity, 1000.0f);
-                        //scene->attach_disk_light(*entity, DirectX::XMFLOAT3(1,1,1), 100.f, 1.0f, DirectX::XM_PIDIV4, DirectX::XM_PIDIV4 * 0.5f, true);
-                        //scene->attach_spherical_light(*entity, DirectX::XMFLOAT3(1,1,1), 100.0f, 0.1f, false);
                         scene->change_active_camera(*cameraEntity);
                     }
                 }
@@ -177,23 +172,40 @@ void demo_game::handle_initialize(int, char *[])
                 if(nLight)
                 {
                     auto attType = nLight->first_attribute("type");
-                    if(!strcmp(attType->value(), "Point") || !strcmp(attType->value(), "Spot"))
+                    auto &&isPoint = !strcmp(attType->value(), "Point");
+                    auto &&isSpot = !strcmp(attType->value(), "Spot");
+                    if(isPoint || isSpot)
                     {
-                        // Point light
                         auto attIntensity = nLight->first_attribute("intensity");
                         auto attRadius = nLight->first_attribute("radius");
                         auto attCastsShadows = nLight->first_attribute("castsShadows");
                         auto attColor = nLight->first_attribute("color");
+                        auto attSpotAngleDeg = nLight->first_attribute("spotAngle");
 
+                        auto radiusScale = 1.0f;
                         auto lightIntensityScale = 10.f;
                         auto luminousPower = (float)std::atof(attIntensity->value()) * lightIntensityScale;
-                        auto radius = (float)std::atof(attRadius->value()) * sceneScale;
+                        auto radius = (float)std::atof(attRadius->value()) * sceneScale * radiusScale;
                         auto color = go::string_to_vector3f<DirectX::XMFLOAT3>(attColor->value());
                         auto castsShadows = (bool)std::atoi(attCastsShadows->value());
+                        auto spotAngleDeg = (float)std::atof(attSpotAngleDeg->value());
 
-                        //scene->attach_disk_light(*entity, color, luminousPower, 1.0f, DirectX::XM_PI - DirectX::XM_PIDIV4, DirectX::XM_PIDIV4, castsShadows);
-                        scene->attach_spherical_light(*entity, color, luminousPower, 0.1f, castsShadows);
+                        if(isSpot)
+                        {
+                            auto &&spotAngle = DirectX::XMConvertToRadians(spotAngleDeg);
+                            luminousPower *= 50.0f;
+                            scene->attach_disk_light(*entity, color, luminousPower, 0.25f, spotAngle, spotAngle * 0.7f, castsShadows);
+                            scene->translate_entity(*entity, DirectX::XMVectorSet(0.0f, -0.1f, 0.0f, 0.0f));
+                            m_diskLights.emplace_back(numDiskLights, 0.0f, 3.0f, 4.0f, 1.0f, luminousPower, color);
+                            ++numDiskLights;
+                        }
+                        else if(isPoint)
+                        {
+                            scene->attach_spherical_light(*entity, color, luminousPower * 0.00025f, 0.01f, castsShadows);
+                        }
+
                         scene->change_entity_scale(*entity, radius); // Override entity scale
+
                         ++numLights;
                     }
                 }
@@ -259,15 +271,36 @@ void demo_game::handle_shutdown()
 
 void demo_game::handle_update()
 {
-    // Update the sun
-    static float s_time = 0.0f;
-    s_time += 0.01f;
-    auto sinTime = (std::sin(s_time) + 1.0f) * 0.5f;
-    auto sinTimeFast = (std::sin(s_time * 30.0f) + 1.0f) * 0.5f;
+    auto &&t = go::the_game_time;
+    auto &&scene = m_sceneMgr->scenes()[0];
 
-    auto &&scene = m_sceneMgr->scenes().back();
+    for(auto &&l : m_diskLights)
+    {
+        auto &&light = std::get<0>(l);
+        if(light % 4 != 0)
+        {
+            continue;
+        }
 
-    //scene->change_disk_light_color(4, DirectX::XMFLOAT3(1,1,1), 3000000.0f * std::min(1.0f, std::max(0.2f, sinTimeFast * 2.0f)));
+        auto &&counter = std::get<1>(l);
+        auto &&periodStart = std::get<2>(l);
+        auto &&periodEnd = std::get<3>(l);
+        auto &&freq = std::get<4>(l);
+        auto &&lumPower = std::get<5>(l);
+        auto &&color = std::get<6>(l);
+        counter += go::performance.elapsedTime;
+        if(counter > periodEnd)
+        {
+            counter = 0.0f;
+        }
+        else if(counter > periodStart)
+        {
+            auto &&scale = std::abs(std::sin(2000.0f * t * freq * counter));
+            scale *= 0.1f;
+            scale += 0.1f;
+            scene->change_disk_light_color(light, color, scale * lumPower);
+        }
+    }
 
     m_sceneMgr->update();
 }

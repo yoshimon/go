@@ -517,13 +517,13 @@ bool go::ui_system::has_input_focus() const noexcept
 
 void go::ui_system::show_cursor()
 {
-    SetCursor(LoadCursor(NULL, MAKEINTRESOURCE(IDC_ARROW)));
+    ShowCursor(TRUE);
 }
 
 
 void go::ui_system::hide_cursor()
 {
-    SetCursor(NULL);
+    ShowCursor(FALSE);
 }
 
 

@@ -123,7 +123,7 @@ void gat::unity_material_set::reset(const go::file_path &filePath)
 
             entry.material.bind_rgba_constant(section, "_EmissionColor", "emissiveTint", "1 1 1 1");
             entry.material.bind_float_constant(section, "_EmissiveIntensity", "emissiveIntensity", "1");
-            entry.material.bind_float_constant(section, "_Metallic", "metallicScale", "0.5");
+            entry.material.bind_float_constant(section, "_Metallic", "metallicScale", "1");
             
             // Remap glossiness to roughness
             auto glossiness = 0.0f;

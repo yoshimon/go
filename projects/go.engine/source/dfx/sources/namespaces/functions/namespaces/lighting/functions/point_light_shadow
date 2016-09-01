@@ -28,10 +28,8 @@ inline float $(
     // 4x4 PCF
     float coverage = 0.0f;
 
-    [unroll]
     for(float y = -1.5f; y <= 1.5; y += 1.0f)
     {
-        [unroll]
         for(float x = -1.5f; x <= 1.5; x += 1.0f)
         {
             const float2 offset = DFX_POINT_LIGHT_SHADOW_MAP_ATLAS_TEXEL_SIZE * float2(x, y);

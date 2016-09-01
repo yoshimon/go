@@ -210,6 +210,9 @@ void go::gfx_material_database::process_record(rapidxml::xml_node<> *n, gfx_mate
     // Two sided
     go::xml_get_bool_attribute(n, "isTwoSided", *(bool *)&def.isTwoSided, false);
 
+    // Material textures
+    read_textures(n, def, m_textureDB);
+
     // Material constants
     switch(def.shaderID)
     {
@@ -228,6 +231,27 @@ void go::gfx_material_database::process_record(rapidxml::xml_node<> *n, gfx_mate
         read_constant(nConstants, "uvScaling", DirectX::XMFLOAT2(1, 1), def.constants.standard.uvTiling);
         read_constant(nConstants, "uvBias", DirectX::XMFLOAT2(0, 0), def.constants.standard.uvOffsets);
 
+        // Adjust constants to match Unity behaviour if textures are bound
+        uint32_t slot;
+        if(go::gfx_material_shader_texture_semantic_to_slot(go::gfx_material_shader_id::standard, "metallicSmoothness", slot))
+        {
+            if(def.textureIDs[slot] != -1)
+            {
+                def.constants.standard.metallicScale = 1.0f;
+                def.constants.standard.roughnessScale = 1.0f;
+            }
+        }
+
+        if(go::gfx_material_shader_texture_semantic_to_slot(go::gfx_material_shader_id::standard, "albedo", slot))
+        {
+            if(def.textureIDs[slot] != -1)
+            {
+                def.constants.standard.albedoTint[0] = 1.0f;
+                def.constants.standard.albedoTint[1] = 1.0f;
+                def.constants.standard.albedoTint[2] = 1.0f;
+            }
+        }
+
         // Remap colors to non-linear space
         def.constants.standard.albedoTint[0] *= def.constants.standard.albedoTint[0];
         def.constants.standard.albedoTint[1] *= def.constants.standard.albedoTint[1];
@@ -240,9 +264,6 @@ void go::gfx_material_database::process_record(rapidxml::xml_node<> *n, gfx_mate
         break;
     }
     }
-
-    // Material textures
-    read_textures(n, def, m_textureDB);
 
     // Register material index
     m_materialTypeIndices[(uint32_t)matShaderInfo.type].push_back(def.id);

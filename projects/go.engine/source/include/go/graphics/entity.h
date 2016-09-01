@@ -135,7 +135,7 @@ public:
                 // Component manager not registered?
                 if(!mgr)
                 {
-                    return false;
+                    return nullptr;
                 }
 
                 // Bind manager

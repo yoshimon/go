@@ -16,10 +16,12 @@ No 3rd-party libraries are included in this repo for licensing reasons.
 
 Little bit tricky. The framework is structured into 4 main projects:
 
-1. go.engine - This is where most of the code is. What you might call 'engine'.
-2. go.game (DLL) - A layer built on top of go.engine to represent a 'game' - it's not really a game, just quick & dirty usage of the framework.
-3. go.launcher - The launcher uses go.engine to setup an application and fires the go.game DLL callbacks.
-4. go.tools - Different DCC tools (asset conversion, asset importing, etc.).
+go.engine - This is where most of the code is. What you might call 'engine'.
+go.game (DLL) - A layer built on top of go.engine to represent a 'game' - it's not really a game, just quick & dirty usage of the framework.
+go.launcher - The launcher uses go.engine to setup an application and fires the go.game DLL callbacks.
+go.tools - Different DCC tools (asset conversion, asset importing, etc.).
+
+You will have to manually download and build the 3rd-party libraries.
 
 ## Shaders
 

@@ -75,11 +75,35 @@ public:
             {
             // Shift
             case 0x10: { speedMultiplier = isDown ? kDefaultSpeed * 2 : kDefaultSpeed; break; }
+            // 1,2
+            case 0x31:
+            case 0x61:
+                {
+                    if(!e.digitalData.isDown)
+                    {
+                        GO_LOGFILE_INFO("Switching to Scene 1.\n");
+                        m_scene->change_entity_position(entityID, XMVectorSet(-25.7160015f, 1.78305757f, 0.0379160009f, 1.0f));
+                        m_scene->change_entity_rotation(entityID, XMVectorSet(0.0f, 0.618101001f, 0.0f, 0.786098003f));
+                    }
+                    break;
+                }
+            case 0x32:
+            case 0x62:
+                {
+                    if(!e.digitalData.isDown)
+                    {
+                        GO_LOGFILE_INFO("Switching to Scene 2.\n");
+                        m_scene->change_entity_position(entityID, XMVectorSet(-15.2028084f, 9.28631878f, 8.03242588f, 1.0f));
+                        m_scene->change_entity_rotation(entityID, XMVectorSet(0.0183652323f, 0.975361288f, 0.0170506667f, 0.219184279f));
+                    }
+                    break;
+                }
             // A, D, S, W
             case 0x41: { m_translation.x = isDown ? 1 : m_translation.x > 0 ? 0.f : m_translation.x; break; }
             case 0x44: { m_translation.x = isDown ? -1 : m_translation.x < 0 ? 0.f : m_translation.x; break; }
             case 0x53: { m_translation.z = isDown ? -1 : m_translation.z < 0 ? 0.f : m_translation.z; break; }
             case 0x57: { m_translation.z = isDown ? 1 : m_translation.z > 0 ? 0.f : m_translation.z; break; }
+            case 0x56: { m_scene->sky().fogDensity = e.digitalData.isDown ? 0.010f : 0.0025f; break; }
             // Space
             case VK_SPACE: { m_translation.y = isDown ? 1 : m_translation.y > 0 ? 0.f : m_translation.y; break; }
             // Ctrl
@@ -104,18 +128,21 @@ public:
         }
         case go::input_event_device::mouse:
         {
-            // Load some information about the camera orientation
-            auto &entityData = m_scene->entity_data();
-            auto orientation = &entityData.orientations[entityID];
+            if(e.type == go::input_event_type::analog)
+            {
+                // Load some information about the camera orientation
+                auto &entityData = m_scene->entity_data();
+                auto orientation = &entityData.orientations[entityID];
 
-            auto vDirN = XMLoadFloat4(orientation);
-            auto vLeftN = XMVector3Normalize(XMVector3Cross(vDirN, DirectX::g_XMIdentityR1));
-            auto vUpN = XMVector3Normalize(XMVector3Cross(vDirN, vLeftN));
+                auto vDirN = XMLoadFloat4(orientation);
+                auto vLeftN = XMVector3Normalize(XMVector3Cross(vDirN, DirectX::g_XMIdentityR1));
+                auto vUpN = XMVector3Normalize(XMVector3Cross(vDirN, vLeftN));
 
-            // Rotate
-            auto elapsedTime = go::performance.elapsedTime;
-            m_scene->rotate_entity(entityID, XMQuaternionRotationNormal(vLeftN, elapsedTime * 0.05f * -e.dualAnalogData.motionDelta[1]));
-            m_scene->rotate_entity(entityID, XMQuaternionRotationNormal(vUpN, elapsedTime * 0.05f * -e.dualAnalogData.motionDelta[0]));
+                // Rotate
+                auto elapsedTime = go::performance.elapsedTime;
+                m_scene->rotate_entity(entityID, XMQuaternionRotationNormal(vLeftN, elapsedTime * 0.05f * -e.dualAnalogData.motionDelta[1]));
+                m_scene->rotate_entity(entityID, XMQuaternionRotationNormal(vUpN, elapsedTime * 0.05f * -e.dualAnalogData.motionDelta[0]));
+            }
             break;
         }
         }
@@ -163,7 +190,7 @@ public:
         go::the_ui_system->execute_script(1, js);
     }
 public:
-    static constexpr float kDefaultSpeed = 50.5f;
+    static constexpr float kDefaultSpeed = 2.5f;
     float speedMultiplier = kDefaultSpeed;
 private:
     go::gfx_scene *m_scene = nullptr;

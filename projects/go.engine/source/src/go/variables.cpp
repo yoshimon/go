@@ -51,13 +51,13 @@ GO_DEFINE_CVAR(mouse_speed_scale_y, "1", "The vertical scaling factor for the mo
 
 GO_DEFINE_CVAR(texture_filter, "1", "The texture filter to use. (0 = linear, 1 = anisotropic)", go::variable::permanent)
 
-GO_DEFINE_CVAR(ssao_quality, "2", "The quality of the real-time screen-space ambient occlusion.", go::variable::permanent)
+GO_DEFINE_CVAR(ssao_strength, "3", "The strength of the real-time screen-space ambient occlusion.", go::variable::permanent)
 
-GO_DEFINE_CVAR(volumetric_lighting_quality, "3", "The quality of the volumetric lighting.", go::variable::permanent)
+GO_DEFINE_CVAR(volumetric_lighting_quality, "1", "The quality of the volumetric lighting.", go::variable::permanent)
 
 GO_DEFINE_CVAR(default_material_name, "engine\\default", "The name of the default material.", go::variable::permanent)
 
-GO_DEFINE_CVAR(enable_gpu_profiling, "1", "State flag, indicating whether GPU profiling is enabled.", go::variable::permanent)
+GO_DEFINE_CVAR(gpu_profiling, "1", "State flag, indicating whether GPU profiling is enabled.", go::variable::permanent)
 
 GO_DEFINE_CVAR(path_assets, GO_PATH_SYMBOL_WORLD_BASE, "The asset base path.", go::variable::nonpersistent | go::variable::permanent)
 GO_DEFINE_CVAR(path_shaders, GO_PATH_SYMBOL_DATA "shaders\\", "The shader base path.", go::variable::nonpersistent | go::variable::permanent)
@@ -75,7 +75,7 @@ void go::internal::initialize_all_environment_variables()
     GO_ADD_CVAR(default_material_name);
     GO_ADD_CVAR(display_gamma);
     GO_ADD_CVAR(display_mode);
-    GO_ADD_CVAR(enable_gpu_profiling);
+    GO_ADD_CVAR(gpu_profiling);
     GO_ADD_CVAR(fullscreen_viewport);
     GO_ADD_CVAR(mouse_speed_scale_x);
     GO_ADD_CVAR(mouse_speed_scale_y);
@@ -83,7 +83,7 @@ void go::internal::initialize_all_environment_variables()
     GO_ADD_CVAR_WITH_PATH_SYMBOL(path_shaders, GO_PATH_SYMBOL_NAME_SHADER);
     GO_ADD_CVAR_WITH_PATH_SYMBOL(path_ui_base, GO_PATH_SYMBOL_NAME_UI_BASE);
     GO_ADD_CVAR_WITH_PATH_SYMBOL(path_world_base, GO_PATH_SYMBOL_NAME_WORLD_BASE);
-    GO_ADD_CVAR(ssao_quality);
+    GO_ADD_CVAR(ssao_strength);
     GO_ADD_CVAR(texture_filter);
     GO_ADD_CVAR(volumetric_lighting_quality);
     GO_ADD_CVAR(windowed_viewport);

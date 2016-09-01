@@ -45,8 +45,7 @@ go::scene::scene(scene_manager *owner, size_t entityCacheSize)
     : m_owner(owner),
     m_entityManager(this, entityCacheSize), // NOTE: the order is important here!
     m_lightManager(this),
-    m_activeCamera((entity_id)-1),
-    m_isRendering(false)
+    m_activeCamera((entity_id)-1)
 {
     memset(&m_cameraProperties, 0, sizeof(m_cameraProperties));
 }
@@ -54,18 +53,17 @@ go::scene::scene(scene_manager *owner, size_t entityCacheSize)
 
 void go::scene::render()
 {
-    if(m_isRendering || m_activeCamera == (entity_id)-1)
-    {
-        return;
-    }
+    GO_ASSERT(m_activeCamera != (entity_id)-1);
 
-    m_isRendering = true;
+    // Compute rendering transforms by interpolating between the current
+    // and the last known TRS transforms using the accumulator value
+    m_entityManager.interpolate_transforms();
 
     // Always update the main camera first
     update_camera_frustum();
 
-    // Figure out which lights should be casting shadows
-    determine_shadow_casting_lights();
+    // Determine the visible lights using the interpolated transforms
+    m_lightManager.update_visible_lights();
 
     for(auto &&m : m_componentManagers)
     {
@@ -84,8 +82,6 @@ void go::scene::render()
 
     // Submit the work to the GPU
     flush_render_context();
-
-    m_isRendering = false;
 }
 
 
@@ -99,11 +95,21 @@ void go::scene::flush_render_context()
 
 
 void go::scene::update()
-{
+{    
+    // Swap the transform buffers
+    // The current transforms become the old ones
+    m_entityManager.update();
+
+    // Now we can update all managers, add the new current transforms
+    // which will allow the render function, that is executed later,
+    // to interpolate between the two.
     for(auto &&m : m_componentManagers)
     {
         m->handle_begin_update();
     }
+
+    // TODO: update physics
+    // TODO: update sound
 
     for(auto &&m : m_componentManagers)
     {
@@ -141,7 +147,7 @@ void go::scene::update_camera_frustum()
     auto &&cameraTransform = m_renderContext.renderPoints.main.transform;
     auto &&cameraProperties = m_renderContext.renderPoints.main.cameraProperties;
 
-    auto &&transform = m_entityManager.transforms()[cameraID];
+    auto &&transform = m_entityManager.interpolated_transforms()[cameraID];
 
     // Local camera basis
     auto &&vPos = XMLoadFloat4A(&transform.position);
@@ -168,69 +174,4 @@ void go::scene::update_camera_frustum()
     // Compute the frustum
     auto &&frustum = cameraTransform.frustum;
     frustum.reset(vPos, vOrientation, vUp, cameraProperties.nearClip, cameraProperties.farClip, cameraProperties.fovY, aspectRatio);
-}
-
-
-void go::scene::determine_shadow_casting_lights()
-{
-    auto &&cameraID = m_activeCamera;
-    auto &&cameraFrustum = m_renderContext.renderPoints.main.transform.frustum;
-
-    auto &&transform = m_entityManager.transforms()[cameraID];
-
-    // Load camera info
-    auto &&vCamPos = XMLoadFloat4A(&transform.position);
-    auto &&vCamRotation = XMLoadFloat4A(&transform.rotation);
-    auto &&vCamDir = XMVector3Rotate(XMLoadFloat4A(&transform.rotation), vCamRotation);
-
-    // Figure out the light basis vectors
-    auto &&vSunDir = XMLoadFloat3(&m_renderContext.sky.sunDirection);
-    auto &&vToSunDir = -vSunDir;
-    auto &&isSunDirUpParallel = XMScalarNearEqual(abs(XMVectorGetX(XMVector3Dot(g_XMIdentityR1, vSunDir))), 1.0f, FLT_EPSILON);
-    auto &&vSunSide = isSunDirUpParallel ? g_XMIdentityR2 : XMVector3Normalize(XMVector3Cross(g_XMIdentityR1, vSunDir));
-    auto &&vSunUp = XMVector3Normalize(XMVector3Cross(vSunDir, vSunSide));
-
-    // Load the camera frustum bounding sphere
-    auto &&vFrustumBSCenter = XMLoadFloat4A(&cameraFrustum.boundingSphereCenter);
-    auto &&frustumBSRadius = std::ceil(cameraFrustum.boundingSphereRadius * 16.0f) / 16.0f; // NOTE: round up to prevent precision problems from recalc
-    auto &&frustumBSDiameter = frustumBSRadius * 2.0f;
-
-    // Push the light back
-    const auto lightNearClip = 1.0f;
-    const auto extraBackupDist = 1000.0f; // TODO: for culling
-    const auto backupDist = extraBackupDist + lightNearClip + frustumBSRadius;
-    auto &&vLightPos = vFrustumBSCenter + vToSunDir * backupDist;
-
-    // Build the light view matrix
-    auto &&mLightView = DirectX::XMMatrixLookAtLH(vLightPos, vFrustumBSCenter, vSunUp);
-
-    // Build the projection matrix
-    auto &&bounds = frustumBSDiameter;
-    auto &&lightFarClip = backupDist + frustumBSRadius;
-    auto &&mLightProj = XMMatrixOrthographicLH(bounds, bounds, lightNearClip, lightFarClip);
-
-    // Combine them
-    auto &&mLightViewProj = mLightView * mLightProj;
-
-    // Snap texels
-    auto &&halfShadowMapSize = DFX_DIRECTIONAL_LIGHT_SHADOW_MAP_SIZE * 0.5f;
-    auto &&originLS = XMVector3TransformCoord(g_XMIdentityR3, mLightViewProj) / halfShadowMapSize;
-    auto &&roundedOriginLS = XMVectorRound(originLS);
-    auto &&rounding = (roundedOriginLS - originLS) / halfShadowMapSize;
-
-    auto &&mRoundMatrix = DirectX::XMMatrixTranslationFromVector(rounding);
-
-    mLightViewProj *= mRoundMatrix;
-
-    // Save results
-    auto &&lightSplit = m_renderContext.renderPoints.directionalLight[0];
-
-    auto &&lightTransforms = lightSplit.transform;
-    XMStoreFloat4x4(&lightTransforms.projectionMatrix, mLightProj);
-    XMStoreFloat4x4(&lightTransforms.viewMatrix, mLightView);
-    XMStoreFloat4x4(&lightTransforms.viewProjectionMatrix, mLightViewProj);
-
-    // Update the light frustum
-    auto &&frustum = lightSplit.transform.frustum;
-    frustum.reset(vLightPos, vSunDir, bounds, bounds, lightFarClip);
 }

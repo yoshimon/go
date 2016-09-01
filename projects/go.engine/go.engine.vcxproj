@@ -578,6 +578,7 @@
     <ClInclude Include="source\include\go\core\byte_step_view_impl.h" />
     <ClInclude Include="source\include\go\core\common.h" />
     <ClInclude Include="source\include\go\core\concurrent_append_array.h" />
+    <ClInclude Include="source\include\go\core\double_buffered.h" />
     <ClInclude Include="source\include\go\core\exception.h" />
     <ClInclude Include="source\include\go\core\inplace_lexer.h" />
     <ClInclude Include="source\include\go\core\interpolator.h" />

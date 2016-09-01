@@ -302,8 +302,8 @@ void update_shadow_casting_point_lights(
     // Omni-directional light constants
     const auto kFovY = XM_PIDIV2;
     const auto kAspectRatio = 1.f;
-    const auto kNearClip = 0.2f;
-    const auto kMinFarClip = 0.001f;
+    const auto kNearClip = 0.05f;
+    const auto kMinFarClip = kNearClip + 0.001f;
 
     size_t sclIndex = 0;
     for(auto scl : shadowCastingLights)
@@ -387,7 +387,7 @@ void update_shadow_casting_spot_lights(
         shadowCastingLights);
 
     // Setup the transforms
-    auto kNearClip = 0.2f;
+    auto kNearClip = 0.25f;
     auto kMinFarClip = kNearClip + 0.1f;
     auto kAspectRatio = 1.0f;
 
@@ -1026,11 +1026,25 @@ void go::gfx_scene::change_disk_light_color(int32_t lightIndex, const DirectX::X
     XMStoreFloat3((XMFLOAT3 *)m_renderContext.lights.disk.parameters[lightIndex].color, XMLoadFloat3(&color) * luminance);
 }
 
+void go::gfx_scene::change_entity_position(gfx_entity_id id, FXMVECTOR vNewPos) noexcept
+{
+    GO_ASSERT(id >= 0 && id < m_entityData.positions.size());
+    XMStoreFloat4A(&m_entityData.positions[id], vNewPos);
+}
+
 
 void go::gfx_scene::translate_entity(gfx_entity_id id, FXMVECTOR vDelta) noexcept
 {
     GO_ASSERT(id >= 0 && id < m_entityData.positions.size());
     XMStoreFloat4A(&m_entityData.positions[id], XMLoadFloat4A(&m_entityData.positions[id]) + vDelta);
+}
+
+
+void go::gfx_scene::change_entity_rotation(gfx_entity_id id, DirectX::FXMVECTOR vQuat) noexcept
+{
+    auto p = XMVector3Rotate(g_XMIdentityR2, vQuat);
+    XMStoreFloat4A(&m_entityData.orientations[id], p);
+    XMStoreFloat4A(&m_entityData.rotations[id], vQuat);
 }
 
 

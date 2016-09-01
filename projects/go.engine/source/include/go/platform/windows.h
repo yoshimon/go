@@ -57,6 +57,7 @@
 #include <d3d11shader.h>
 #include <d3dcompiler.h>
 #include <d3d9.h> // D3DPERF API
+#pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "d3d9.lib")
 #endif // GO_USE_DIRECT3D11
 
