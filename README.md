@@ -5,7 +5,7 @@ Go is not a game, nor is it an attempt to replace any of the big engines out the
 
 ## Pre-compiled demo
 
-I highly recommend downloading the pre-compiled demo here (X GB) instead of trying to recompile everything.
+I highly recommend downloading the pre-compiled demo instead of trying to recompile everything.
 
 
 ## Libraries
